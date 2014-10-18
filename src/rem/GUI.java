@@ -1,8 +1,10 @@
-package rem;
+package bin.rem;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,13 +39,15 @@ public class GUI {
 	JPanel mainPanel = new JPanel(new BorderLayout());
 	
 	//Table
-	String[] columnNames = {"Kurs","Thema","Beginn","Abgabe","Status"};
+	String[] columnNames = {"Topic","About","Begin","End", "Status"};
 	Object[][] streams;
 	JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
 	//Files
 	File podcastData = new File("userfiles/tasks");
 	
+	//Other
+	static Object[] status = {"not started","in process","finished"};
 	
 	/**
 	 * Initialise the main window.
@@ -96,6 +100,14 @@ public class GUI {
 	}
 	
 	private void setToolbar(){
+		newButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				
+				addTableRow("mathematics","work","20141010","20141024");
+			}
+		});
+		
+		
 		toolbar.add(newButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
@@ -109,7 +121,7 @@ public class GUI {
 	}
 	
 	/**
-	 * Set a Table of all Stream-names/urls.
+	 * Set a Table
 	 */
 	private void setTable(){
 		table.setFillsViewportHeight(true);
@@ -120,10 +132,11 @@ public class GUI {
 	 * Function to add a new row to the Table.
 	 * @param podcast
 	 * @param url
+	 * "Topic","About","Begin","End", "Status"
 	 */
-	private void addTableRow(String podcast, String url){
+	private void addTableRow(String topic, String about, String begin, String end){
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		model.addRow(new Object[]{podcast, url});
+		model.addRow(new Object[]{topic, about, begin, end, status[0]});
 	}
 	
 	

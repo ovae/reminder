@@ -1,6 +1,6 @@
-package rem;
+package bin.rem;
 
-import rem.GUI;
+import bin.rem.GUI;
 
 public class Main {
 
