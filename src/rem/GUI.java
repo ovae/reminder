@@ -14,8 +14,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Scanner;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -65,6 +69,8 @@ public class GUI {
 	File taskFile = new File("userfiles/tasks");
 	
 	//Other
+	Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
+	Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
 	static Object[] status = {"not_started","in_process","finished"};
 	
 	/**
@@ -119,6 +125,7 @@ public class GUI {
 	}
 	
 	private void setToolbar(){
+		//toolbar.setFloatable(false);
 		newButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				setAddFrame();
@@ -128,8 +135,11 @@ public class GUI {
 		removeButton.addActionListener(new ActionListener(){
 			@Override//TODO
 			public void actionPerformed(ActionEvent e) {
-				removeTableRow();
-				writeTableItemsToFile();
+				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(p==0){
+					removeTableRow();
+					writeTableItemsToFile();
+				}
 			}
 		});
 		
@@ -160,13 +170,11 @@ public class GUI {
 		JLabel enterAbout = new JLabel("About: ");
 		JLabel enterBegin = new JLabel("Begin: ");
 		JLabel enterEnd = new JLabel("End: ");
-		//JLabel space = new JLabel("");
 		
 		enterTopic.setBounds(10, 100, 100, 28);
 		enterAbout.setBounds(10, 100, 100, 28);
 		enterBegin.setBounds(10, 100, 100, 28);
 		enterEnd.setBounds(10, 100, 100, 28);
-		//space.setBounds(10, 100, 100, 28);
 		
 		inputTopic.setBounds(10, 100, 180,28);
 		inputAbout.setBounds(10, 100, 180,28);
@@ -208,12 +216,6 @@ public class GUI {
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
 					addTableRow(topic,about,begin,end);
-					/*
-					inputTopic.setText("");
-					inputAbout.setText("");
-					inputBegin.setText("");
-					inputEnd.setText("");
-					*/
 				}
 			}
 		});
