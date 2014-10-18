@@ -5,3 +5,5 @@ all:
 jar:
 	jar cmf bin/MANIFEST.MF/ run.jar bin/rem/*.class
 
+run:
+	java -jar run.jar

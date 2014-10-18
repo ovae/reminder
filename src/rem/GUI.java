@@ -48,6 +48,7 @@ public class GUI {
 	JTextField inputBegin = new JTextField("");
 	JTextField inputEnd = new JTextField("");
 	JButton addButton = new JButton("add");
+	JButton resetButton = new JButton("reset");
 	
 	//Main Panel
 	JPanel mainPanel = new JPanel(new BorderLayout());
@@ -141,18 +142,19 @@ public class GUI {
 		addFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		addFrame.setLayout(new BorderLayout());
 		JPanel addPanel = new JPanel();
+		JPanel buttonPanel = new JPanel(new BorderLayout());
 
 		JLabel enterTopic = new JLabel("Topic: ");
 		JLabel enterAbout = new JLabel("About: ");
 		JLabel enterBegin = new JLabel("Begin: ");
 		JLabel enterEnd = new JLabel("End: ");
-		JLabel space = new JLabel("");
+		//JLabel space = new JLabel("");
 		
 		enterTopic.setBounds(10, 100, 100, 28);
 		enterAbout.setBounds(10, 100, 100, 28);
 		enterBegin.setBounds(10, 100, 100, 28);
 		enterEnd.setBounds(10, 100, 100, 28);
-		space.setBounds(10, 100, 100, 28);
+		//space.setBounds(10, 100, 100, 28);
 		
 		inputTopic.setBounds(10, 100, 180,28);
 		inputAbout.setBounds(10, 100, 180,28);
@@ -178,7 +180,8 @@ public class GUI {
 		addPanel.add(inputAbout);
 		addPanel.add(inputBegin);
 		addPanel.add(inputEnd);
-		addFrame.add(addButton, BorderLayout.SOUTH);
+		buttonPanel.add(resetButton,BorderLayout.WEST);
+		buttonPanel.add(addButton, BorderLayout.CENTER);
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String topic = inputTopic.getText();
@@ -203,7 +206,17 @@ public class GUI {
 			}
 		});
 		
+		resetButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				inputTopic.setText("");
+				inputAbout.setText("");
+				inputBegin.setText("");
+				inputEnd.setText("");
+			}
+		});
+		
 		addFrame.add(addPanel,BorderLayout.CENTER);
+		addFrame.add(buttonPanel, BorderLayout.SOUTH);
 		centerWindow(addFrame);
 		addFrame.setVisible(true);
 	}
