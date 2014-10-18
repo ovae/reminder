@@ -1,6 +1,7 @@
 package bin.rem;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -52,6 +54,7 @@ public class GUI {
 	
 	//Main Panel
 	JPanel mainPanel = new JPanel(new BorderLayout());
+	JScrollPane scroll = new JScrollPane(mainPanel);
 	
 	//Table
 	String[] columnNames = {"Topic","About","Begin","End", "Status"};
@@ -126,6 +129,15 @@ public class GUI {
 			@Override//TODO
 			public void actionPerformed(ActionEvent e) {
 				removeTableRow();
+				writeTableItemsToFile();
+			}
+		});
+		
+		
+		doneButton.addActionListener(new ActionListener(){
+			@Override//TODO
+			public void actionPerformed(ActionEvent e) {
+				updateTableRow();
 				writeTableItemsToFile();
 			}
 		});
@@ -225,7 +237,7 @@ public class GUI {
 	 * 
 	 */
 	private void setMainPanel(){
-		mainWindow.add(mainPanel, BorderLayout.CENTER);
+		mainWindow.add(scroll, BorderLayout.CENTER);
 		setTable();
 		loadTableItemsFromFile();
 	}
@@ -322,4 +334,28 @@ public class GUI {
 		}
 		table.clearSelection();
 	}
+	
+	/**
+	 * 
+	 */
+	private void updateTableRow(){
+		try{
+			int[] row = table.getSelectedRows();
+			String value= (String) table.getModel().getValueAt(row[0], 4);
+			if(value == status[0]){
+				table.getModel().setValueAt(status[1], row[0], 4);
+			}else if(value == status[1]){
+				table.getModel().setValueAt(status[2], row[0], 4);
+			}else{
+				table.getModel().setValueAt(status[0], row[0], 4);
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "You have to select a row.");
+		}
+	}
+
+	private void setTableRowColor(){
+		
+	}
+
 }
