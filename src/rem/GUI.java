@@ -249,6 +249,7 @@ public class GUI {
 		table.setFillsViewportHeight(true);
 		mainPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		mainPanel.add(table, BorderLayout.CENTER);
+		table.getTableHeader().setReorderingAllowed(false);
 	}
 	/**
 	 * Function to add a new row to the Table.
