@@ -26,6 +26,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class GUI {
 	
@@ -120,6 +121,13 @@ public class GUI {
 			}
 		});
 		
+		removeButton.addActionListener(new ActionListener(){
+			@Override//TODO
+			public void actionPerformed(ActionEvent e) {
+				removeTableRow();
+				writeTableItemsToFile();
+			}
+		});
 		
 		toolbar.add(newButton);
 		toolbar.add(removeButton);
@@ -287,5 +295,18 @@ public class GUI {
 		}catch(IOException e){
 			JOptionPane.showMessageDialog(null, e.getStackTrace());
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void removeTableRow(){
+		int[] rows = table.getSelectedRows();
+		TableModel tm= table.getModel();
+		while(rows.length>0){
+			((DefaultTableModel)tm).removeRow(table.convertRowIndexToModel(rows[0]));
+			rows = table.getSelectedRows();
+		}
+		table.clearSelection();
 	}
 }
