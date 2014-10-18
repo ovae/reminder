@@ -16,10 +16,14 @@ import java.io.InputStreamReader;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class GUI {
@@ -34,6 +38,14 @@ public class GUI {
 	JButton newButton = new JButton("new");
 	JButton removeButton = new JButton("remove");
 	JButton doneButton = new JButton("done");
+	
+	//AddFrame
+	JFrame addFrame = new JFrame("New");
+	JTextField inputTopic = new JTextField("");
+	JTextField inputAbout = new JTextField("");
+	JTextField inputBegin = new JTextField("");
+	JTextField inputEnd = new JTextField("");
+	JButton addButton = new JButton("add");
 	
 	//Main Panel
 	JPanel mainPanel = new JPanel(new BorderLayout());
@@ -102,8 +114,7 @@ public class GUI {
 	private void setToolbar(){
 		newButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
-				addTableRow("mathematics","work","20141010","20141024");
+				setAddFrame();
 			}
 		});
 		
@@ -114,6 +125,80 @@ public class GUI {
 		mainWindow.add(toolbar, BorderLayout.NORTH);
 	}
 	
+	private void setAddFrame(){
+		addFrame.setLocationRelativeTo(null);
+		addFrame.setSize(new Dimension(350,256));
+		addFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		addFrame.setLayout(new BorderLayout());
+		JPanel addPanel = new JPanel();
+
+		JLabel enterTopic = new JLabel("Topic: ");
+		JLabel enterAbout = new JLabel("About: ");
+		JLabel enterBegin = new JLabel("Begin: ");
+		JLabel enterEnd = new JLabel("End: ");
+		JLabel space = new JLabel("");
+		
+		enterTopic.setBounds(10, 100, 100, 28);
+		enterAbout.setBounds(10, 100, 100, 28);
+		enterBegin.setBounds(10, 100, 100, 28);
+		enterEnd.setBounds(10, 100, 100, 28);
+		space.setBounds(10, 100, 100, 28);
+		
+		inputTopic.setBounds(10, 100, 180,28);
+		inputAbout.setBounds(10, 100, 180,28);
+		inputBegin.setBounds(10, 100, 180,28);
+		inputEnd.setBounds(10, 100, 180,28);
+		
+		enterTopic.setLocation(40, 40);
+		enterAbout.setLocation(40, 70);
+		enterBegin.setLocation(40, 100);
+		enterEnd.setLocation(40, 130);
+		
+		inputTopic.setLocation(120, 40);
+		inputAbout.setLocation(120, 70);
+		inputBegin.setLocation(120, 100);
+		inputEnd.setLocation(120, 130);
+		
+		addPanel.setLayout(null);
+		addPanel.add(enterTopic);
+		addPanel.add(enterAbout);
+		addPanel.add(enterBegin);
+		addPanel.add(enterEnd);
+		addPanel.add(inputTopic);
+		addPanel.add(inputAbout);
+		addPanel.add(inputBegin);
+		addPanel.add(inputEnd);
+		addFrame.add(addButton, BorderLayout.SOUTH);
+		addButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				String topic = inputTopic.getText();
+				String about = inputAbout.getText();
+				String begin = inputBegin.getText();
+				String end = inputEnd.getText();
+
+				if(inputTopic.getText().equals("") || 
+						inputAbout.getText().equals("") ||
+						inputBegin.getText().equals("") ||
+						inputEnd.getText().equals("") ){
+					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
+				}else{
+					addTableRow(topic,about,begin,end);
+					inputTopic.setText("");
+					inputAbout.setText("");
+					inputBegin.setText("");
+					inputEnd.setText("");
+				}
+			}
+		});
+		
+		addFrame.add(addPanel,BorderLayout.CENTER);
+		centerWindow(addFrame);
+		addFrame.setVisible(true);
+	}
+	
+	/**
+	 * 
+	 */
 	private void setMainPanel(){
 		
 		mainWindow.add(mainPanel, BorderLayout.CENTER);
