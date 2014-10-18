@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,10 +57,10 @@ public class GUI {
 	JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
 	//Files
-	File podcastData = new File("userfiles/tasks");
+	File taskFile = new File("userfiles/tasks");
 	
 	//Other
-	static Object[] status = {"not started","in process","finished"};
+	static Object[] status = {"not_started","in_process","finished"};
 	
 	/**
 	 * Initialise the main window.
@@ -70,6 +71,7 @@ public class GUI {
 				setWindow();
 				setToolbar();
 				setMainPanel();
+				
 			}
 		});
 	}
@@ -183,10 +185,12 @@ public class GUI {
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
 					addTableRow(topic,about,begin,end);
+					/*
 					inputTopic.setText("");
 					inputAbout.setText("");
 					inputBegin.setText("");
 					inputEnd.setText("");
+					*/
 				}
 			}
 		});
@@ -200,9 +204,9 @@ public class GUI {
 	 * 
 	 */
 	private void setMainPanel(){
-		
 		mainWindow.add(mainPanel, BorderLayout.CENTER);
 		setTable();
+		loadTableItemsFromFile();
 	}
 	
 	/**
@@ -215,21 +219,51 @@ public class GUI {
 	}
 	/**
 	 * Function to add a new row to the Table.
-	 * @param podcast
+	 * @param topic, about, begin, end
 	 * @param url
 	 * "Topic","About","Begin","End", "Status"
 	 */
 	private void addTableRow(String topic, String about, String begin, String end){
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status[0]});
+		writeTableItemsToFile();
 	}
 	
+	/**
+	 * Function to add a new row to the Table.
+	 * @param topic, about, begin, end, status
+	 * @param url
+	 * "Topic","About","Begin","End", "Status"
+	 */
+	private void addTableRow(String topic, String about, String begin, String end, String status){
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.addRow(new Object[]{topic, about, begin, end, status});
+		writeTableItemsToFile();
+	}
+
 	
 	/**
 	* Load the items of the table from a userfile
 	*/
 	private void loadTableItemsFromFile(){
 		//magic TODO
+		Scanner sca;
+		//open the file
+		try{
+			sca = new Scanner(taskFile);
+			//read from the file
+			while(sca.hasNext()){
+				String topic = sca.next();
+				String about = sca.next();
+				String begin = sca.next();
+				String end = sca.next();
+				String status = sca.next();
+				//add to the table
+				addTableRow(topic, about, begin, end, status);
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "File not found or the file is empty.");
+		}
 	}
 	
 	/**
@@ -238,6 +272,20 @@ public class GUI {
 	*/
 	private void writeTableItemsToFile(){
 		//magic TODO
-
+		try{
+		BufferedWriter buffer = new BufferedWriter(new FileWriter(taskFile));
+			for(int i = 0 ; i < table.getRowCount(); i++){
+				buffer.newLine();
+				for(int j = 0 ; j < 5;j++){
+					String test =(String) table.getValueAt(i,j);
+					test = test.replaceAll("\\s", "_");
+					buffer.write(test);
+					buffer.write("\t");
+				}
+			}
+			buffer.close();
+		}catch(IOException e){
+			JOptionPane.showMessageDialog(null, e.getStackTrace());
+		}
 	}
 }
