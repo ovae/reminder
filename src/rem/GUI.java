@@ -20,6 +20,7 @@ import java.util.Scanner;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,8 +31,11 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 public class GUI {
@@ -46,6 +50,7 @@ public class GUI {
 	JButton newButton = new JButton("new");
 	JButton removeButton = new JButton("remove");
 	JButton doneButton = new JButton("done");
+	JButton settingsButton = new JButton("settings");
 	
 	//AddFrame
 	JFrame addFrame = new JFrame("New");
@@ -59,6 +64,10 @@ public class GUI {
 	//Main Panel
 	JPanel mainPanel = new JPanel(new BorderLayout());
 	JScrollPane scroll = new JScrollPane(mainPanel);
+	JPanel infoPanel = new JPanel(new BorderLayout());
+	
+	//Setings Window
+	JFrame settingsWindow = new JFrame("Settings");
 	
 	//Table
 	String[] columnNames = {"Topic","About","Begin","End", "Status"};
@@ -82,6 +91,10 @@ public class GUI {
 				setWindow();
 				setToolbar();
 				setMainPanel();
+				setTable();
+				loadTableItemsFromFile();
+				setInfoPanel();
+				//setLook();
 				
 			}
 		});
@@ -124,8 +137,12 @@ public class GUI {
 		centerWindow(mainWindow);
 	}
 	
+	/**
+	 * 
+	 */
 	private void setToolbar(){
-		//toolbar.setFloatable(false);
+		//Diasable the drag functionality of the table header.d
+		toolbar.setFloatable(false);
 		newButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				setAddFrame();
@@ -133,7 +150,7 @@ public class GUI {
 		});
 		
 		removeButton.addActionListener(new ActionListener(){
-			@Override//TODO
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(p==0){
@@ -145,19 +162,30 @@ public class GUI {
 		
 		
 		doneButton.addActionListener(new ActionListener(){
-			@Override//TODO
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateTableRow();
 				writeTableItemsToFile();
 			}
 		});
 		
+		settingsButton.addActionListener(new ActionListener(){
+			@Override//TODO
+			public void actionPerformed(ActionEvent e) {
+				//JOptionPane.showMessageDialog(null, "not implemented");
+				setSettingsWindow();
+			}
+		});
+		
 		toolbar.add(newButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
-		mainWindow.add(toolbar, BorderLayout.NORTH);
+		toolbar.add(settingsButton);
 	}
 	
+	/**
+	 * 
+	 */
 	private void setAddFrame(){
 		addFrame.setLocationRelativeTo(null);
 		addFrame.setSize(new Dimension(350,256));
@@ -239,9 +267,51 @@ public class GUI {
 	 * 
 	 */
 	private void setMainPanel(){
+		mainWindow.add(toolbar, BorderLayout.NORTH);
 		mainWindow.add(scroll, BorderLayout.CENTER);
-		setTable();
-		loadTableItemsFromFile();
+		mainWindow.add(infoPanel,BorderLayout.SOUTH);
+	}
+	
+	/**
+	 * set the info panel with date label.
+	 */
+	private void setInfoPanel(){
+		JLabel info = new JLabel("Date:"+Time.getDate());
+		info.setBounds(10, 100, 180,28);
+		info.setLocation(10, 40);
+		infoPanel.add(info, BorderLayout.CENTER);
+	}
+	
+	/**
+	 * 
+	 */
+	private void setSettingsWindow(){
+		//TODO
+		settingsWindow.setLocationRelativeTo(null);
+		settingsWindow.setSize(new Dimension(350, 256));
+		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		
+		
+		settingsWindow.setVisible(true);
+	}
+	
+	
+	/**
+	 * 
+	 */
+	private void setLook(){
+		try {
+			//Nimbus
+			//
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (Exception e) {
+			// If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 	}
 	
 	/**
@@ -252,6 +322,8 @@ public class GUI {
 		mainPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		mainPanel.add(table, BorderLayout.CENTER);
 		table.getTableHeader().setReorderingAllowed(false);
+		//TODO
+
 	}
 	/**
 	 * Function to add a new row to the Table.
@@ -282,7 +354,6 @@ public class GUI {
 	* Load the items of the table from a userfile
 	*/
 	private void loadTableItemsFromFile(){
-		//magic TODO
 		Scanner sca;
 		//open the file
 		try{
@@ -307,7 +378,6 @@ public class GUI {
 	 * @throws IOException 
 	*/
 	private void writeTableItemsToFile(){
-		//magic TODO
 		try{
 		BufferedWriter buffer = new BufferedWriter(new FileWriter(taskFile));
 			for(int i = 0 ; i < table.getRowCount(); i++){
@@ -358,7 +428,7 @@ public class GUI {
 	}
 
 	private void setTableRowColor(){
-		
+		//magic TODO
 	}
 
 }
