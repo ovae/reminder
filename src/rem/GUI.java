@@ -21,6 +21,7 @@ import java.util.Scanner;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -68,6 +69,8 @@ public class GUI {
 	
 	//Setings Window
 	JFrame settingsWindow = new JFrame("Settings");
+	JTextField userfilesDirectoryInput = new JTextField();
+	JPanel settingsPanel = new JPanel(new BorderLayout());
 	
 	//Table
 	String[] columnNames = {"Topic","About","Begin","End", "Status"};
@@ -75,12 +78,13 @@ public class GUI {
 	JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
 	//Files
+	File userfilesDirectory = new File("userfiles/");
 	File taskFile = new File("userfiles/tasks");
 	
 	//Other
 	Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
 	Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
-	static Object[] status = {"not_started","in_process","finished"};
+	static Object[] status = {"not_started","in_progress","finished"};
 	
 	/**
 	 * Initialise the main window.
@@ -138,7 +142,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * setting up the toolbar
 	 */
 	private void setToolbar(){
 		//Diasable the drag functionality of the table header.d
@@ -174,6 +178,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				//JOptionPane.showMessageDialog(null, "not implemented");
 				setSettingsWindow();
+				userfilesDirectoryInput.setText(userfilesDirectory.toString());
 			}
 		});
 		
@@ -184,7 +189,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * all settings and configurations of the addFrame
 	 */
 	private void setAddFrame(){
 		addFrame.setLocationRelativeTo(null);
@@ -264,7 +269,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * set up the main panel
 	 */
 	private void setMainPanel(){
 		mainWindow.add(toolbar, BorderLayout.NORTH);
@@ -283,18 +288,49 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Setting up the settings window
 	 */
 	private void setSettingsWindow(){
 		//TODO
+		JLabel filePathLabel = new JLabel("Path of the tasks file:");
+		
 		settingsWindow.setLocationRelativeTo(null);
-		settingsWindow.setSize(new Dimension(350, 256));
+		settingsWindow.setSize(new Dimension(512, 256));
 		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		settingsPanel.setLayout(null);
 		
+		JButton getPathButton = new JButton("Change");
+		getPathButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				getFilePath();
+			}
+		});
 		
+		filePathLabel.setBounds(10, 100, 340,28);
+		filePathLabel.setLocation(40,20);
+		userfilesDirectoryInput.setBounds(10, 100, 318,28);
+		userfilesDirectoryInput.setLocation(40, 40);
+		getPathButton.setBounds(10, 100, 100,27);
+		getPathButton.setLocation(360, 40);
+		
+		settingsPanel.add(filePathLabel);
+		settingsPanel.add(userfilesDirectoryInput);
+		settingsPanel.add(getPathButton);
+		settingsWindow.add(settingsPanel);
 		settingsWindow.setVisible(true);
 	}
 	
+	private void getFilePath(){
+		final JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int response = fc.showOpenDialog(null);
+		if(response == JFileChooser.APPROVE_OPTION){
+			userfilesDirectory = fc.getSelectedFile();
+			userfilesDirectoryInput.setText(userfilesDirectory.toString());
+		}else{
+			//Nothing
+		}
+	}
 	
 	/**
 	 * 
