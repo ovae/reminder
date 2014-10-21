@@ -32,62 +32,70 @@ import javax.swing.table.TableModel;
 public class GUI {
 	
 	//Main window
-	static int mainWindowWidth = 800;
-	static int mainWindowHeight = 512;
-	static JFrame mainWindow = new JFrame();
+	private static int mainWindowWidth = 800;
+	private static int mainWindowHeight = 512;
+	private static JFrame mainWindow = new JFrame();
 	
 	//Toolbar
-	JToolBar toolbar = new JToolBar();
-	JButton newButton = new JButton("new");
-	JButton removeButton = new JButton("remove");
-	JButton doneButton = new JButton("done");
-	JButton settingsButton = new JButton("settings");
+	private JToolBar toolbar = new JToolBar();
+	private JButton newButton = new JButton("new");
+	private JButton removeButton = new JButton("remove");
+	private JButton doneButton = new JButton("done");
+	private JButton settingsButton = new JButton("settings");
 	
 	//AddFrame
-	JFrame addFrame = new JFrame("New");
-	JTextField inputTopic = new JTextField("");
-	JTextField inputAbout = new JTextField("");
-	JTextField inputBegin = new JTextField("");
-	JTextField inputEnd = new JTextField("");
-	JButton addButton = new JButton("add");
-	JButton resetButton = new JButton("reset");
+	private JFrame addFrame = new JFrame("New");
+	private JTextField inputTopic = new JTextField("");
+	private JTextField inputAbout = new JTextField("");
+	private JTextField inputBegin = new JTextField("");
+	private JTextField inputEnd = new JTextField("");
+	private JButton addButton = new JButton("add");
+	private JButton resetButton = new JButton("reset");
 	
 	//Main Panel
-	JPanel mainPanel = new JPanel(new BorderLayout());
-	JScrollPane scroll = new JScrollPane(mainPanel);
-	JPanel infoPanel = new JPanel(new BorderLayout());
+	private JPanel mainPanel = new JPanel(new BorderLayout());
+	private JScrollPane scroll = new JScrollPane(mainPanel);
+	private JPanel infoPanel = new JPanel(new BorderLayout());
 	
 	//Setings Window
-	JFrame settingsWindow = new JFrame("Settings");
-	JTextField userfilesDirectoryInput = new JTextField();
-	JPanel settingsPanel = new JPanel(new BorderLayout());
+	private JFrame settingsWindow = new JFrame("Settings");
+	private JTextField userfilesDirectoryInput = new JTextField();
+	private JPanel settingsPanel = new JPanel(new BorderLayout());
 	
 	//Table
-	String[] columnNames = {"Topic","About","Begin","End", "Status"};
-	Object[][] streams;
-	JTable table = new JTable(new DefaultTableModel(streams,columnNames));
+	private String[] columnNames = {"Topic","About","Begin","End", "Status"};
+	private Object[][] streams;
+	private JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
 	//Preferences
-	static Preferences prefs;
-	final String PREF_USERFILESPATH = "userfilesPath";
+	private static Preferences prefs;
+	private static String PREF_USERFILESPATH = "userfilesPath";
 	
 	//Files
-	File userfilesDirectory = new File("");
-	File taskFile = new File("userfiles/tasks");
+	private File userfilesDirectory = new File("");
+	private File taskFile = new File("userfiles/tasks");
 	
 	//Other
-	Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
-	Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
+	private Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
+	private Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
 	static Object[] status = {"not_started","in_progress","finished"};
 	
 	//Debug
 	boolean debugMode = false;
+	
+	/**
+	 * Constructor
+	 */
+	public GUI(){
+	}
+	
 	/**
 	 * Initialise the main window.
 	 */
 	public void init(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
+				setDebugMode();
 				setWindow();
 				setToolbar();
 				setMainPanel();
@@ -531,8 +539,7 @@ public class GUI {
 	private void setPreference(){
 		//TODO
 		try{ 
-			prefs = Preferences.userNodeForPackage(bin.rem.GUI.class);
-			//prefs = Preferences.userNodeForPackage(bin.rem.Main.class);
+			prefs = Preferences.userNodeForPackage(bin.rem.Main.class);
 			if(debugMode){
 				System.out.println(Time.getTimeDebug()+" setPreference.");
 			}
@@ -541,6 +548,16 @@ public class GUI {
 				System.err.println("preferences dont work");
 			}
 		}
-		prefs.put(PREF_USERFILESPATH, "First");
+		prefs.put(PREF_USERFILESPATH, "Default");
+	}
+	
+	/**
+	 * prints out a heading in a terminal if the debugmode is activated 
+	 */
+	private void setDebugMode(){
+		if(debugMode){
+			System.out.println("Reminder-DebugMode");
+			System.out.println("==================");
+		}
 	}
 }
