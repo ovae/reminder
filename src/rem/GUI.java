@@ -68,8 +68,7 @@ public class GUI {
 	private JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
 	//Preferences
-	private static Preferences prefs;
-	private static String PREF_USERFILESPATH = "userfilesPath";
+	RemPreference remPref = new RemPreference();
 	
 	//Files
 	private File userfilesDirectory = new File("");
@@ -96,13 +95,14 @@ public class GUI {
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setDebugMode();
+				remPref.setPreference();
+				
 				setWindow();
 				setToolbar();
 				setMainPanel();
 				setTable();
 				loadTableItemsFromFile();
 				setInfoPanel();
-				setPreference();
 				//setLook();
 				
 			}
@@ -184,7 +184,7 @@ public class GUI {
 				setSettingsWindow();
 				String lastOutputDir = null;
 				try{
-					lastOutputDir = prefs.get(PREF_USERFILESPATH, "Second");
+					lastOutputDir = remPref.getUserPath();
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Load preference succesfully");
 					}
@@ -325,7 +325,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e){
 				//TODO
 				try{
-					prefs.put(PREF_USERFILESPATH, userfilesDirectory.toString());
+					remPref.setUserPath(userfilesDirectory.toString());
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Save preference via button.");
 					}
@@ -334,18 +334,6 @@ public class GUI {
 						System.err.println(Time.getTimeDebug()+"Error save via button");
 					}
 				}
-				try{
-					prefs.flush();
-					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Preference flush().");
-					}
-				}catch(Exception c){
-					if(debugMode){
-						System.err.println(Time.getTimeDebug()+" Flush problem");
-						System.err.println(c.getStackTrace());
-					}
-				}
-				
 				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
@@ -374,7 +362,7 @@ public class GUI {
 			userfilesDirectory = fc.getSelectedFile();
 			userfilesDirectoryInput.setText(userfilesDirectory.toString());
 			try{
-				prefs.put(PREF_USERFILESPATH, userfilesDirectory.toString());
+				remPref.setUserPath(userfilesDirectory.toString());
 				if(debugMode){
 					System.out.println(Time.getTimeDebug()+" Save preference.");
 				}
@@ -531,24 +519,6 @@ public class GUI {
 	 */
 	private void setTableRowColor(){
 		//magic
-	}
-
-	/**
-	 * Set the preference
-	 */
-	private void setPreference(){
-		//TODO
-		try{ 
-			prefs = Preferences.userNodeForPackage(bin.rem.Main.class);
-			if(debugMode){
-				System.out.println(Time.getTimeDebug()+" setPreference.");
-			}
-		}catch(Exception e){
-			if(debugMode){
-				System.err.println("preferences dont work");
-			}
-		}
-		prefs.put(PREF_USERFILESPATH, "Default");
 	}
 	
 	/**
