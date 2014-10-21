@@ -1,26 +1,19 @@
 package bin.rem;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Scanner;
+import java.util.prefs.Preferences;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,10 +26,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 public class GUI {
@@ -77,8 +67,12 @@ public class GUI {
 	Object[][] streams;
 	JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
+	//Preferences
+	static Preferences prefs;
+	final String PREF_USERFILESPATH = "userfilesPath";
+	
 	//Files
-	File userfilesDirectory = new File("userfiles/");
+	File userfilesDirectory = new File("");
 	File taskFile = new File("userfiles/tasks");
 	
 	//Other
@@ -86,6 +80,8 @@ public class GUI {
 	Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
 	static Object[] status = {"not_started","in_progress","finished"};
 	
+	//Debug
+	boolean debugMode = false;
 	/**
 	 * Initialise the main window.
 	 */
@@ -98,6 +94,7 @@ public class GUI {
 				setTable();
 				loadTableItemsFromFile();
 				setInfoPanel();
+				setPreference();
 				//setLook();
 				
 			}
@@ -176,9 +173,19 @@ public class GUI {
 		settingsButton.addActionListener(new ActionListener(){
 			@Override//TODO
 			public void actionPerformed(ActionEvent e) {
-				//JOptionPane.showMessageDialog(null, "not implemented");
 				setSettingsWindow();
-				userfilesDirectoryInput.setText(userfilesDirectory.toString());
+				String lastOutputDir = null;
+				try{
+					lastOutputDir = prefs.get(PREF_USERFILESPATH, "Second");
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Load preference succesfully");
+					}
+				}catch(Exception d){
+					if(debugMode){
+						System.err.println(Time.getTimeDebug()+" Loading error");
+					}
+				}
+				userfilesDirectoryInput.setText(lastOutputDir);
 			}
 		});
 		
@@ -291,18 +298,47 @@ public class GUI {
 	 * Setting up the settings window
 	 */
 	private void setSettingsWindow(){
-		//TODO
 		JLabel filePathLabel = new JLabel("Path of the tasks file:");
+		JButton saveSettingsButton = new JButton("save settings");
+		JButton getPathButton = new JButton("Change");
 		
 		settingsWindow.setLocationRelativeTo(null);
 		settingsWindow.setSize(new Dimension(512, 256));
 		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		settingsPanel.setLayout(null);
 		
-		JButton getPathButton = new JButton("Change");
 		getPathButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				getFilePath();
+			}
+		});
+		
+		saveSettingsButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//TODO
+				try{
+					prefs.put(PREF_USERFILESPATH, userfilesDirectory.toString());
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Save preference via button.");
+					}
+				}catch(Exception d){
+					if(debugMode){
+						System.err.println(Time.getTimeDebug()+"Error save via button");
+					}
+				}
+				try{
+					prefs.flush();
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Preference flush().");
+					}
+				}catch(Exception c){
+					if(debugMode){
+						System.err.println(Time.getTimeDebug()+" Flush problem");
+						System.err.println(c.getStackTrace());
+					}
+				}
+				
+				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
 		
@@ -316,7 +352,8 @@ public class GUI {
 		settingsPanel.add(filePathLabel);
 		settingsPanel.add(userfilesDirectoryInput);
 		settingsPanel.add(getPathButton);
-		settingsWindow.add(settingsPanel);
+		settingsWindow.add(settingsPanel, BorderLayout.CENTER);
+		settingsWindow.add(saveSettingsButton, BorderLayout.SOUTH);
 		settingsWindow.setVisible(true);
 	}
 	
@@ -325,8 +362,19 @@ public class GUI {
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int response = fc.showOpenDialog(null);
 		if(response == JFileChooser.APPROVE_OPTION){
+			//TODO
 			userfilesDirectory = fc.getSelectedFile();
 			userfilesDirectoryInput.setText(userfilesDirectory.toString());
+			try{
+				prefs.put(PREF_USERFILESPATH, userfilesDirectory.toString());
+				if(debugMode){
+					System.out.println(Time.getTimeDebug()+" Save preference.");
+				}
+			}catch(Exception e){
+				if(debugMode){
+					System.err.println(Time.getTimeDebug()+" Save preference error.");
+				}
+			}
 		}else{
 			//Nothing
 		}
@@ -463,8 +511,36 @@ public class GUI {
 		}
 	}
 
+	/**
+	 * 
+	 */
+	private void sortTableItems(){
+		//magic
+	}
+	
+	/**
+	 * 
+	 */
 	private void setTableRowColor(){
-		//magic TODO
+		//magic
 	}
 
+	/**
+	 * Set the preference
+	 */
+	private void setPreference(){
+		//TODO
+		try{ 
+			prefs = Preferences.userNodeForPackage(bin.rem.GUI.class);
+			//prefs = Preferences.userNodeForPackage(bin.rem.Main.class);
+			if(debugMode){
+				System.out.println(Time.getTimeDebug()+" setPreference.");
+			}
+		}catch(Exception e){
+			if(debugMode){
+				System.err.println("preferences dont work");
+			}
+		}
+		prefs.put(PREF_USERFILESPATH, "First");
+	}
 }
