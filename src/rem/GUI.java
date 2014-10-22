@@ -80,7 +80,7 @@ public class GUI {
 	static Object[] status = {"not_started","in_progress","finished"};
 	
 	//Debug
-	boolean debugMode = false;
+	private boolean debugMode = false;
 	
 	/**
 	 * Constructor
@@ -127,7 +127,7 @@ public class GUI {
 	 * Set a frame centered in the screen
 	 * @param frame
 	 */
-	public static void centerWindow(JFrame frame) {
+	private static void centerWindow(JFrame frame) {
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
 		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
@@ -137,7 +137,7 @@ public class GUI {
 	/**
 	 * Set the basic information of the main window.
 	 */
-	public void setWindow(){
+	private void setWindow(){
 		mainWindow.setTitle("Reminder");
 		mainWindow.setSize(new Dimension(mainWindowWidth,mainWindowHeight));
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -353,6 +353,9 @@ public class GUI {
 		settingsWindow.setVisible(true);
 	}
 	
+	/**
+	 * Method to get the filepath from an filechooser.
+	 */
 	private void getFilePath(){
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -377,7 +380,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * set an other look of the java gui.
 	 */
 	private void setLook(){
 		try {
@@ -476,7 +479,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Method to remove selected items from the table.
 	 */
 	private void removeTableRow(){
 		int[] rows = table.getSelectedRows();
@@ -489,7 +492,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Method to add items to the table and update the table.
 	 */
 	private void updateTableRow(){
 		try{
