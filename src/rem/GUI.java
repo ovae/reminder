@@ -14,6 +14,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -309,6 +310,8 @@ public class GUI {
 		JLabel filePathLabel = new JLabel("Path of the tasks file:");
 		JButton saveSettingsButton = new JButton("save settings");
 		JButton getPathButton = new JButton("Change");
+		JLabel lookLabel = new JLabel("Use an alternative look:");
+		JCheckBox lookBox = new JCheckBox("Nimbus");
 		
 		settingsWindow.setLocationRelativeTo(null);
 		settingsWindow.setSize(new Dimension(512, 256));
@@ -345,9 +348,16 @@ public class GUI {
 		getPathButton.setBounds(10, 100, 100,27);
 		getPathButton.setLocation(360, 40);
 		
+		lookLabel.setBounds(10, 100, 340, 28);
+		lookLabel.setLocation(40,80);
+		lookBox.setBounds(10, 10, 20, 28);
+		lookBox.setLocation(210,80);
+		
 		settingsPanel.add(filePathLabel);
 		settingsPanel.add(userfilesDirectoryInput);
 		settingsPanel.add(getPathButton);
+		settingsPanel.add(lookLabel);
+		settingsPanel.add(lookBox);
 		settingsWindow.add(settingsPanel, BorderLayout.CENTER);
 		settingsWindow.add(saveSettingsButton, BorderLayout.SOUTH);
 		settingsWindow.setVisible(true);
@@ -395,6 +405,13 @@ public class GUI {
 		} catch (Exception e) {
 			// If Nimbus is not available, you can set the GUI to another look and feel.
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkLook(){
+		//TODO
 	}
 	
 	/**
