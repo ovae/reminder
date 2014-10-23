@@ -62,6 +62,10 @@ public class GUI {
 	private JFrame settingsWindow = new JFrame("Settings");
 	private JTextField userfilesDirectoryInput = new JTextField();
 	private JPanel settingsPanel = new JPanel(new BorderLayout());
+	private JCheckBox lookBox = new JCheckBox("Nimbus");
+	private boolean isLookBox = false;
+	private JLabel selectedLook = new JLabel("Error");
+	
 	
 	//Table
 	private String[] columnNames = {"Topic","About","Begin","End", "Status"};
@@ -97,14 +101,14 @@ public class GUI {
 			public void run(){
 				setDebugMode();
 				remPref.setPreference();
-				
+
 				setWindow();
+				checkLook();
 				setToolbar();
 				setMainPanel();
 				setTable();
 				loadTableItemsFromFile();
 				setInfoPanel();
-				//setLook();
 				
 			}
 		});
@@ -165,7 +169,11 @@ public class GUI {
 				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(p==0){
 					removeTableRow();
-					writeTableItemsToFile();
+					if(isLookBox){
+						selectedLook.setText("Nimbus");
+					}else{
+						selectedLook.setText("Default");
+					}
 				}
 			}
 		});
@@ -186,6 +194,13 @@ public class GUI {
 				String lastOutputDir = null;
 				try{
 					lastOutputDir = remPref.getUserPath();
+					isLookBox = remPref.getLookCheckBox();
+					if(isLookBox){
+						selectedLook.setText("Nimbus");
+					}else{
+						selectedLook.setText("Default");
+					}
+					lookBox.setSelected(isLookBox);
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Load preference succesfully");
 					}
@@ -311,7 +326,7 @@ public class GUI {
 		JButton saveSettingsButton = new JButton("save settings");
 		JButton getPathButton = new JButton("Change");
 		JLabel lookLabel = new JLabel("Use an alternative look:");
-		JCheckBox lookBox = new JCheckBox("Nimbus");
+		JLabel selectedLookLabel = new JLabel("Selected look:");
 		
 		settingsWindow.setLocationRelativeTo(null);
 		settingsWindow.setSize(new Dimension(512, 256));
@@ -324,11 +339,26 @@ public class GUI {
 			}
 		});
 		
+		lookBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(isLookBox){
+					isLookBox = false;
+					selectedLook.setText("Nimbus");
+					JOptionPane.showMessageDialog(null, "After a restart is the default look activated.");
+				}else{
+					isLookBox = true;
+					selectedLook.setText("Default");
+					JOptionPane.showMessageDialog(null, "After a restart is the Nimbus look activated.");
+				}
+			}
+		});
+		
 		saveSettingsButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				//TODO
 				try{
 					remPref.setUserPath(userfilesDirectory.toString());
+					remPref.setLookCheckBox(isLookBox);
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Save preference via button.");
 					}
@@ -348,16 +378,23 @@ public class GUI {
 		getPathButton.setBounds(10, 100, 100,27);
 		getPathButton.setLocation(360, 40);
 		
+		
 		lookLabel.setBounds(10, 100, 340, 28);
 		lookLabel.setLocation(40,80);
 		lookBox.setBounds(10, 10, 20, 28);
 		lookBox.setLocation(210,80);
+		selectedLookLabel.setBounds(10, 100, 150, 28);
+		selectedLookLabel.setLocation(240,80);
+		selectedLook.setBounds(10, 100, 340, 28);
+		selectedLook.setLocation(350,80);
 		
 		settingsPanel.add(filePathLabel);
 		settingsPanel.add(userfilesDirectoryInput);
 		settingsPanel.add(getPathButton);
 		settingsPanel.add(lookLabel);
 		settingsPanel.add(lookBox);
+		settingsPanel.add(selectedLookLabel);
+		settingsPanel.add(selectedLook);
 		settingsWindow.add(settingsPanel, BorderLayout.CENTER);
 		settingsWindow.add(saveSettingsButton, BorderLayout.SOUTH);
 		settingsWindow.setVisible(true);
@@ -412,6 +449,9 @@ public class GUI {
 	 */
 	private void checkLook(){
 		//TODO
+		if(remPref.getLookCheckBox() == true){
+			setLook();
+		}
 	}
 	
 	/**

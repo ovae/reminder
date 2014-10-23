@@ -5,7 +5,7 @@ import java.util.prefs.Preferences;
 public class RemPreference {
 	private Preferences prefs;
 	private static String userPath = "";
-	private static String lookCheckBox = "";
+	private static String lookCheckBox = "false";
 
 	public void setPreference() {
 		// This will define a node in which the preferences can be stored
@@ -20,11 +20,11 @@ public class RemPreference {
 		return prefs.get(userPath ,"get");
 	}
 	
-	public void setLookCheckBox(String str){
-		prefs.put(lookCheckBox ,str);
+	public void setLookCheckBox(Boolean bool){
+		prefs.putBoolean(lookCheckBox ,bool);
 	}
 	
-	public String getLookCheckBox(){
-		return prefs.get(lookCheckBox, "");
+	public Boolean getLookCheckBox(){
+		return prefs.getBoolean(lookCheckBox, false);
 	}
 }
