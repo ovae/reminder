@@ -82,7 +82,7 @@ public class GUI {
 	//Other
 	private Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
 	private Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
-	static Object[] status = {"not_started","in_progress","finished"};
+	static Object[] status = {"not_started","in_progress","finished","delivered"};
 	
 	//Debug
 	private boolean debugMode = false;
@@ -559,6 +559,8 @@ public class GUI {
 				table.getModel().setValueAt(status[1], row[0], 4);
 			}else if(value == status[1]){
 				table.getModel().setValueAt(status[2], row[0], 4);
+			}else if(value == status[2]){
+				table.getModel().setValueAt(status[3], row[0], 4);
 			}else{
 				table.getModel().setValueAt(status[0], row[0], 4);
 			}
