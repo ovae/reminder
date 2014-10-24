@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.prefs.Preferences;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -82,7 +81,7 @@ public class GUI {
 	//Other
 	private Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
 	private Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
-	static Object[] status = {"not_started","in_progress","finished","delivered"};
+	static Object[] status = {"not_started","started","half-finished","finished","delivered"};
 	
 	//Debug
 	private boolean debugMode = false;
@@ -561,6 +560,8 @@ public class GUI {
 				table.getModel().setValueAt(status[2], row[0], 4);
 			}else if(value == status[2]){
 				table.getModel().setValueAt(status[3], row[0], 4);
+			}else if(value == status[3]){
+				table.getModel().setValueAt(status[4], row[0], 4);
 			}else{
 				table.getModel().setValueAt(status[0], row[0], 4);
 			}
