@@ -2,6 +2,7 @@ package bin.rem;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -76,9 +78,9 @@ public class GUI {
 	
 	//Files
 	private File userfilesDirectory = new File("");
-	private File taskFile = new File("userfiles/tasks");
+	//private File taskFile = new File("userfiles/tasks");
 	
-	//Other
+	//Other, Icons
 	private Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
 	private Icon iconInfo = UIManager.getIcon("OptionPane.informationIcon");
 	static Object[] status = {"not_started","started","half-finished","finished","delivered"};
@@ -168,11 +170,7 @@ public class GUI {
 				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(p==0){
 					removeTableRow();
-					if(isLookBox){
-						selectedLook.setText("Nimbus");
-					}else{
-						selectedLook.setText("Default");
-					}
+					writeTableItemsToFile();
 				}
 			}
 		});
@@ -494,9 +492,12 @@ public class GUI {
 	*/
 	private void loadTableItemsFromFile(){
 		Scanner sca;
+		File tempFile = new File(remPref.getUserPath().toString()+"/tasks");
 		//open the file
 		try{
-			sca = new Scanner(taskFile);
+			//sca = new Scanner(taskFile);
+			sca = new Scanner(tempFile);
+			//sca = new Scanner(remPref.getUserPath().toString()+"/tasks");
 			//read from the file
 			while(sca.hasNext()){
 				String topic = sca.next();
@@ -517,8 +518,9 @@ public class GUI {
 	 * @throws IOException 
 	*/
 	private void writeTableItemsToFile(){
+		File tempFile = new File(remPref.getUserPath().toString()+"/tasks");
 		try{
-		BufferedWriter buffer = new BufferedWriter(new FileWriter(taskFile));
+		BufferedWriter buffer = new BufferedWriter(new FileWriter(tempFile));
 			for(int i = 0 ; i < table.getRowCount(); i++){
 				buffer.newLine();
 				for(int j = 0 ; j < 5;j++){
