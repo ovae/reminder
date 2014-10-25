@@ -442,7 +442,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Check if the user has set an alternative look of the java gui
 	 */
 	private void checkLook(){
 		//TODO
