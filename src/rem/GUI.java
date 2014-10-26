@@ -1,6 +1,7 @@
 package bin.rem;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -152,6 +153,7 @@ public class GUI {
 		centerWindow(mainWindow);
 	}
 	
+	//Toolbar******************************************************************************************************************
 	/**
 	 * setting up the toolbar
 	 */
@@ -160,7 +162,7 @@ public class GUI {
 		toolbar.setFloatable(false);
 		newButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				setAddFrame();
+				setAddTaskFrame();
 			}
 		});
 		
@@ -199,11 +201,11 @@ public class GUI {
 					}
 					lookBox.setSelected(isLookBox);
 					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Load preference succesfully");
+						System.out.println(Time.getTimeDebug()+" Load preference succesfully.");
 					}
 				}catch(Exception d){
 					if(debugMode){
-						System.err.println(Time.getTimeDebug()+" Loading error");
+						System.err.println(Time.getTimeDebug()+" Loading preference error.");
 					}
 				}
 				userfilesDirectoryInput.setText(lastOutputDir);
@@ -216,10 +218,12 @@ public class GUI {
 		toolbar.add(settingsButton);
 	}
 	
+	//Add-task-window**********************************************************************************************************
 	/**
 	 * all settings and configurations of the addFrame
+	 * you can add new tasks over this window.
 	 */
-	private void setAddFrame(){
+	private void setAddTaskFrame(){
 		addFrame.setLocationRelativeTo(null);
 		addFrame.setSize(new Dimension(350,256));
 		addFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -296,6 +300,7 @@ public class GUI {
 		addFrame.setVisible(true);
 	}
 	
+	//Main-window**************************************************************************************************************
 	/**
 	 * set up the main panel
 	 */
@@ -305,6 +310,7 @@ public class GUI {
 		mainWindow.add(infoPanel,BorderLayout.SOUTH);
 	}
 	
+	//Info-panel***************************************************************************************************************
 	/**
 	 * set the info panel with date label.
 	 */
@@ -315,6 +321,8 @@ public class GUI {
 		infoPanel.add(info, BorderLayout.CENTER);
 	}
 	
+	
+	//Settings-window**********************************************************************************************************
 	/**
 	 * Setting up the settings window
 	 */
@@ -333,6 +341,7 @@ public class GUI {
 		getPathButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				getFilePath();
+				//saveSettings();
 			}
 		});
 		
@@ -347,23 +356,15 @@ public class GUI {
 					selectedLook.setText("Default");
 					JOptionPane.showMessageDialog(null, "After a restart is the Nimbus look activated.");
 				}
+				//saveSettings();
 			}
 		});
 		
 		saveSettingsButton.addActionListener(new ActionListener(){
+			//TODO
 			public void actionPerformed(ActionEvent e){
-				//TODO
-				try{
-					remPref.setUserPath(userfilesDirectory.toString());
-					remPref.setLookCheckBox(isLookBox);
-					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Save preference via button.");
-					}
-				}catch(Exception d){
-					if(debugMode){
-						System.err.println(Time.getTimeDebug()+"Error save via button");
-					}
-				}
+				saveSettings();
+				loadTableItemsFromFile();
 				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
@@ -385,6 +386,7 @@ public class GUI {
 		selectedLook.setBounds(10, 100, 340, 28);
 		selectedLook.setLocation(350,80);
 		
+		//Add all elements to the settingsPanel
 		settingsPanel.add(filePathLabel);
 		settingsPanel.add(userfilesDirectoryInput);
 		settingsPanel.add(getPathButton);
@@ -405,31 +407,36 @@ public class GUI {
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int response = fc.showOpenDialog(null);
 		if(response == JFileChooser.APPROVE_OPTION){
-			//TODO
 			userfilesDirectory = fc.getSelectedFile();
 			userfilesDirectoryInput.setText(userfilesDirectory.toString());
-			try{
-				remPref.setUserPath(userfilesDirectory.toString());
-				if(debugMode){
-					System.out.println(Time.getTimeDebug()+" Save preference.");
-				}
-			}catch(Exception e){
-				if(debugMode){
-					System.err.println(Time.getTimeDebug()+" Save preference error.");
-				}
-			}
-		}else{
-			//Nothing
 		}
 	}
 	
+	/**
+	 * Save the settings.
+	 */
+	private void saveSettings(){
+		//TODO
+		try{
+			remPref.setUserPath(userfilesDirectory.toString());
+			remPref.setLookCheckBox(isLookBox);
+			if(debugMode){
+				System.out.println(Time.getTimeDebug()+" Save preference.");
+			}
+		}catch(Exception e){
+			if(debugMode){
+				System.err.println(Time.getTimeDebug()+" Save preference error.");
+			}
+		}
+	}
+	
+	//Gui-look*****************************************************************************************************************
 	/**
 	 * set an other look of the java gui.
 	 */
 	private void setLook(){
 		try {
 			//Nimbus
-			//
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
 					UIManager.setLookAndFeel(info.getClassName());
@@ -442,7 +449,7 @@ public class GUI {
 	}
 	
 	/**
-	 * Check if the user has set an alternative look of the java gui
+	 * Check if the user has set an alternative look of the java GUI
 	 */
 	private void checkLook(){
 		//TODO
@@ -451,6 +458,8 @@ public class GUI {
 		}
 	}
 	
+	
+	//Table********************************************************************************************************************
 	/**
 	 * Set a Table
 	 */
@@ -459,9 +468,8 @@ public class GUI {
 		mainPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		mainPanel.add(table, BorderLayout.CENTER);
 		table.getTableHeader().setReorderingAllowed(false);
-		//TODO
-
 	}
+	
 	/**
 	 * Function to add a new row to the Table.
 	 * @param topic, about, begin, end
@@ -483,7 +491,7 @@ public class GUI {
 	private void addTableRow(String topic, String about, String begin, String end, String status){
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status});
-		writeTableItemsToFile();
+		//writeTableItemsToFile();
 	}
 
 	
@@ -495,9 +503,7 @@ public class GUI {
 		File tempFile = new File(remPref.getUserPath().toString()+"/tasks");
 		//open the file
 		try{
-			//sca = new Scanner(taskFile);
 			sca = new Scanner(tempFile);
-			//sca = new Scanner(remPref.getUserPath().toString()+"/tasks");
 			//read from the file
 			while(sca.hasNext()){
 				String topic = sca.next();
@@ -508,7 +514,14 @@ public class GUI {
 				//add to the table
 				addTableRow(topic, about, begin, end, status);
 			}
+			if(debugMode){
+				System.out.println(Time.getTimeDebug()+" Load from file successfully.");
+			}
 		}catch(Exception e){
+			if(debugMode){
+				System.err.println("\n"+Time.getTimeDebug()+" Loading table items error. \n");
+			}
+			emptyTable();
 			JOptionPane.showMessageDialog(null, "File not found or the file is empty.");
 		}
 	}
@@ -531,7 +544,13 @@ public class GUI {
 				}
 			}
 			buffer.close();
+			if(debugMode){
+				System.out.println(Time.getTimeDebug()+" Write to file successfully.");
+			}
 		}catch(IOException e){
+			if(debugMode){
+				System.err.println(Time.getTimeDebug()+" Writing to file error.");
+			}
 			JOptionPane.showMessageDialog(null, e.getStackTrace());
 		}
 	}
@@ -547,6 +566,29 @@ public class GUI {
 			rows = table.getSelectedRows();
 		}
 		table.clearSelection();
+	}
+	
+	/**
+	 * removes all elements of the table.
+	 */
+	private void emptyTable(){
+		//TODO
+		try{
+			DefaultTableModel dm = (DefaultTableModel) table.getModel();
+			int rowCount = dm.getRowCount();
+			//Remove rows one by one from the end of the table
+			for (int i = rowCount - 1; i >= 0; i--) {
+				dm.removeRow(i);
+			}
+			
+			if(debugMode){
+				System.out.println(Time.getTimeDebug()+" Empty table successfully.");
+			}
+		}catch(Exception e){
+			if(debugMode){
+				System.err.println(Time.getTimeDebug()+" Empty table error.");
+			}
+		}
 	}
 	
 	/**
@@ -586,6 +628,7 @@ public class GUI {
 		//magic
 	}
 	
+	//Debug********************************************************************************************************************
 	/**
 	 * prints out a heading in a terminal if the debugmode is activated 
 	 */
