@@ -2,6 +2,7 @@ package bin.rem;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -11,6 +12,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import javax.swing.Icon;
@@ -29,7 +32,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 public class GUI {
@@ -110,6 +115,7 @@ public class GUI {
 				setMainPanel();
 				setTable();
 				loadTableItemsFromFile();
+				setTableRowColor();
 				setInfoPanel();
 				
 			}
@@ -194,6 +200,9 @@ public class GUI {
 				try{
 					lastOutputDir = remPref.getUserPath();
 					isLookBox = remPref.getLookCheckBox();
+					//If the checkox isLookBox is activated 
+					// 'Nimbus' is written in the selectedLook label
+					//or otherwise 'Default'.
 					if(isLookBox){
 						selectedLook.setText("Nimbus");
 					}else{
@@ -626,6 +635,54 @@ public class GUI {
 	 */
 	private void setTableRowColor(){
 		//magic
+		
+		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				String tableValue = (String)table.getModel().getValueAt(row, 3);
+				String tableStatus = (String) table.getModel().getValueAt(row, 4);
+				//get the date of today
+				Date date = new Date();
+				SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
+				String today =ft.format(date);
+				
+				int todayParse = Integer.parseInt(""+today+"");
+				int valueParse = Integer.parseInt(tableValue);
+				
+				if((valueParse-todayParse)==0){
+					//the delivery day is today
+					c.setBackground(new Color(240, 88, 88));//red
+				}else if((valueParse-todayParse)<0){
+					//the task ist deliverd or you failed the dilevery day.
+					c.setBackground(Color.LIGHT_GRAY);
+				}else if((valueParse-todayParse)==1){
+					//you have one day time to finish your task
+					c.setBackground(new Color(255,149,88));//orange
+				}else if((valueParse-todayParse)==2){
+					c.setBackground(new Color(255,210,120));//yellow
+				}else if((valueParse-todayParse)>2){
+					//you have more then 2 day time to finish your task
+					c.setBackground(new Color(126, 207, 88));//green
+				}else{
+					c.setBackground(Color.WHITE);
+				}
+				
+				//If you select a row and the row gets blue.
+				if(isSelected){
+					c.setBackground(new Color(160,166,207));//blue
+				}
+				
+				//Check the status
+				/*
+				if(tableStatus.equals(status[4])){
+					c.setBackground(Color.LIGHT_GRAY);
+				}
+				*/
+				
+				return c;
+			}
+		});
 	}
 	
 	//Debug********************************************************************************************************************
