@@ -50,6 +50,7 @@ public class GUI {
 	private JButton removeButton = new JButton("remove");
 	private JButton doneButton = new JButton("done");
 	private JButton settingsButton = new JButton("settings");
+	private JButton infoButton = new JButton("info");
 	
 	//AddFrame
 	private JFrame addFrame = new JFrame("New");
@@ -73,6 +74,8 @@ public class GUI {
 	private boolean isLookBox = false;
 	private JLabel selectedLook = new JLabel("Error");
 	
+	//Info Window
+	private JFrame infoFrame = new JFrame("Info");
 	
 	//Table
 	private String[] columnNames = {"Topic","About","Begin","End", "Status"};
@@ -193,7 +196,7 @@ public class GUI {
 		});
 		
 		settingsButton.addActionListener(new ActionListener(){
-			@Override//TODO
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				setSettingsWindow();
 				String lastOutputDir = null;
@@ -221,10 +224,118 @@ public class GUI {
 			}
 		});
 		
+		infoButton.addActionListener(new ActionListener(){
+			@Override//TODO
+			public void actionPerformed(ActionEvent e) {
+				setInfoFrame();
+			}
+		});
+		
 		toolbar.add(newButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
 		toolbar.add(settingsButton);
+		toolbar.add(infoButton);
+	}
+	//Info-Frame***************************************************************************************************************
+	/**
+	 * Setting up the info window
+	 */
+	//TODO
+	private void setInfoFrame(){
+		infoFrame.setLocationRelativeTo(null);
+		infoFrame.setSize(new Dimension(350,290));
+		infoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		infoFrame.setLayout(new BorderLayout());
+		
+		JPanel infoPanel = new JPanel();
+		JLabel head = new JLabel("Declaration on the choice of color");
+		JTextField green = new JTextField();
+		JTextField gray = new JTextField();
+		JTextField red = new JTextField();
+		JTextField orange = new JTextField();
+		JTextField yellow = new JTextField();
+		JTextField blue = new JTextField();
+		JTextField white = new JTextField();
+		JLabel greenLabel = new JLabel("More then 2 days time");
+		JLabel grayLabel = new JLabel("Delivered");
+		JLabel redLabel = new JLabel("Delivery day");
+		JLabel orangeLabel = new JLabel("One day left");
+		JLabel yellowLabel = new JLabel("Two days left");
+		JLabel blueLabel = new JLabel("Selected a row");
+		JLabel whiteLabel = new JLabel("Default value");
+		
+		green.setBackground(new Color(126, 207, 88));
+		gray.setBackground(Color.LIGHT_GRAY);
+		red.setBackground(new Color(240, 88, 88));
+		orange.setBackground(new Color(255,149,88));
+		yellow.setBackground(new Color(255,210,120));
+		blue.setBackground(new Color(160,166,207));
+		white.setBackground(Color.WHITE);
+		
+		green.setEditable(false);
+		gray.setEditable(false);
+		red.setEditable(false);
+		orange.setEditable(false);
+		yellow.setEditable(false);
+		blue.setEditable(false);
+		white.setEditable(false);
+
+		head.setBounds(10, 100, 240,28);
+		head.setLocation(20, 20);
+		
+		green.setBounds(10, 100, 100,28);
+		gray.setBounds(10, 100, 100,28);
+		red.setBounds(10, 100, 100,28);
+		orange.setBounds(10, 100, 100,28);
+		yellow.setBounds(10, 100, 100,28);
+		blue.setBounds(10, 100, 100,28);
+		white.setBounds(10, 100, 100,28);
+		
+		greenLabel.setBounds(10, 100, 300,28);
+		grayLabel.setBounds(10, 100, 300,28);
+		redLabel.setBounds(10, 100, 300,28);
+		orangeLabel.setBounds(10, 100, 300,28);
+		yellowLabel.setBounds(10, 100, 300,28);
+		blueLabel.setBounds(10, 100, 300,28);
+		whiteLabel.setBounds(10, 100, 300,28);
+
+		gray.setLocation(20, 45);
+		green.setLocation(20, 73);
+		yellow.setLocation(20, 101);
+		orange.setLocation(20, 129);
+		red.setLocation(20, 157);
+		blue.setLocation(20, 185);
+		white.setLocation(20, 213);
+		
+		grayLabel.setLocation(130, 45);
+		greenLabel.setLocation(130, 73);
+		yellowLabel.setLocation(130, 101);
+		orangeLabel.setLocation(130, 129);
+		redLabel.setLocation(130, 157);
+		blueLabel.setLocation(130, 185);
+		whiteLabel.setLocation(130, 213);
+		
+		infoPanel.setLayout(null);
+		infoPanel.add(head);
+		infoPanel.add(gray);
+		infoPanel.add(green);
+		infoPanel.add(yellow);
+		infoPanel.add(orange);
+		infoPanel.add(red);
+		infoPanel.add(blue);
+		infoPanel.add(white);
+		
+		infoPanel.add(grayLabel);
+		infoPanel.add(greenLabel);
+		infoPanel.add(yellowLabel);
+		infoPanel.add(orangeLabel);
+		infoPanel.add(redLabel);
+		infoPanel.add(blueLabel);
+		infoPanel.add(whiteLabel);
+		
+		infoFrame.add(infoPanel);
+		infoFrame.setVisible(true);
 	}
 	
 	//Add-task-window**********************************************************************************************************
@@ -370,7 +481,6 @@ public class GUI {
 		});
 		
 		saveSettingsButton.addActionListener(new ActionListener(){
-			//TODO
 			public void actionPerformed(ActionEvent e){
 				saveSettings();
 				loadTableItemsFromFile();
@@ -425,7 +535,6 @@ public class GUI {
 	 * Save the settings.
 	 */
 	private void saveSettings(){
-		//TODO
 		try{
 			remPref.setUserPath(userfilesDirectory.toString());
 			remPref.setLookCheckBox(isLookBox);
@@ -461,7 +570,6 @@ public class GUI {
 	 * Check if the user has set an alternative look of the java GUI
 	 */
 	private void checkLook(){
-		//TODO
 		if(remPref.getLookCheckBox() == true){
 			setLook();
 		}
@@ -581,7 +689,6 @@ public class GUI {
 	 * removes all elements of the table.
 	 */
 	private void emptyTable(){
-		//TODO
 		try{
 			DefaultTableModel dm = (DefaultTableModel) table.getModel();
 			int rowCount = dm.getRowCount();
@@ -631,7 +738,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Colorize table rows dependent on the 'end' value
 	 */
 	private void setTableRowColor(){
 		//magic
