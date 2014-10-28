@@ -51,6 +51,7 @@ public class GUI {
 	private JButton doneButton = new JButton("done");
 	private JButton settingsButton = new JButton("settings");
 	private JButton infoButton = new JButton("info");
+	private JButton saveAll = new JButton("save");
 	
 	//AddFrame
 	private JFrame addFrame = new JFrame("New");
@@ -71,7 +72,9 @@ public class GUI {
 	private JTextField userfilesDirectoryInput = new JTextField();
 	private JPanel settingsPanel = new JPanel(new BorderLayout());
 	private JCheckBox lookBox = new JCheckBox("Nimbus");
+	private JCheckBox useColorsBox = new JCheckBox("Color");
 	private boolean isLookBox = false;
+	private boolean isColorox = false;
 	private JLabel selectedLook = new JLabel("Error");
 	
 	//Info Window
@@ -87,7 +90,7 @@ public class GUI {
 	
 	//Files
 	private File userfilesDirectory = new File("");
-	//private File taskFile = new File("userfiles/tasks");
+	private File taskFileBack;
 	
 	//Other, Icons
 	private Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
@@ -111,7 +114,7 @@ public class GUI {
 			public void run(){
 				setDebugMode();
 				remPref.setPreference();
-
+				
 				setWindow();
 				checkLook();
 				setToolbar();
@@ -120,6 +123,7 @@ public class GUI {
 				loadTableItemsFromFile();
 				setTableRowColor();
 				setInfoPanel();
+				//taskFileBack =new File(""+remPref.getUserPath().toString()+"/tasks");
 				
 			}
 		});
@@ -195,6 +199,18 @@ public class GUI {
 			}
 		});
 		
+		saveAll.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try{
+					writeTableItemsToFile();
+					JOptionPane.showMessageDialog(null, "Tasks saved");
+				}catch(Exception f){
+					JOptionPane.showMessageDialog(null, "Saving failed");
+				}
+			}
+			
+		});
+		
 		settingsButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -234,6 +250,7 @@ public class GUI {
 		toolbar.add(newButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
+		toolbar.add(saveAll);
 		toolbar.add(settingsButton);
 		toolbar.add(infoButton);
 	}
@@ -336,6 +353,7 @@ public class GUI {
 		
 		infoFrame.add(infoPanel);
 		infoFrame.setVisible(true);
+		centerWindow(infoFrame);
 	}
 	
 	//Add-task-window**********************************************************************************************************
@@ -416,8 +434,8 @@ public class GUI {
 		
 		addFrame.add(addPanel,BorderLayout.CENTER);
 		addFrame.add(buttonPanel, BorderLayout.SOUTH);
-		centerWindow(addFrame);
 		addFrame.setVisible(true);
+		centerWindow(addFrame);
 	}
 	
 	//Main-window**************************************************************************************************************
@@ -452,6 +470,7 @@ public class GUI {
 		JButton getPathButton = new JButton("Change");
 		JLabel lookLabel = new JLabel("Use an alternative look:");
 		JLabel selectedLookLabel = new JLabel("Selected look:");
+		JLabel selectedColorLabel = new JLabel("Use colors:");
 		
 		settingsWindow.setLocationRelativeTo(null);
 		settingsWindow.setSize(new Dimension(512, 256));
@@ -480,6 +499,13 @@ public class GUI {
 			}
 		});
 		
+		useColorsBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//magic TODO
+			}
+		});
+		
+		
 		saveSettingsButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				saveSettings();
@@ -498,12 +524,22 @@ public class GUI {
 		
 		lookLabel.setBounds(10, 100, 340, 28);
 		lookLabel.setLocation(40,80);
+		//Checkbox gui look
 		lookBox.setBounds(10, 10, 20, 28);
 		lookBox.setLocation(210,80);
+		//Chekbox gui look label
 		selectedLookLabel.setBounds(10, 100, 150, 28);
 		selectedLookLabel.setLocation(240,80);
+		//Checkbox gui look, label that changes
 		selectedLook.setBounds(10, 100, 340, 28);
 		selectedLook.setLocation(350,80);
+		
+		//Color checkbox label
+		selectedColorLabel.setBounds(10,100,150,28);
+		selectedColorLabel.setLocation(40,100);
+		//Color checkbox
+		useColorsBox.setBounds(10, 10, 20, 28);
+		useColorsBox.setLocation(210,100);
 		
 		//Add all elements to the settingsPanel
 		settingsPanel.add(filePathLabel);
@@ -513,9 +549,12 @@ public class GUI {
 		settingsPanel.add(lookBox);
 		settingsPanel.add(selectedLookLabel);
 		settingsPanel.add(selectedLook);
+		settingsPanel.add(selectedColorLabel);
+		settingsPanel.add(useColorsBox);
 		settingsWindow.add(settingsPanel, BorderLayout.CENTER);
 		settingsWindow.add(saveSettingsButton, BorderLayout.SOUTH);
 		settingsWindow.setVisible(true);
+		centerWindow(settingsWindow);
 	}
 	
 	/**
@@ -638,7 +677,12 @@ public class GUI {
 			if(debugMode){
 				System.err.println("\n"+Time.getTimeDebug()+" Loading table items error. \n");
 			}
-			emptyTable();
+			//TODO
+			/*
+			if(tempFile != taskFileBack){
+				emptyTable();
+			}
+			*/
 			JOptionPane.showMessageDialog(null, "File not found or the file is empty.");
 		}
 	}
