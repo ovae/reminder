@@ -1,6 +1,8 @@
 package bin.rem;
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
+import java.awt.CheckboxGroup;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -73,6 +75,9 @@ public class GUI {
 	private JPanel settingsPanel = new JPanel(new BorderLayout());
 	private JCheckBox lookBox = new JCheckBox("Nimbus");
 	private JCheckBox useColorsBox = new JCheckBox("Color");
+	private JCheckBox useTimeFormateA = new JCheckBox();
+	private JCheckBox useTimeFormateB = new JCheckBox();
+	private JCheckBox useTimeFormateC = new JCheckBox();
 	private boolean isLookBox = false;
 	private boolean isColorox = false;
 	private JLabel selectedLook = new JLabel("Error");
@@ -215,6 +220,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setSettingsWindow();
+				setTimeFormatBoxes();
 				String lastOutputDir = null;
 				try{
 					lastOutputDir = remPref.getUserPath();
@@ -471,9 +477,13 @@ public class GUI {
 		JLabel lookLabel = new JLabel("Use an alternative look:");
 		JLabel selectedLookLabel = new JLabel("Selected look:");
 		JLabel selectedColorLabel = new JLabel("Use colors:");
+		JLabel timeFormatLabel = new JLabel("Select your favorite time format:");
+		JLabel timeCheckBoxA = new JLabel("yyyyMMdd");
+		JLabel timeCheckBoxB = new JLabel("MMddyyyy");
+		JLabel timeCheckBoxC = new JLabel("ddMMyyyy");
 		
 		settingsWindow.setLocationRelativeTo(null);
-		settingsWindow.setSize(new Dimension(512, 256));
+		settingsWindow.setSize(new Dimension(512, 350));
 		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		settingsPanel.setLayout(null);
 		
@@ -534,12 +544,50 @@ public class GUI {
 		selectedLook.setBounds(10, 100, 340, 28);
 		selectedLook.setLocation(350,80);
 		
+		//CheckBox time format
+		useTimeFormateA.setBounds(10, 100, 340, 28);
+		useTimeFormateB.setBounds(10, 100, 340, 28);
+		useTimeFormateC.setBounds(10, 100, 340, 28);
+		useTimeFormateA.setLocation(210,160);
+		useTimeFormateB.setLocation(210,180);
+		useTimeFormateC.setLocation(210,200);
+		
+		//CheckBox time format label
+		timeFormatLabel.setBounds(10,100,300,28);
+		timeFormatLabel.setLocation(40,140);
+		timeCheckBoxA.setBounds(10,100,100,28);
+		timeCheckBoxB.setBounds(10,100,100,28);
+		timeCheckBoxC.setBounds(10,100,100,28);
+		timeCheckBoxA.setLocation(40,160);
+		timeCheckBoxB.setLocation(40,180);
+		timeCheckBoxC.setLocation(40,200);
+		
 		//Color checkbox label
 		selectedColorLabel.setBounds(10,100,150,28);
 		selectedColorLabel.setLocation(40,100);
 		//Color checkbox
 		useColorsBox.setBounds(10, 10, 20, 28);
 		useColorsBox.setLocation(210,100);
+		
+		/*
+		useTimeFormateA.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				setTimeFormatBoxes();
+			}
+		});
+		
+		useTimeFormateB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				setTimeFormatBoxes();
+			}
+		});
+		
+		useTimeFormateC.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				setTimeFormatBoxes();
+			}
+		});
+		*/
 		
 		//Add all elements to the settingsPanel
 		settingsPanel.add(filePathLabel);
@@ -551,10 +599,38 @@ public class GUI {
 		settingsPanel.add(selectedLook);
 		settingsPanel.add(selectedColorLabel);
 		settingsPanel.add(useColorsBox);
+		
+		settingsPanel.add(timeFormatLabel);
+		settingsPanel.add(timeCheckBoxA);
+		settingsPanel.add(timeCheckBoxB);
+		settingsPanel.add(timeCheckBoxC);
+		settingsPanel.add(useTimeFormateA);
+		settingsPanel.add(useTimeFormateB);
+		settingsPanel.add(useTimeFormateC);
 		settingsWindow.add(settingsPanel, BorderLayout.CENTER);
 		settingsWindow.add(saveSettingsButton, BorderLayout.SOUTH);
 		settingsWindow.setVisible(true);
 		centerWindow(settingsWindow);
+	}
+	
+	/**
+	 * 
+	 */
+	private void setTimeFormatBoxes(){
+		//TODO
+		if(useTimeFormateA.isSelected()){
+			useTimeFormateB.setSelected(false);
+			useTimeFormateC.setSelected(false);
+		}else if(useTimeFormateB.isSelected()){
+			useTimeFormateA.setSelected(false);
+			useTimeFormateC.setSelected(false);
+		}else if(useTimeFormateC.isSelected()){
+			useTimeFormateA.setSelected(false);
+			useTimeFormateB.setSelected(false);
+		}else{
+			useTimeFormateA.setSelected(true);
+		}
+		
 	}
 	
 	/**
