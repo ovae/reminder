@@ -79,7 +79,7 @@ public class GUI {
 	private JCheckBox useTimeFormateB = new JCheckBox();
 	private JCheckBox useTimeFormateC = new JCheckBox();
 	private boolean isLookBox = false;
-	private boolean isColorox = false;
+	private boolean isColorBox = false;
 	private JLabel selectedLook = new JLabel("Error");
 	
 	//Info Window
@@ -225,6 +225,7 @@ public class GUI {
 				try{
 					lastOutputDir = remPref.getUserPath();
 					isLookBox = remPref.getLookCheckBox();
+					isColorBox = remPref.getColorCheckBox();
 					//If the checkox isLookBox is activated 
 					// 'Nimbus' is written in the selectedLook label
 					//or otherwise 'Default'.
@@ -234,6 +235,7 @@ public class GUI {
 						selectedLook.setText("Default");
 					}
 					lookBox.setSelected(isLookBox);
+					useColorsBox.setSelected(isColorBox);
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Load preference succesfully.");
 					}
@@ -511,7 +513,13 @@ public class GUI {
 		
 		useColorsBox.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				//magic TODO
+				if(isColorBox){
+					isColorBox = false;
+					JOptionPane.showMessageDialog(null, "Enable Colors");
+				}else{
+					isColorBox = true;
+					JOptionPane.showMessageDialog(null, "Disable Colors");
+				}
 			}
 		});
 		
@@ -653,6 +661,7 @@ public class GUI {
 		try{
 			remPref.setUserPath(userfilesDirectory.toString());
 			remPref.setLookCheckBox(isLookBox);
+			remPref.setColorCheckBox(isColorBox);
 			if(debugMode){
 				System.out.println(Time.getTimeDebug()+" Save preference.");
 			}
