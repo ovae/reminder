@@ -81,6 +81,7 @@ public class GUI {
 	private boolean isLookBox = false;
 	private boolean isColorBox = false;
 	private JLabel selectedLook = new JLabel("Error");
+	private boolean haveColorCheckBoxChanged = false;
 	
 	//Info Window
 	private JFrame infoFrame = new JFrame("Info");
@@ -486,12 +487,12 @@ public class GUI {
 		JLabel timeCheckBoxA = new JLabel("yyyyMMdd");
 		JLabel timeCheckBoxB = new JLabel("MMddyyyy");
 		JLabel timeCheckBoxC = new JLabel("ddMMyyyy");
-		
+
 		settingsWindow.setLocationRelativeTo(null);
 		settingsWindow.setSize(new Dimension(512, 350));
 		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		settingsPanel.setLayout(null);
-		
+
 		try{
 			tempUserPrefsPath =remPref.getUserPath();
 		}catch(Exception e){
@@ -499,46 +500,49 @@ public class GUI {
 				System.err.println("\n"+Time.getTimeDebug()+" Loading tempUserPrefsPath error. \n");
 			}
 		}
-		
+
 		getPathButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				getFilePath();
 				//saveSettings();
 			}
 		});
-		
+
 		lookBox.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if(isLookBox){
 					isLookBox = false;
 					selectedLook.setText("Nimbus");
+					haveColorCheckBoxChanged=true;
 					JOptionPane.showMessageDialog(null, "After a restart is the default look activated.");
 				}else{
 					isLookBox = true;
 					selectedLook.setText("Default");
+					haveColorCheckBoxChanged=true;
 					JOptionPane.showMessageDialog(null, "After a restart is the Nimbus look activated.");
 				}
 				//saveSettings();
 			}
 		});
-		
+
 		useColorsBox.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if(isColorBox){
 					isColorBox = false;
-					JOptionPane.showMessageDialog(null, "Enable Colors");
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Disable Colors.");
+					}
 				}else{
 					isColorBox = true;
-					JOptionPane.showMessageDialog(null, "Disable Colors");
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Enable Colors.");
+					}
 				}
 			}
 		});
-		
-		
+
 		saveSettingsButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				saveSettings();
-				//TODO
 				//If the userPath have changed to nothing:
 				if(tempUserPrefsPath.equals( userfilesDirectoryInput.getText() )){
 					if(debugMode){
@@ -551,18 +555,19 @@ public class GUI {
 						System.out.println(Time.getTimeDebug()+" Userpath have changed [loadTable].");
 					}
 				}
+				saveSettings();
 				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
-		
+
 		filePathLabel.setBounds(10, 100, 340,28);
 		filePathLabel.setLocation(40,20);
 		userfilesDirectoryInput.setBounds(10, 100, 318,28);
 		userfilesDirectoryInput.setLocation(40, 40);
 		getPathButton.setBounds(10, 100, 100,27);
 		getPathButton.setLocation(360, 40);
-		
-		
+
+
 		lookLabel.setBounds(10, 100, 340, 28);
 		lookLabel.setLocation(40,80);
 		//Checkbox gui look
@@ -696,6 +701,16 @@ public class GUI {
 					System.out.println(Time.getTimeDebug()+" Userpath have changed. [saveTable]");
 				}
 			}
+			
+			//If the color checkbox have changed and the savesSteiings butten were presed the Table resets its items.
+			if(haveColorCheckBoxChanged=true){
+				haveColorCheckBoxChanged=false;
+				resetTable();
+				if(debugMode){
+					System.out.println(Time.getTimeDebug()+" resetTable.");
+				}
+			}
+
 			if(debugMode){
 				System.out.println(Time.getTimeDebug()+" Save preference.");
 			}
@@ -900,11 +915,21 @@ public class GUI {
 	}
 	
 	/**
+	 * Emptys the table and loads it again.
+	 */
+	private void resetTable(){
+		emptyTable();
+		checkColorBox();
+		if(remPref.getColorCheckBox() == false){
+			setTableRowWhite();
+		}
+		loadTableItemsFromFile();
+	}
+	
+	/**
 	 * Colorize table rows dependent on the 'end' value
 	 */
 	private void setTableRowColor(){
-		//magic
-		
 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
@@ -949,6 +974,26 @@ public class GUI {
 				}
 				*/
 				
+				return c;
+			}
+		});
+	}
+	
+	/**
+	 * Resets the colorized table rows.
+	 */
+	private void setTableRowWhite(){
+		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				String tableValue = (String)table.getModel().getValueAt(row, 3);
+				String tableStatus = (String) table.getModel().getValueAt(row, 4);
+				//get the date of today
+				Date date = new Date();
+				SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
+				String today =ft.format(date);
+					c.setBackground(Color.WHITE);
 				return c;
 			}
 		});
