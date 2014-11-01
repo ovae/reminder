@@ -623,25 +623,28 @@ public class GUI {
 		useColorsBox.setBounds(10, 10, 20, 28);
 		useColorsBox.setLocation(210,100);
 		
-		/*
+		
 		useTimeFormateA.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				setTimeFormatBoxes();
+				useTimeFormateB.setSelected(false);
+				useTimeFormateC.setSelected(false);
 			}
 		});
 		
 		useTimeFormateB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				setTimeFormatBoxes();
+				useTimeFormateA.setSelected(false);
+				useTimeFormateC.setSelected(false);
 			}
 		});
 		
 		useTimeFormateC.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				setTimeFormatBoxes();
+				useTimeFormateA.setSelected(false);
+				useTimeFormateB.setSelected(false);
 			}
 		});
-		*/
+		
 		
 		//Add all elements to the settingsPanel
 		settingsPanel.add(filePathLabel);
@@ -672,19 +675,8 @@ public class GUI {
 	 */
 	private void setTimeFormatBoxes(){
 		//TODO
-		if(useTimeFormateA.isSelected()){
-			useTimeFormateB.setSelected(false);
-			useTimeFormateC.setSelected(false);
-		}else if(useTimeFormateB.isSelected()){
-			useTimeFormateA.setSelected(false);
-			useTimeFormateC.setSelected(false);
-		}else if(useTimeFormateC.isSelected()){
-			useTimeFormateA.setSelected(false);
-			useTimeFormateB.setSelected(false);
-		}else{
-			useTimeFormateA.setSelected(true);
-		}
-		
+
+
 	}
 	
 	/**
