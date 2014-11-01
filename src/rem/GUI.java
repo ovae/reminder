@@ -91,11 +91,11 @@ public class GUI {
 	private JTable table = new JTable(new DefaultTableModel(streams,columnNames));
 	
 	//Preferences
-	RemPreference remPref = new RemPreference();
+	private RemPreference remPref = new RemPreference();
+	private String tempUserPrefsPath = "";
 	
 	//Files
 	private File userfilesDirectory = new File("");
-	private File taskFileBack;
 	
 	//Other, Icons
 	private Icon iconWarning = UIManager.getIcon("OptionPane.warningIcon");
@@ -206,9 +206,15 @@ public class GUI {
 			public void actionPerformed(ActionEvent e){
 				try{
 					writeTableItemsToFile();
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Saving successfully [SaveButton_toolbar].");
+					}
 					JOptionPane.showMessageDialog(null, "Tasks saved");
 				}catch(Exception f){
 					JOptionPane.showMessageDialog(null, "Saving failed");
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Saveing failed [SaveButton_toolbar].");
+					}
 				}
 			}
 			
@@ -247,7 +253,7 @@ public class GUI {
 		});
 		
 		infoButton.addActionListener(new ActionListener(){
-			@Override//TODO
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				setInfoFrame();
 			}
@@ -264,7 +270,6 @@ public class GUI {
 	/**
 	 * Setting up the info window
 	 */
-	//TODO
 	private void setInfoFrame(){
 		infoFrame.setLocationRelativeTo(null);
 		infoFrame.setSize(new Dimension(350,290));
@@ -487,6 +492,14 @@ public class GUI {
 		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		settingsPanel.setLayout(null);
 		
+		try{
+			tempUserPrefsPath =remPref.getUserPath();
+		}catch(Exception e){
+			if(debugMode){
+				System.err.println("\n"+Time.getTimeDebug()+" Loading tempUserPrefsPath error. \n");
+			}
+		}
+		
 		getPathButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				getFilePath();
@@ -525,7 +538,19 @@ public class GUI {
 		saveSettingsButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				saveSettings();
-				loadTableItemsFromFile();
+				//TODO
+				//If the userPath have changed to nothing:
+				if(tempUserPrefsPath.equals( userfilesDirectoryInput.getText() )){
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Userpath dont changed [loadTable].");
+					}
+				}else{
+					//Else do this:
+					loadTableItemsFromFile();
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Userpath have changed [loadTable].");
+					}
+				}
 				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
@@ -657,9 +682,20 @@ public class GUI {
 	 */
 	private void saveSettings(){
 		try{
-			remPref.setUserPath(userfilesDirectory.toString());
 			remPref.setLookCheckBox(isLookBox);
 			remPref.setColorCheckBox(isColorBox);
+			//TODO
+			//If the userPath havened change do nothing
+			if(tempUserPrefsPath.equals( userfilesDirectoryInput.getText() )){
+				if(debugMode){
+					System.out.println(Time.getTimeDebug()+" Userpath dont changed. [saveTable]");
+				}
+			}else{
+				remPref.setUserPath(userfilesDirectory.toString());
+				if(debugMode){
+					System.out.println(Time.getTimeDebug()+" Userpath have changed. [saveTable]");
+				}
+			}
 			if(debugMode){
 				System.out.println(Time.getTimeDebug()+" Save preference.");
 			}
