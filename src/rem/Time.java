@@ -19,6 +19,14 @@ public class Time {
 		SimpleDateFormat ft = new SimpleDateFormat ("dd.MM.yyyy");
 		return ""+ft.format(date)+"";
 	}
+	
+	/**
+	 * 
+	 */
+	public static String getDate(String str){
+		SimpleDateFormat ft = new SimpleDateFormat (str);
+		return ""+ft.format(date)+"";
+	}
 	/**
 	 * Get the Week day
 	 * example : monday

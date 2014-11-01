@@ -68,6 +68,7 @@ public class GUI {
 	private JPanel mainPanel = new JPanel(new BorderLayout());
 	private JScrollPane scroll = new JScrollPane(mainPanel);
 	private JPanel infoPanel = new JPanel(new BorderLayout());
+	private JLabel infoDateLabel = new JLabel();
 	
 	//Setings Window
 	private JFrame settingsWindow = new JFrame("Settings");
@@ -465,12 +466,28 @@ public class GUI {
 	 * set the info panel with date label.
 	 */
 	private void setInfoPanel(){
-		JLabel info = new JLabel("Date:"+Time.getDate());
-		info.setBounds(10, 100, 180,28);
-		info.setLocation(10, 40);
-		infoPanel.add(info, BorderLayout.CENTER);
+		//TODO
+		infoDateLabel.setText("Date: "+Time.getDate("yyyy.MM.dd"));
+		
+		infoDateLabel.setBounds(10, 100, 180,28);
+		infoDateLabel.setLocation(10, 40);
+		infoPanel.add(infoDateLabel, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * 
+	 */
+	private void setDateLable(){
+		if(useTimeFormateA.isSelected()){
+			infoDateLabel.setText("Date: "+Time.getDate("yyyy.MM.dd"));
+		}else if(useTimeFormateB.isSelected()){
+			infoDateLabel.setText("Date: "+Time.getDate("MM.dd.yyyy"));
+		}else if(useTimeFormateC.isSelected()){
+			infoDateLabel.setText("Date: "+Time.getDate("dd.MM.yyyy"));
+		}else{
+			infoDateLabel.setText("Date: "+Time.getDate()+"[default]");
+		}
+	}
 	
 	//Settings-window**********************************************************************************************************
 	/**
@@ -556,6 +573,7 @@ public class GUI {
 					}
 				}
 				saveSettings();
+				setDateLable();
 				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
