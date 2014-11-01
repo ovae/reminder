@@ -126,10 +126,8 @@ public class GUI {
 				setMainPanel();
 				setTable();
 				loadTableItemsFromFile();
-				setTableRowColor();
+				checkColorBox();
 				setInfoPanel();
-				//taskFileBack =new File(""+remPref.getUserPath().toString()+"/tasks");
-				
 			}
 		});
 	}
@@ -699,7 +697,6 @@ public class GUI {
 		}
 	}
 	
-	
 	//Table********************************************************************************************************************
 	/**
 	 * Set a Table
@@ -919,6 +916,15 @@ public class GUI {
 				return c;
 			}
 		});
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkColorBox(){
+		if(remPref.getColorCheckBox() == true){
+			setTableRowColor();
+		}
 	}
 	
 	//Debug********************************************************************************************************************
