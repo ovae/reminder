@@ -4,9 +4,10 @@ import java.util.prefs.Preferences;
 
 public class RemPreference {
 	private Preferences prefs;
-	private static String userPath = "";
-	private static String lookCheckBox = "false";
-	private static String colorCheckBox = "true";
+	private static String userPath = "userPath";
+	private static String lookCheckBox = "lookCheckBox";
+	private static String colorCheckBox = "ColorCheckBox";
+	private static String timeFormate = "timeFormate";
 
 
 	public void setPreference() {
@@ -21,7 +22,7 @@ public class RemPreference {
 	}
 	
 	public String getUserPath(){
-		return prefs.get(userPath ,"get");
+		return prefs.get(userPath ,"");
 	}
 	
 	//Look*********************************************************************
@@ -41,4 +42,13 @@ public class RemPreference {
 	public Boolean getColorCheckBox(){
 		return prefs.getBoolean(colorCheckBox, true);
 	}
+	//timeFormate***************************************************************
+	public void setTimeFormate(int formate){
+		prefs.putInt(timeFormate, formate);
+	}
+	
+	public int getTimeFormate(){
+		return prefs.getInt(timeFormate, 0);
+	}
+	
 }

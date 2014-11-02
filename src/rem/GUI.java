@@ -79,6 +79,7 @@ public class GUI {
 	private JCheckBox useTimeFormateA = new JCheckBox();
 	private JCheckBox useTimeFormateB = new JCheckBox();
 	private JCheckBox useTimeFormateC = new JCheckBox();
+	private char selectedTimeFormate = 'a';
 	private boolean isLookBox = false;
 	private boolean isColorBox = false;
 	private JLabel selectedLook = new JLabel("Error");
@@ -130,6 +131,7 @@ public class GUI {
 				loadTableItemsFromFile();
 				checkColorBox();
 				setInfoPanel();
+				loadTimeFormatePreferences();
 			}
 		});
 	}
@@ -226,7 +228,6 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setSettingsWindow();
-				setTimeFormatBoxes();
 				String lastOutputDir = null;
 				try{
 					lastOutputDir = remPref.getUserPath();
@@ -512,6 +513,7 @@ public class GUI {
 
 		try{
 			tempUserPrefsPath =remPref.getUserPath();
+			loadTimeFormatePreferences();
 		}catch(Exception e){
 			if(debugMode){
 				System.err.println("\n"+Time.getTimeDebug()+" Loading tempUserPrefsPath error. \n");
@@ -628,6 +630,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e){
 				useTimeFormateB.setSelected(false);
 				useTimeFormateC.setSelected(false);
+				selectedTimeFormate = 'a';
 			}
 		});
 		
@@ -635,6 +638,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e){
 				useTimeFormateA.setSelected(false);
 				useTimeFormateC.setSelected(false);
+				selectedTimeFormate = 'b';
 			}
 		});
 		
@@ -642,6 +646,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e){
 				useTimeFormateA.setSelected(false);
 				useTimeFormateB.setSelected(false);
+				selectedTimeFormate = 'c';
 			}
 		});
 		
@@ -673,9 +678,24 @@ public class GUI {
 	/**
 	 * 
 	 */
-	private void setTimeFormatBoxes(){
+	private void loadTimeFormatePreferences(){
 		//TODO
-
+		int tempTimeForamte = 0;
+		try{
+			tempTimeForamte = remPref.getTimeFormate();
+			if(tempTimeForamte == 'a'){
+				useTimeFormateA.setSelected(true);
+			}else if(tempTimeForamte == 'b'){
+				useTimeFormateB.setSelected(true);
+			}else{
+				useTimeFormateC.setSelected(true);
+			}
+			setDateLable();
+		}catch(Exception e){
+			if(debugMode){
+				System.err.println(Time.getTimeDebug()+" Loading time formate error");
+			}
+		}
 
 	}
 	
@@ -699,6 +719,7 @@ public class GUI {
 		try{
 			remPref.setLookCheckBox(isLookBox);
 			remPref.setColorCheckBox(isColorBox);
+			remPref.setTimeFormate(selectedTimeFormate);
 			//TODO
 			//If the userPath havened change do nothing
 			if(tempUserPrefsPath.equals( userfilesDirectoryInput.getText() )){
