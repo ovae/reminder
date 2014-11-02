@@ -42,6 +42,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+/**
+ * 
+ * @author ovae
+ * @version
+ */
 public class GUI {
 	
 	//Main window
@@ -273,6 +278,7 @@ public class GUI {
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
 		toolbar.add(saveAll);
+		toolbar.addSeparator(new Dimension(3, 10));
 		toolbar.add(settingsButton);
 		toolbar.add(infoButton);
 	}
@@ -300,7 +306,7 @@ public class GUI {
 		JLabel redLabel = new JLabel("Delivery day");
 		JLabel orangeLabel = new JLabel("One day left");
 		JLabel yellowLabel = new JLabel("Two days left");
-		JLabel blueLabel = new JLabel("Selected a row");
+		JLabel blueLabel = new JLabel("Selected row");
 		JLabel whiteLabel = new JLabel("Default value");
 		
 		green.setBackground(new Color(126, 207, 88));
@@ -859,7 +865,7 @@ public class GUI {
 			JOptionPane.showMessageDialog(null, "File not found or the file is empty.");
 		}
 	}
-	
+
 	/**
 	* Write the items of the table in a userfile
 	 * @throws IOException 
@@ -888,7 +894,7 @@ public class GUI {
 			JOptionPane.showMessageDialog(null, e.getStackTrace());
 		}
 	}
-	
+
 	/**
 	 * Method to remove selected items from the table.
 	 */
@@ -901,7 +907,7 @@ public class GUI {
 		}
 		table.clearSelection();
 	}
-	
+
 	/**
 	 * removes all elements of the table.
 	 */
@@ -923,7 +929,7 @@ public class GUI {
 			}
 		}
 	}
-	
+
 	/**
 	 * Method to add items to the table and update the table.
 	 */
@@ -965,7 +971,7 @@ public class GUI {
 		}
 		loadTableItemsFromFile();
 	}
-	
+
 	/**
 	 * Colorize table rows dependent on the 'end' value
 	 */
@@ -975,7 +981,7 @@ public class GUI {
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				String tableValue = (String)table.getModel().getValueAt(row, 3);
-				String tableStatus = (String) table.getModel().getValueAt(row, 4);
+				//String tableStatus = (String) table.getModel().getValueAt(row, 4);
 				//get the date of today
 				Date date = new Date();
 				SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
@@ -1018,7 +1024,7 @@ public class GUI {
 			}
 		});
 	}
-	
+
 	/**
 	 * Resets the colorized table rows.
 	 */
@@ -1027,12 +1033,6 @@ public class GUI {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-				String tableValue = (String)table.getModel().getValueAt(row, 3);
-				String tableStatus = (String) table.getModel().getValueAt(row, 4);
-				//get the date of today
-				Date date = new Date();
-				SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
-				String today =ft.format(date);
 					c.setBackground(Color.WHITE);
 				return c;
 			}
@@ -1040,7 +1040,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Check if any item of the Table has changed.
 	 */
 	private void checkIfTableHasChanged(){
 		table.getModel().addTableModelListener(new TableModelListener(){
@@ -1052,7 +1052,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Check if the color checkbox is set in the preferences.
 	 */
 	private void checkColorBox(){
 		if(remPref.getColorCheckBox() == true){
