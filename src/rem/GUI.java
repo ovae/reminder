@@ -69,6 +69,7 @@ public class GUI {
 	private JScrollPane scroll = new JScrollPane(mainPanel);
 	private JPanel infoPanel = new JPanel(new BorderLayout());
 	private JLabel infoDateLabel = new JLabel();
+	private JLabel saveStateLabel = new JLabel();
 	
 	//Setings Window
 	private JFrame settingsWindow = new JFrame("Settings");
@@ -469,10 +470,10 @@ public class GUI {
 	private void setInfoPanel(){
 		//TODO
 		infoDateLabel.setText("Date: "+Time.getDate("yyyy.MM.dd"));
+		saveStateLabel.setText("[Saved]");
 		
-		infoDateLabel.setBounds(10, 100, 180,28);
-		infoDateLabel.setLocation(10, 40);
 		infoPanel.add(infoDateLabel, BorderLayout.CENTER);
+		infoPanel.add(saveStateLabel, BorderLayout.EAST);
 	}
 	
 	/**
