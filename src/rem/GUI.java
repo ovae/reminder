@@ -34,6 +34,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -133,6 +136,7 @@ public class GUI {
 				checkColorBox();
 				setInfoPanel();
 				loadTimeFormatePreferences();
+				checkIfTableHasChanged();
 			}
 		});
 	}
@@ -214,12 +218,14 @@ public class GUI {
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Saving successfully [SaveButton_toolbar].");
 					}
-					JOptionPane.showMessageDialog(null, "Tasks saved");
+					saveStateLabel.setText("[saved]");
+					//JOptionPane.showMessageDialog(null, "Tasks saved");
 				}catch(Exception f){
-					JOptionPane.showMessageDialog(null, "Saving failed");
+					//JOptionPane.showMessageDialog(null, "Saving failed");
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Saveing failed [SaveButton_toolbar].");
 					}
+					saveStateLabel.setText("[Saving failed]");
 				}
 			}
 			
@@ -470,7 +476,7 @@ public class GUI {
 	private void setInfoPanel(){
 		//TODO
 		infoDateLabel.setText("Date: "+Time.getDate("yyyy.MM.dd"));
-		saveStateLabel.setText("[Saved]");
+		saveStateLabel.setText("[saved]");
 		
 		infoPanel.add(infoDateLabel, BorderLayout.CENTER);
 		infoPanel.add(saveStateLabel, BorderLayout.EAST);
@@ -746,10 +752,12 @@ public class GUI {
 			if(debugMode){
 				System.out.println(Time.getTimeDebug()+" Save preference.");
 			}
+			saveStateLabel.setText("[saved]");
 		}catch(Exception e){
 			if(debugMode){
 				System.err.println(Time.getTimeDebug()+" Save preference error.");
 			}
+			saveStateLabel.setText("[changed]");
 		}
 	}
 	
@@ -1028,6 +1036,18 @@ public class GUI {
 					c.setBackground(Color.WHITE);
 				return c;
 			}
+		});
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkIfTableHasChanged(){
+		table.getModel().addTableModelListener(new TableModelListener(){
+			public void tableChanged(TableModelEvent tme){
+				saveStateLabel.setText("[changed]");
+			}
+			
 		});
 	}
 	
