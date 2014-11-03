@@ -6,6 +6,7 @@ import java.awt.CheckboxGroup;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -35,12 +37,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.RowSorterEvent;
+import javax.swing.event.RowSorterListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  * 
@@ -69,6 +74,8 @@ public class GUI {
 	private JTextField inputAbout = new JTextField("");
 	private JTextField inputBegin = new JTextField("");
 	private JTextField inputEnd = new JTextField("");
+	private JLabel beginInfoLabel = new JLabel("");
+	private JLabel endInfoLabel = new JLabel("");
 	private JButton addButton = new JButton("add");
 	private JButton resetButton = new JButton("reset");
 	
@@ -101,7 +108,7 @@ public class GUI {
 	private String[] columnNames = {"Topic","About","Begin","End", "Status"};
 	private Object[][] streams;
 	private JTable table = new JTable(new DefaultTableModel(streams,columnNames));
-	
+
 	//Preferences
 	private RemPreference remPref = new RemPreference();
 	private String tempUserPrefsPath = "";
@@ -136,10 +143,12 @@ public class GUI {
 				checkLook();
 				setToolbar();
 				setMainPanel();
+				initAddTaskFrame();
 				setTable();
 				loadTableItemsFromFile();
 				checkColorBox();
 				setInfoPanel();
+				
 				loadTimeFormatePreferences();
 				checkIfTableHasChanged();
 			}
@@ -192,7 +201,9 @@ public class GUI {
 		toolbar.setFloatable(false);
 		newButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				setAddTaskFrame();
+				loadAddFramePreference();
+				resetInputsAddFrame();
+				setAddFrameVisible();
 			}
 		});
 		
@@ -388,9 +399,9 @@ public class GUI {
 	 * all settings and configurations of the addFrame
 	 * you can add new tasks over this window.
 	 */
-	private void setAddTaskFrame(){
+	private void initAddTaskFrame(){
 		addFrame.setLocationRelativeTo(null);
-		addFrame.setSize(new Dimension(350,256));
+		addFrame.setSize(new Dimension(400,256));
 		addFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		addFrame.setLayout(new BorderLayout());
 		JPanel addPanel = new JPanel();
@@ -411,6 +422,9 @@ public class GUI {
 		inputBegin.setBounds(10, 100, 180,28);
 		inputEnd.setBounds(10, 100, 180,28);
 		
+		beginInfoLabel.setBounds(10, 100, 180,28);
+		endInfoLabel.setBounds(10, 100, 180,28);
+		
 		enterTopic.setLocation(40, 40);
 		enterAbout.setLocation(40, 70);
 		enterBegin.setLocation(40, 100);
@@ -420,6 +434,8 @@ public class GUI {
 		inputAbout.setLocation(120, 70);
 		inputBegin.setLocation(120, 100);
 		inputEnd.setLocation(120, 130);
+		beginInfoLabel.setLocation(300, 100);
+		endInfoLabel.setLocation(300, 130);
 		
 		addPanel.setLayout(null);
 		addPanel.add(enterTopic);
@@ -430,8 +446,11 @@ public class GUI {
 		addPanel.add(inputAbout);
 		addPanel.add(inputBegin);
 		addPanel.add(inputEnd);
+		addPanel.add(beginInfoLabel);
+		addPanel.add(endInfoLabel);
 		buttonPanel.add(resetButton,BorderLayout.WEST);
 		buttonPanel.add(addButton, BorderLayout.CENTER);
+		
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String topic = inputTopic.getText();
@@ -447,22 +466,126 @@ public class GUI {
 				}else{
 					addTableRow(topic,about,begin,end);
 				}
+				//checkInputBeginEnd();
 			}
 		});
 		
 		resetButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				inputTopic.setText("");
-				inputAbout.setText("");
-				inputBegin.setText("");
-				inputEnd.setText("");
+				resetInputsAddFrame();
 			}
 		});
 		
 		addFrame.add(addPanel,BorderLayout.CENTER);
 		addFrame.add(buttonPanel, BorderLayout.SOUTH);
-		addFrame.setVisible(true);
+		addFrame.setVisible(false);
 		centerWindow(addFrame);
+	}
+	
+	private void setAddFrameVisible(){
+		addFrame.setVisible(true);
+	}
+	
+	/**
+	 * 
+	 */
+	private void resetInputsAddFrame(){
+		inputTopic.setText("");
+		inputAbout.setText("");
+		inputBegin.setText("");
+		inputEnd.setText("");
+	}
+	
+	/**
+	 * 
+	 */
+	private void loadAddFramePreference(){
+		int currentFormate = remPref.getTimeFormate();
+		String beginOutput = "[ ";
+		String endOutput = "[ ";
+		
+		//Check if Begin and End have the length of 8.
+		if(currentFormate == 'a'){
+			//timeformate A
+			beginOutput += "yyyyMMdd";
+			endOutput += "yyyyMMdd";
+		}else if(currentFormate == 'b'){
+			//timeformate B
+			beginOutput += "MMddyyyy";
+			endOutput += "MMddyyyy";
+		}else{
+			//timeformate C
+			beginOutput += "ddMMyyyy";
+			endOutput += "ddMMyyyy";
+		}
+		beginOutput += " ]";
+		endOutput += " ]";
+
+		beginInfoLabel.setText(beginOutput);
+		endInfoLabel.setText(endOutput);
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkInputBeginEnd(){
+		//TODO
+		char tempC = (char) remPref.getTimeFormate();
+		String tempTextBegin = inputBegin.getText();
+		String tempTextEnd = inputEnd.getText();
+		String month = Time.getCurrentMonth();
+		String year = Time.getCurrentYear();
+		
+		String subAEndY = tempTextEnd.substring(0,4);
+		String subAEndM = tempTextEnd.substring(4,6);
+		String subBEndM = tempTextEnd.substring(0,2);
+		String subBEndY = tempTextEnd.substring(4,8);
+		String subCEndM = tempTextEnd.substring(4,6);
+		String subCEndY= tempTextEnd.substring(4,8);
+		int currentFormate = remPref.getTimeFormate();
+		
+		String beginOutput = "[ ";
+		String endOutput = "[ ";
+		
+		//Check if Begin and End have the length of 8.
+		if(tempTextBegin.length()==8 && tempTextBegin.length()==8){
+			if(currentFormate == 'a'){
+				//timeformate A
+				beginOutput += "yyyyMMdd";
+				endOutput += "yyyyMMdd";
+			}else if(currentFormate == 'b'){
+				//timeformate B
+				beginOutput += "MMddyyyy";
+				endOutput += "MMddyyyy";
+			}else{
+				//timeformate C
+				beginOutput += "ddMMyyyy";
+				endOutput += "ddMMyyyy";
+			}
+		}else{
+			beginOutput += " Error";
+			endOutput += " Error";
+		}
+		beginOutput += " ]";
+		endOutput += " ]";
+
+		beginInfoLabel.setText(beginOutput);
+		endInfoLabel.setText(endOutput);
+		/*
+		if(subAEndY.equals(year) && subAEndM.equals(month) ){
+			//timeformate A
+			endInfoLabel.setText("[A Ok]");
+		}else if(subBEndY.equals(year) && subBEndM.equals(month) ){
+			//timeformate B
+			endInfoLabel.setText("[B Ok]");
+		}else if(subCEndY.equals(year) && subCEndM.equals(month) ){
+			//timeformate C
+			endInfoLabel.setText("[C Ok]");
+		}else{
+			//set lables to error
+			endInfoLabel.setText(endOutput+" Error]");
+		}
+		*/
 	}
 	
 	//Main-window**************************************************************************************************************
@@ -589,6 +712,7 @@ public class GUI {
 				}
 				saveSettings();
 				setDateLable();
+				loadAddFramePreference();
 				JOptionPane.showMessageDialog(null, "settings saved");
 			}
 		});
@@ -953,12 +1077,6 @@ public class GUI {
 		}
 	}
 
-	/**
-	 * 
-	 */
-	private void sortTableItems(){
-		//magic
-	}
 	
 	/**
 	 * Emptys the table and loads it again.
@@ -970,6 +1088,51 @@ public class GUI {
 			setTableRowWhite();
 		}
 		loadTableItemsFromFile();
+	}
+
+	/**
+	 * Sort the Table by the end date.
+	 */
+	private void sortTable(){
+		//get the table values
+		int tableRows = table.getRowCount();
+		String[][] tableValuesUnSort= new String[tableRows][5];
+		for(int i = 0 ; i < table.getRowCount(); i++){
+			for(int j = 0 ; j < 5;j++){
+				tableValuesUnSort[i][j] =(String) table.getValueAt(i,j);
+			}
+		}
+		
+		//sort the elements
+		int tempA = 0;
+		int tempB = 0;
+		int tempChange =0;
+		boolean changedCompletly;
+		do{
+			changedCompletly = true;
+			for(int i = 0 ; i < table.getRowCount()-1; i++){
+				tempA = Integer.parseInt(tableValuesUnSort[i][3]);
+				tempB = Integer.parseInt(tableValuesUnSort[(i+1)][3]);
+				if(tempA > tempB){
+					tempChange = tempA;
+					tableValuesUnSort[i][3] =""+tempB+"";
+					tableValuesUnSort[(i+1)][3] = ""+tempChange+"";
+					 changedCompletly = false;
+				}
+			}
+		}while(!changedCompletly);
+		
+		//Empty the table
+		emptyTable();
+		//add the sorted elements back into the table.
+		for(int i = 0 ; i < table.getRowCount(); i++){
+			addTableRow(tableValuesUnSort[i][0],
+						tableValuesUnSort[i][1],
+						tableValuesUnSort[i][2],
+						tableValuesUnSort[i][3],
+						tableValuesUnSort[i][4]);
+		}
+		
 	}
 
 	/**

@@ -52,6 +52,22 @@ public class Time {
 		return ""+ft.format(date)+"";
 	}
 	
+	/**
+	 * get the current month
+	 */
+	public static String getCurrentMonth(){
+		SimpleDateFormat ft = new SimpleDateFormat ("MM");
+		return ""+ft.format(date)+"";
+	}
+	
+	/**
+	 * get the current year
+	 */
+	public static String getCurrentYear(){
+		SimpleDateFormat ft = new SimpleDateFormat ("yyyy");
+		return ""+ft.format(date)+"";
+	}
+	
 	//Time
 	/**
 	 * @return hh:mm:ss
