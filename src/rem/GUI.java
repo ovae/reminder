@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -25,11 +26,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -46,6 +49,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.text.NumberFormatter;
 
 /**
  * 
@@ -72,7 +76,8 @@ public class GUI {
 	private JFrame addFrame = new JFrame("New");
 	private JTextField inputTopic = new JTextField("");
 	private JTextField inputAbout = new JTextField("");
-	private JTextField inputBegin = new JTextField("");
+	
+	private JFormattedTextField inputBegin;
 	private JTextField inputEnd = new JTextField("");
 	private JLabel beginInfoLabel = new JLabel("");
 	private JLabel endInfoLabel = new JLabel("");
@@ -85,7 +90,7 @@ public class GUI {
 	private JPanel infoPanel = new JPanel(new BorderLayout());
 	private JLabel infoDateLabel = new JLabel();
 	private JLabel saveStateLabel = new JLabel();
-	
+
 	//Setings Window
 	private JFrame settingsWindow = new JFrame("Settings");
 	private JTextField userfilesDirectoryInput = new JTextField();
@@ -100,6 +105,14 @@ public class GUI {
 	private boolean isColorBox = false;
 	private JLabel selectedLook = new JLabel("Error");
 	private boolean haveColorCheckBoxChanged = false;
+	
+	private JTabbedPane tabbedPane = new JTabbedPane();
+	//Archiv
+	private JPanel archivPanel= new JPanel(new BorderLayout());
+	private JScrollPane scrollArchiv = new JScrollPane(archivPanel);
+	private String[] columnNamesArchiv = {"Topic","About","Begin","End", "Result"};
+	private Object[][] archivList;
+	private JTable tableArchiv = new JTable(new DefaultTableModel(archivList,columnNamesArchiv));
 	
 	//Info Window
 	private JFrame infoFrame = new JFrame("Info");
@@ -151,6 +164,8 @@ public class GUI {
 				
 				loadTimeFormatePreferences();
 				checkIfTableHasChanged();
+				
+				setArchivTable();
 			}
 		});
 	}
@@ -180,6 +195,7 @@ public class GUI {
 		frame.setLocation(x, y);
 	}
 
+	//Main-window**************************************************************************************************************
 	/**
 	 * Set the basic information of the main window.
 	 */
@@ -190,6 +206,18 @@ public class GUI {
 		mainWindow.setMinimumSize(new Dimension(640, mainWindowHeight));
 		mainWindow.setLayout(new BorderLayout());
 		centerWindow(mainWindow);
+	}
+	
+	/**
+	 * set up the main panel
+	 */
+	private void setMainPanel(){
+		mainWindow.add(toolbar, BorderLayout.NORTH);
+		//mainWindow.add(scroll, BorderLayout.CENTER);
+		tabbedPane.addTab("Latest", null, scroll,"Latest tab");
+		tabbedPane.addTab("Archive", null, scrollArchiv,"Archive tab");
+		mainWindow.add(tabbedPane, BorderLayout.CENTER);
+		mainWindow.add(infoPanel,BorderLayout.SOUTH);
 	}
 	
 	//Toolbar******************************************************************************************************************
@@ -404,6 +432,12 @@ public class GUI {
 		addFrame.setSize(new Dimension(400,256));
 		addFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		addFrame.setLayout(new BorderLayout());
+		//FormattedTextField Begin
+		NumberFormat inputBeginFormate = NumberFormat.getNumberInstance(); 
+		inputBeginFormate.setMaximumIntegerDigits(8);
+		inputBeginFormate.setGroupingUsed(false); 
+		inputBegin = new JFormattedTextField(inputBeginFormate);
+		
 		JPanel addPanel = new JPanel();
 		JPanel buttonPanel = new JPanel(new BorderLayout());
 
@@ -463,8 +497,11 @@ public class GUI {
 						inputBegin.getText().equals("") ||
 						inputEnd.getText().equals("") ){
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
+					
 				}else{
-					addTableRow(topic,about,begin,end);
+					//if(checkInputBeginEnd()){
+						addTableRow(topic,about,begin,end);
+					//}
 				}
 				//checkInputBeginEnd();
 			}
@@ -487,7 +524,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Resets the all input fields of the addFrame.
 	 */
 	private void resetInputsAddFrame(){
 		inputTopic.setText("");
@@ -497,7 +534,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Loads the time format preference.
 	 */
 	private void loadAddFramePreference(){
 		int currentFormate = remPref.getTimeFormate();
@@ -528,9 +565,9 @@ public class GUI {
 	/**
 	 * 
 	 */
-	private void checkInputBeginEnd(){
+	private boolean checkInputBeginEnd(){
 		//TODO
-		char tempC = (char) remPref.getTimeFormate();
+		boolean ret=false;
 		String tempTextBegin = inputBegin.getText();
 		String tempTextEnd = inputEnd.getText();
 		String month = Time.getCurrentMonth();
@@ -562,15 +599,19 @@ public class GUI {
 				beginOutput += "ddMMyyyy";
 				endOutput += "ddMMyyyy";
 			}
+			ret=true;
 		}else{
 			beginOutput += " Error";
 			endOutput += " Error";
+			ret=false;
 		}
 		beginOutput += " ]";
 		endOutput += " ]";
 
 		beginInfoLabel.setText(beginOutput);
 		endInfoLabel.setText(endOutput);
+		
+		return ret;
 		/*
 		if(subAEndY.equals(year) && subAEndM.equals(month) ){
 			//timeformate A
@@ -588,16 +629,6 @@ public class GUI {
 		*/
 	}
 	
-	//Main-window**************************************************************************************************************
-	/**
-	 * set up the main panel
-	 */
-	private void setMainPanel(){
-		mainWindow.add(toolbar, BorderLayout.NORTH);
-		mainWindow.add(scroll, BorderLayout.CENTER);
-		mainWindow.add(infoPanel,BorderLayout.SOUTH);
-	}
-	
 	//Info-panel***************************************************************************************************************
 	/**
 	 * set the info panel with date label.
@@ -612,7 +643,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Set the time format labels of the addFrame.
 	 */
 	private void setDateLable(){
 		if(useTimeFormateA.isSelected()){
@@ -724,7 +755,6 @@ public class GUI {
 		getPathButton.setBounds(10, 100, 100,27);
 		getPathButton.setLocation(360, 40);
 
-
 		lookLabel.setBounds(10, 100, 340, 28);
 		lookLabel.setLocation(40,80);
 		//Checkbox gui look
@@ -813,7 +843,7 @@ public class GUI {
 	}
 	
 	/**
-	 * 
+	 * Load the time format preference for the settingsFrame.
 	 */
 	private void loadTimeFormatePreferences(){
 		//TODO
@@ -1222,7 +1252,17 @@ public class GUI {
 			setTableRowColor();
 		}
 	}
-	
+	//Archiv*******************************************************************************************************************
+	/**
+	 * Set a archiv table
+	 */
+	private void setArchivTable(){
+		tableArchiv .setFillsViewportHeight(true);
+		archivPanel.add(tableArchiv .getTableHeader(), BorderLayout.PAGE_START);
+		archivPanel.add(tableArchiv , BorderLayout.CENTER);
+		tableArchiv .getTableHeader().setReorderingAllowed(false);
+	}
+
 	//Debug********************************************************************************************************************
 	/**
 	 * prints out a heading in a terminal if the debugmode is activated 
