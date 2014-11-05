@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -68,6 +69,7 @@ public class GUI {
 	private JButton newButton = new JButton("new");
 	private JButton removeButton = new JButton("remove");
 	private JButton doneButton = new JButton("done");
+	private JButton shiftToArchiv = new JButton("archive");
 	private JButton settingsButton = new JButton("settings");
 	private JButton infoButton = new JButton("info");
 	private JButton saveAll = new JButton("save");
@@ -275,6 +277,13 @@ public class GUI {
 			
 		});
 		
+		shiftToArchiv.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//TODO
+				shiftTableItemsinArchiv();
+			}
+		});
+		
 		settingsButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -317,6 +326,7 @@ public class GUI {
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
 		toolbar.add(saveAll);
+		toolbar.add(shiftToArchiv);
 		toolbar.addSeparator(new Dimension(3, 10));
 		toolbar.add(settingsButton);
 		toolbar.add(infoButton);
@@ -982,6 +992,11 @@ public class GUI {
 		model.addRow(new Object[]{topic, about, begin, end, status});
 		//writeTableItemsToFile();
 	}
+	
+	private void addTableRow(JTable tempTable, String topic, String about, String begin, String end, String status){
+			DefaultTableModel model = (DefaultTableModel) tempTable.getModel();
+			model.addRow(new Object[]{topic, about, begin, end, status});
+	}
 
 	
 	/**
@@ -1261,6 +1276,24 @@ public class GUI {
 		archivPanel.add(tableArchiv .getTableHeader(), BorderLayout.PAGE_START);
 		archivPanel.add(tableArchiv , BorderLayout.CENTER);
 		tableArchiv .getTableHeader().setReorderingAllowed(false);
+	}
+	
+	/**
+	 *Shift the selected rows of the Tasks table in the archive table.
+	 */
+	private void shiftTableItemsinArchiv(){
+		int[] rows = table.getSelectedRows();
+		for(int i = 0 ; i < rows.length; i++){
+			addTableRow(tableArchiv, (String) table.getValueAt(i,0),
+									(String) table.getValueAt(i,1),
+									(String) table.getValueAt(i,2),
+									(String) table.getValueAt(i,3),
+									(String) table.getValueAt(i,4));
+		}
+		
+		//add the remove function
+		
+		table.clearSelection();
 	}
 
 	//Debug********************************************************************************************************************

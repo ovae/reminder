@@ -1,5 +1,5 @@
 all:
-	javac src/rem/*.java
+	javac -cp lib/json-simple-1.1.1.jar src/rem/*.java
 	mv src/rem/*.class bin/rem/
 
 jar:
