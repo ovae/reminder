@@ -162,6 +162,7 @@ public class GUI {
 				checkIfTableHasChanged();
 				
 				setArchivTable();
+				setArchiveTableRowColor();
 			}
 		});
 	}
@@ -1175,12 +1176,12 @@ public class GUI {
 	 */
 	private void setTableRowWhite(){
 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-					c.setBackground(Color.WHITE);
-				return c;
-			}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+			final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				c.setBackground(Color.WHITE);
+			return c;
+		}
 		});
 	}
 	
@@ -1238,6 +1239,20 @@ public class GUI {
 		
 		table.clearSelection();
 	}
+	
+	/**
+	 * Colorize table rows dependent on the 'end' value
+	 */
+	private void setArchiveTableRowColor(){
+		tableArchiv.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+					c.setBackground(Color.LIGHT_GRAY);
+				return c;
+			}
+			});
+	}
+	
 	//JSON*********************************************************************************************************************
 	/**
 	 * 
