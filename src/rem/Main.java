@@ -10,7 +10,5 @@ public class Main {
 
 		gui.init();
 		gui.start();
-		
 	}
-
 }

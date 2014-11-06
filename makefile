@@ -3,7 +3,7 @@ all:
 	mv src/rem/*.class bin/rem/
 
 jar:
-	jar cmf bin/MANIFEST.MF/ run.jar bin/rem/*.class
+	jar cmf bin/MANIFEST.MF/ run.jar bin/rem/*.class org/*
 
 run:
 	java -jar run.jar

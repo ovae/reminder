@@ -1,29 +1,22 @@
 package bin.rem;
 
 import java.awt.BorderLayout;
-import java.awt.Checkbox;
-import java.awt.CheckboxGroup;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
+import java.util.Iterator;
 
-import javax.swing.AbstractButton;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -40,17 +33,16 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.RowSorterEvent;
-import javax.swing.event.RowSorterListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-import javax.swing.text.NumberFormatter;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * 
@@ -160,7 +152,9 @@ public class GUI {
 				setMainPanel();
 				initAddTaskFrame();
 				setTable();
-				loadTableItemsFromFile();
+				//loadTableItemsFromFile();
+				loadFromJSON(table,"/tasks.json");
+				loadFromJSON(tableArchiv, "/archive.json");
 				checkColorBox();
 				setInfoPanel();
 				
@@ -243,7 +237,8 @@ public class GUI {
 				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(p==0){
 					removeTableRow();
-					writeTableItemsToFile();
+					saveTableToJSON(table, columnNames, "/tasks.json");
+					saveTableToJSON(tableArchiv, columnNamesArchiv,"/archive.json");
 				}
 			}
 		});
@@ -253,14 +248,18 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateTableRow();
-				writeTableItemsToFile();
+				saveTableToJSON(table, columnNames, "/tasks.json");
+				saveTableToJSON(tableArchiv, columnNamesArchiv,"/archive.json");
 			}
 		});
 		
 		saveAll.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				try{
-					writeTableItemsToFile();
+					//TODO
+					//writeTableItemsToFile();
+					saveTableToJSON(table, columnNames, "/tasks.json");
+					saveTableToJSON(tableArchiv, columnNamesArchiv,"/archive.json");
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Saving successfully [SaveButton_toolbar].");
 					}
@@ -279,7 +278,6 @@ public class GUI {
 		
 		shiftToArchiv.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				//TODO
 				shiftTableItemsinArchiv();
 			}
 		});
@@ -576,7 +574,6 @@ public class GUI {
 	 * 
 	 */
 	private boolean checkInputBeginEnd(){
-		//TODO
 		boolean ret=false;
 		String tempTextBegin = inputBegin.getText();
 		String tempTextEnd = inputEnd.getText();
@@ -644,7 +641,6 @@ public class GUI {
 	 * set the info panel with date label.
 	 */
 	private void setInfoPanel(){
-		//TODO
 		infoDateLabel.setText("Date: "+Time.getDate("yyyy.MM.dd"));
 		saveStateLabel.setText("[saved]");
 		
@@ -746,7 +742,10 @@ public class GUI {
 					}
 				}else{
 					//Else do this:
-					loadTableItemsFromFile();
+					//loadTableItemsFromFile();
+					loadFromJSON(table,"/tasks.json");
+					loadFromJSON(tableArchiv, "/archive.json");
+					//TODO
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Userpath have changed [loadTable].");
 					}
@@ -856,7 +855,6 @@ public class GUI {
 	 * Load the time format preference for the settingsFrame.
 	 */
 	private void loadTimeFormatePreferences(){
-		//TODO
 		int tempTimeForamte = 0;
 		try{
 			tempTimeForamte = remPref.getTimeFormate();
@@ -974,11 +972,13 @@ public class GUI {
 	 * @param topic, about, begin, end
 	 * @param url
 	 * "Topic","About","Begin","End", "Status"
+	 * This method is only yoused in the addNewTaskFrame.
 	 */
 	private void addTableRow(String topic, String about, String begin, String end){
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status[0]});
-		writeTableItemsToFile();
+		//writeTableItemsToFile();
+		saveTableToJSON(table, columnNames, "/tasks.json");
 	}
 	
 	/**
@@ -990,7 +990,6 @@ public class GUI {
 	private void addTableRow(String topic, String about, String begin, String end, String status){
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status});
-		//writeTableItemsToFile();
 	}
 	
 	private void addTableRow(JTable tempTable, String topic, String about, String begin, String end, String status){
@@ -999,70 +998,6 @@ public class GUI {
 	}
 
 	
-	/**
-	* Load the items of the table from a userfile
-	*/
-	private void loadTableItemsFromFile(){
-		Scanner sca;
-		File tempFile = new File(remPref.getUserPath().toString()+"/tasks");
-		//open the file
-		try{
-			sca = new Scanner(tempFile);
-			//read from the file
-			while(sca.hasNext()){
-				String topic = sca.next();
-				String about = sca.next();
-				String begin = sca.next();
-				String end = sca.next();
-				String status = sca.next();
-				//add to the table
-				addTableRow(topic, about, begin, end, status);
-			}
-			if(debugMode){
-				System.out.println(Time.getTimeDebug()+" Load from file successfully.");
-			}
-		}catch(Exception e){
-			if(debugMode){
-				System.err.println("\n"+Time.getTimeDebug()+" Loading table items error. \n");
-			}
-			//TODO
-			/*
-			if(tempFile != taskFileBack){
-				emptyTable();
-			}
-			*/
-			JOptionPane.showMessageDialog(null, "File not found or the file is empty.");
-		}
-	}
-
-	/**
-	* Write the items of the table in a userfile
-	 * @throws IOException 
-	*/
-	private void writeTableItemsToFile(){
-		File tempFile = new File(remPref.getUserPath().toString()+"/tasks");
-		try{
-		BufferedWriter buffer = new BufferedWriter(new FileWriter(tempFile));
-			for(int i = 0 ; i < table.getRowCount(); i++){
-				buffer.newLine();
-				for(int j = 0 ; j < 5;j++){
-					String test =(String) table.getValueAt(i,j);
-					test = test.replaceAll("\\s", "_");
-					buffer.write(test);
-					buffer.write("\t");
-				}
-			}
-			buffer.close();
-			if(debugMode){
-				System.out.println(Time.getTimeDebug()+" Write to file successfully.");
-			}
-		}catch(IOException e){
-			if(debugMode){
-				System.err.println(Time.getTimeDebug()+" Writing to file error.");
-			}
-			JOptionPane.showMessageDialog(null, e.getStackTrace());
-		}
-	}
 
 	/**
 	 * Method to remove selected items from the table.
@@ -1132,7 +1067,9 @@ public class GUI {
 		if(remPref.getColorCheckBox() == false){
 			setTableRowWhite();
 		}
-		loadTableItemsFromFile();
+		//loadTableItemsFromFile(); TODO
+		loadFromJSON(table,"/tasks.json");
+		loadFromJSON(tableArchiv, "/archive.json");
 	}
 
 	/**
@@ -1283,6 +1220,7 @@ public class GUI {
 	 */
 	private void shiftTableItemsinArchiv(){
 		int[] rows = table.getSelectedRows();
+		TableModel tm= table.getModel();
 		for(int i = 0 ; i < rows.length; i++){
 			addTableRow(tableArchiv, (String) table.getValueAt(i,0),
 									(String) table.getValueAt(i,1),
@@ -1291,11 +1229,66 @@ public class GUI {
 									(String) table.getValueAt(i,4));
 		}
 		
+		while(rows.length>0){
+			((DefaultTableModel)tm).removeRow(table.convertRowIndexToModel(rows[0]));
+			rows = table.getSelectedRows();
+		}
+		
 		//add the remove function
 		
 		table.clearSelection();
 	}
+	//JSON*********************************************************************************************************************
+	/**
+	 * 
+	 */
+	private void saveTableToJSON(JTable tempTable, String[] tableHead ,String path){
+		File tempFile = new File(remPref.getUserPath().toString()+path);
+		RemJSON rjson = new RemJSON();
+		for(int i=0; i<tempTable.getRowCount(); i++){
+			rjson.setTask(tableHead,
+					(String) tempTable.getValueAt(i,0),
+					(String) tempTable.getValueAt(i,1),
+					(String) tempTable.getValueAt(i,2),
+					(String) tempTable.getValueAt(i,3),
+					(String) tempTable.getValueAt(i,4));
+		}
+		rjson.writeJsonToFile(tempFile);
+	}
+	
+	
+	private void loadFromJSON(JTable tempTable, String path){
+		FileReader reader;
+		File tempFile = new File(remPref.getUserPath().toString()+path);
+		try {
+			reader = new FileReader(tempFile);
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+			JSONArray lang= (JSONArray) jsonObject.get("Tasks");
+			
+			for(int i=0; i<lang.size(); i++){
+				//System.out.println("The " + i + " element of the array: "+lang.get(i));
+			}
+			Iterator i = lang.iterator();
 
+			// take each value from the json array separately
+			while (i.hasNext()) {
+				JSONObject innerObj = (JSONObject) i.next();
+				addTableRow(tempTable, (String) innerObj.get("Topic"),
+						(String) innerObj.get("About"),
+						(String) innerObj.get("Begin"),
+						(String) innerObj.get("End"),
+						(String) innerObj.get("Status"));
+			}
+		} catch (FileNotFoundException | ParseException e) {
+			// Auto-generated catch block
+			//e.printStackTrace();
+		}catch ( IOException f){
+			f.printStackTrace();
+		}
+	}
+
+	
 	//Debug********************************************************************************************************************
 	/**
 	 * prints out a heading in a terminal if the debugmode is activated 
