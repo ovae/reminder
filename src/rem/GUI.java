@@ -16,13 +16,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.swing.AbstractListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,6 +33,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -1210,6 +1215,8 @@ public class GUI {
 	 * Set a archiv table
 	 */
 	private void setArchivTable(){
+		//scrollArchiv.setRowHeaderView(tableArchiv.getTableHeader());
+		//scrollArchiv.setColumnHeaderView(new JTable(streams,columnNames));
 		tableArchiv .setFillsViewportHeight(true);
 		archivPanel.add(tableArchiv .getTableHeader(), BorderLayout.PAGE_START);
 		archivPanel.add(tableArchiv , BorderLayout.CENTER);
@@ -1247,7 +1254,11 @@ public class GUI {
 		tableArchiv.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				//If you select a row and the row gets blue.
 					c.setBackground(Color.LIGHT_GRAY);
+					if(isSelected){
+						c.setBackground(new Color(160,166,207));//blue
+					}
 				return c;
 			}
 			});
