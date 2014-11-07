@@ -50,9 +50,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * 
  * @author ovae
- * @version
+ * @version alpha 0.0.8
  */
 public class GUI {
 	
@@ -63,12 +62,19 @@ public class GUI {
 	
 	//Toolbar
 	private JToolBar toolbar = new JToolBar();
+	//Button to add a new tasks to the task table.
 	private JButton newButton = new JButton("new");
+	//Button to remove selected rows from the task or archive table.
 	private JButton removeButton = new JButton("remove");
+	//Button to change the state of the tasks.
 	private JButton doneButton = new JButton("done");
+	//Button to archive older tasks in the archive table.
 	private JButton shiftToArchiv = new JButton("archive");
+	//Button to open the settings.
 	private JButton settingsButton = new JButton("settings");
+	//Button to open the info window.
 	private JButton infoButton = new JButton("info");
+	//Button to save the program.
 	private JButton saveAll = new JButton("save");
 	
 	//AddFrame
@@ -85,12 +91,16 @@ public class GUI {
 	
 	//Main Panel
 	private JPanel mainPanel = new JPanel(new BorderLayout());
+	private JTabbedPane tabbedPane = new JTabbedPane();
 	private JScrollPane scroll = new JScrollPane(mainPanel);
 	private JPanel infoPanel = new JPanel(new BorderLayout());
 	private JLabel infoDateLabel = new JLabel();
 	private JLabel saveStateLabel = new JLabel();
-
-	//Setings Window
+	
+	//Info Window
+	private JFrame infoFrame = new JFrame("Info");
+	
+	//Settings Window
 	private JFrame settingsWindow = new JFrame("Settings");
 	private JTextField userfilesDirectoryInput = new JTextField();
 	private JPanel settingsPanel = new JPanel(new BorderLayout());
@@ -104,22 +114,18 @@ public class GUI {
 	private boolean isColorBox = false;
 	private JLabel selectedLook = new JLabel("Error");
 	private boolean haveColorCheckBoxChanged = false;
-	
-	private JTabbedPane tabbedPane = new JTabbedPane();
-	//Archiv
-	private JPanel archivPanel= new JPanel(new BorderLayout());
-	private JScrollPane scrollArchiv = new JScrollPane(archivPanel);
-	private String[] columnNamesArchiv = {"Topic","About","Begin","End", "Result"};
-	private Object[][] archivList;
-	private JTable tableArchiv = new JTable(new DefaultTableModel(archivList,columnNamesArchiv));
-	
-	//Info Window
-	private JFrame infoFrame = new JFrame("Info");
-	
-	//Table
+
+	//Archive Pane
+	private JPanel archivePanel= new JPanel(new BorderLayout());
+	private JScrollPane scrollArchive = new JScrollPane(archivePanel);
+	private String[] columnNamesArchive = {"Topic","About","Begin","End", "Result"};
+	private Object[][] archiveList;
+	private JTable tableArchive = new JTable(new DefaultTableModel(archiveList,columnNamesArchive));
+		
+	//Task Table
 	private String[] columnNames = {"Topic","About","Begin","End", "Status"};
 	private Object[][] streams;
-	private JTable table = new JTable(new DefaultTableModel(streams,columnNames));
+	private JTable tableTasks = new JTable(new DefaultTableModel(streams,columnNames));
 
 	//Preferences
 	private RemPreference remPref = new RemPreference();
@@ -143,31 +149,38 @@ public class GUI {
 	}
 	
 	/**
-	 * Initialise the main window.
+	 * Initialize the main thread.
 	 */
 	public void init(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
+				//Set the debug mode if its on.
 				setDebugMode();
+
+				//initiate the preference instance.
 				remPref.setPreference();
-				
+
+				//initiate the main window with all its components.
 				setWindow();
-				checkLook();
 				setToolbar();
 				setMainPanel();
 				initAddTaskFrame();
 				setTable();
-				//loadTableItemsFromFile();
-				loadFromJSON(table,"/tasks.json");
-				loadFromJSON(tableArchiv, "/archive.json");
-				checkColorBox();
+				setArchiveTable();
 				setInfoPanel();
-				
+
+				//load the table contents.
+				loadFromJSON(tableTasks,"/tasks.json");
+				loadFromJSON(tableArchive, "/archive.json");
+
+				//load the preferences.
 				loadTimeFormatePreferences();
+
+				//check methods
 				checkIfTableHasChanged();
-				
-				setArchivTable();
-				setArchiveTableRowColor();
+				checkLook();
+				checkColorBox();
+
 			}
 		});
 	}
@@ -187,7 +200,7 @@ public class GUI {
 	}
 	
 	/**
-	 * Set a frame centered in the screen
+	 * Sets the frame parameter centered in the screen
 	 * @param frame
 	 */
 	private static void centerWindow(JFrame frame) {
@@ -197,9 +210,9 @@ public class GUI {
 		frame.setLocation(x, y);
 	}
 
-	//Main-window**************************************************************************************************************
+	//Main-Window**************************************************************************************************************
 	/**
-	 * Set the basic information of the main window.
+	 * Set the basic settings of the main window.
 	 */
 	private void setWindow(){
 		mainWindow.setTitle("Reminder");
@@ -211,93 +224,120 @@ public class GUI {
 	}
 	
 	/**
-	 * set up the main panel
+	 * Set up the main panel
+	 * and the position of the containers
 	 */
 	private void setMainPanel(){
 		mainWindow.add(toolbar, BorderLayout.NORTH);
-		//mainWindow.add(scroll, BorderLayout.CENTER);
 		tabbedPane.addTab("Latest", null, scroll,"Latest tab");
-		tabbedPane.addTab("Archive", null, scrollArchiv,"Archive tab");
+		tabbedPane.addTab("Archive", null, scrollArchive,"Archive tab");
 		mainWindow.add(tabbedPane, BorderLayout.CENTER);
 		mainWindow.add(infoPanel,BorderLayout.SOUTH);
 	}
-	
+
 	//Toolbar******************************************************************************************************************
 	/**
-	 * setting up the toolbar
+	 * Setting up the toolbar and all of its compounds and action listeners.
 	 */
 	private void setToolbar(){
-		//Diasable the drag functionality of the table header.d
+		//Disable the drag functionality of the table header.
 		toolbar.setFloatable(false);
+
+		/* The action listener of the newButton.
+		 * If the newButton is pressed:
+		 * the required preferences for the AddFrame are loaded,
+		 * by default all the inputs are reset.
+		 */
 		newButton.addActionListener(new ActionListener(){
+			@Override
 			public void actionPerformed(ActionEvent e){
 				loadAddFramePreference();
 				resetInputsAddFrame();
 				setAddFrameVisible();
 			}
 		});
-		
+
+		/* The action listener of the removeButton.
+		 * If the removeButton is pressed and the user has select at least one table row,
+		 * the selected rows will be removed and the task and archive tables are saved.
+		 */
 		removeButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(p==0){
 					removeTableRow();
-					saveTableToJSON(table, columnNames, "/tasks.json");
-					saveTableToJSON(tableArchiv, columnNamesArchiv,"/archive.json");
+					saveTableToJSON(tableTasks, columnNames, "/tasks.json");
+					saveTableToJSON(tableArchive, columnNamesArchive,"/archive.json");
 				}
 			}
 		});
-		
-		
+
+		/* The action listener of the doneButton.
+		 * If the doneButton is pressed the status cell of the selected
+		 * row will be changed in its state.
+		 * After that the task and archive table are saved.
+		 */
 		doneButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateTableRow();
-				saveTableToJSON(table, columnNames, "/tasks.json");
-				saveTableToJSON(tableArchiv, columnNamesArchiv,"/archive.json");
+				saveTableToJSON(tableTasks, columnNames, "/tasks.json");
+				saveTableToJSON(tableArchive, columnNamesArchive,"/archive.json");
 			}
 		});
-		
+
+		/* The action listener of the saveAll button.
+		 * If the saveAll button is pressed the content of the task and
+		 * archive table are saved. And the saveStatusLabel is set, if 
+		 * the save process was successfully to [saved] or other wise to [saving failed].
+		 */
 		saveAll.addActionListener(new ActionListener(){
+			@Override
 			public void actionPerformed(ActionEvent e){
 				try{
-					//TODO
-					//writeTableItemsToFile();
-					saveTableToJSON(table, columnNames, "/tasks.json");
-					saveTableToJSON(tableArchiv, columnNamesArchiv,"/archive.json");
+					saveTableToJSON(tableTasks, columnNames, "/tasks.json");
+					saveTableToJSON(tableArchive, columnNamesArchive,"/archive.json");
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Saving successfully [SaveButton_toolbar].");
 					}
 					saveStateLabel.setText("[saved]");
-					//JOptionPane.showMessageDialog(null, "Tasks saved");
 				}catch(Exception f){
-					//JOptionPane.showMessageDialog(null, "Saving failed");
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Saveing failed [SaveButton_toolbar].");
 					}
-					saveStateLabel.setText("[Saving failed]");
+					saveStateLabel.setText("[saving failed]");
 				}
 			}
 			
 		});
-		
+
+		/* The action listener of the shiftToArchive button.
+		 * Copies the selected rows of the task table in the archive table
+		 * and removes the selected rows from the task table.
+		 */
 		shiftToArchiv.addActionListener(new ActionListener(){
+			@Override
 			public void actionPerformed(ActionEvent e){
-				shiftTableItemsinArchiv();
+				shiftTableItemsinArchive();
 			}
 		});
-		
+
+		/* The action listener of the settingsButton.
+		 * If the button is pressed the settings window will be appear on the screen.
+		 */
 		settingsButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setSettingsWindow();
 				String lastOutputDir = null;
 				try{
+					//get the userPath from the preference instance
 					lastOutputDir = remPref.getUserPath();
+					//set the help variables
 					isLookBox = remPref.getLookCheckBox();
 					isColorBox = remPref.getColorCheckBox();
-					//If the checkox isLookBox is activated 
+					//If the checkbox isLookBox is activated 
 					// 'Nimbus' is written in the selectedLook label
 					//or otherwise 'Default'.
 					if(isLookBox){
@@ -305,7 +345,9 @@ public class GUI {
 					}else{
 						selectedLook.setText("Default");
 					}
+					//if the Nimbus look is set in the preferences the checkbox will be set to selected.
 					lookBox.setSelected(isLookBox);
+					//if the color for the tables are set in the preferences, the checkbox will be set to selected.
 					useColorsBox.setSelected(isColorBox);
 					if(debugMode){
 						System.out.println(Time.getTimeDebug()+" Load preference succesfully.");
@@ -315,10 +357,14 @@ public class GUI {
 						System.err.println(Time.getTimeDebug()+" Loading preference error.");
 					}
 				}
+				//get the user file path from the preferences and set the label to it.
 				userfilesDirectoryInput.setText(lastOutputDir);
 			}
 		});
 		
+		/* The action listener of the infoButton.
+		 * If the button is pressed the Info window will be appear.
+		 */
 		infoButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -326,6 +372,7 @@ public class GUI {
 			}
 		});
 		
+		//Add all compounds to the toolbar.
 		toolbar.add(newButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
@@ -340,11 +387,13 @@ public class GUI {
 	 * Setting up the info window
 	 */
 	private void setInfoFrame(){
+		//set the basic setting for the frame.
 		infoFrame.setLocationRelativeTo(null);
 		infoFrame.setSize(new Dimension(350,290));
 		infoFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		infoFrame.setLayout(new BorderLayout());
 		
+		//Declare all needed compounds
 		JPanel infoPanel = new JPanel();
 		JLabel head = new JLabel("Declaration on the choice of color");
 		JTextField green = new JTextField();
@@ -362,6 +411,7 @@ public class GUI {
 		JLabel blueLabel = new JLabel("Selected row");
 		JLabel whiteLabel = new JLabel("Default value");
 		
+		//Set the background color for every text field.
 		green.setBackground(new Color(126, 207, 88));
 		gray.setBackground(Color.LIGHT_GRAY);
 		red.setBackground(new Color(240, 88, 88));
@@ -370,6 +420,7 @@ public class GUI {
 		blue.setBackground(new Color(160,166,207));
 		white.setBackground(Color.WHITE);
 		
+		//Disable the ability to edit the text fields.
 		green.setEditable(false);
 		gray.setEditable(false);
 		red.setEditable(false);
@@ -378,9 +429,11 @@ public class GUI {
 		blue.setEditable(false);
 		white.setEditable(false);
 
+		//Set the bounds of the heading label
 		head.setBounds(10, 100, 240,28);
 		head.setLocation(20, 20);
 		
+		//Set the bounds for every text field.
 		green.setBounds(10, 100, 100,28);
 		gray.setBounds(10, 100, 100,28);
 		red.setBounds(10, 100, 100,28);
@@ -389,6 +442,7 @@ public class GUI {
 		blue.setBounds(10, 100, 100,28);
 		white.setBounds(10, 100, 100,28);
 		
+		//Set the bounds for every text field label.
 		greenLabel.setBounds(10, 100, 300,28);
 		grayLabel.setBounds(10, 100, 300,28);
 		redLabel.setBounds(10, 100, 300,28);
@@ -397,6 +451,7 @@ public class GUI {
 		blueLabel.setBounds(10, 100, 300,28);
 		whiteLabel.setBounds(10, 100, 300,28);
 
+		//Set the location for every text field.
 		gray.setLocation(20, 45);
 		green.setLocation(20, 73);
 		yellow.setLocation(20, 101);
@@ -404,7 +459,8 @@ public class GUI {
 		red.setLocation(20, 157);
 		blue.setLocation(20, 185);
 		white.setLocation(20, 213);
-		
+
+		//Set the location for every text field label.
 		grayLabel.setLocation(130, 45);
 		greenLabel.setLocation(130, 73);
 		yellowLabel.setLocation(130, 101);
@@ -412,8 +468,10 @@ public class GUI {
 		redLabel.setLocation(130, 157);
 		blueLabel.setLocation(130, 185);
 		whiteLabel.setLocation(130, 213);
-		
+
+		//Disable the layout of the infoPanel.
 		infoPanel.setLayout(null);
+		//Add all text field to the infoPanel.
 		infoPanel.add(head);
 		infoPanel.add(gray);
 		infoPanel.add(green);
@@ -422,7 +480,8 @@ public class GUI {
 		infoPanel.add(red);
 		infoPanel.add(blue);
 		infoPanel.add(white);
-		
+
+		//Add all text field labels to the infoPanel.
 		infoPanel.add(grayLabel);
 		infoPanel.add(greenLabel);
 		infoPanel.add(yellowLabel);
@@ -431,17 +490,20 @@ public class GUI {
 		infoPanel.add(blueLabel);
 		infoPanel.add(whiteLabel);
 		
+		//Add the infoPanel to the infoFrame and set it to visible.
 		infoFrame.add(infoPanel);
 		infoFrame.setVisible(true);
+		//center the info window on the screen.
 		centerWindow(infoFrame);
 	}
-	
+
 	//Add-task-window**********************************************************************************************************
 	/**
 	 * all settings and configurations of the addFrame
 	 * you can add new tasks over this window.
 	 */
 	private void initAddTaskFrame(){
+		//set the basic setting for the frame.
 		addFrame.setLocationRelativeTo(null);
 		addFrame.setSize(new Dimension(400,256));
 		addFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -451,41 +513,86 @@ public class GUI {
 		inputBeginFormate.setMaximumIntegerDigits(8);
 		inputBeginFormate.setGroupingUsed(false); 
 		inputBegin = new JFormattedTextField(inputBeginFormate);
-		
+
+		//Declare all needed compounds.
 		JPanel addPanel = new JPanel();
 		JPanel buttonPanel = new JPanel(new BorderLayout());
-
 		JLabel enterTopic = new JLabel("Topic: ");
 		JLabel enterAbout = new JLabel("About: ");
 		JLabel enterBegin = new JLabel("Begin: ");
 		JLabel enterEnd = new JLabel("End: ");
-		
+
+		//Set the bounds of the Labels
 		enterTopic.setBounds(10, 100, 100, 28);
 		enterAbout.setBounds(10, 100, 100, 28);
 		enterBegin.setBounds(10, 100, 100, 28);
 		enterEnd.setBounds(10, 100, 100, 28);
-		
+
+		//Set the bounds of the text fields.
 		inputTopic.setBounds(10, 100, 180,28);
 		inputAbout.setBounds(10, 100, 180,28);
 		inputBegin.setBounds(10, 100, 180,28);
 		inputEnd.setBounds(10, 100, 180,28);
-		
+
+		//Set the bounds of the info lables.
 		beginInfoLabel.setBounds(10, 100, 180,28);
 		endInfoLabel.setBounds(10, 100, 180,28);
-		
+
+		//Set the location of the text fields.
 		enterTopic.setLocation(40, 40);
 		enterAbout.setLocation(40, 70);
 		enterBegin.setLocation(40, 100);
 		enterEnd.setLocation(40, 130);
-		
+
+		//Set the label locations.
 		inputTopic.setLocation(120, 40);
 		inputAbout.setLocation(120, 70);
 		inputBegin.setLocation(120, 100);
 		inputEnd.setLocation(120, 130);
 		beginInfoLabel.setLocation(300, 100);
 		endInfoLabel.setLocation(300, 130);
-		
+
+		/* The action listener of the addButton.
+		 * If the button is pressed, all text field
+		 * be controlled. If one of them is empty the new task wont be saved.
+		 * If all text fields have a value the task will be add to the task table.
+		 */
+		addButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//Get the values of the text fields.
+				String topic = inputTopic.getText();
+				String about = inputAbout.getText();
+				String begin = inputBegin.getText();
+				String end = inputEnd.getText();
+
+				//Check if one of the text fields is empty.
+				if(inputTopic.getText().equals("") || 
+						inputAbout.getText().equals("") ||
+						inputBegin.getText().equals("") ||
+						inputEnd.getText().equals("") ){
+					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
+				}else{
+					//if(checkInputBeginEnd()){
+						addTableRow(topic,about,begin,end);
+					//}
+				}
+				//checkInputBeginEnd();
+			}
+		});
+
+		/* The action listener of the resetButton.
+		 * If the button is pressed all the text fields of the window
+		 * will be set to an empty string value.
+		 */
+		resetButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				resetInputsAddFrame();
+			}
+		});
+
+		//Disable the layout of the addPanel.
 		addPanel.setLayout(null);
+		//Add all labels and text fields to the addPanel.
 		addPanel.add(enterTopic);
 		addPanel.add(enterAbout);
 		addPanel.add(enterBegin);
@@ -496,47 +603,25 @@ public class GUI {
 		addPanel.add(inputEnd);
 		addPanel.add(beginInfoLabel);
 		addPanel.add(endInfoLabel);
+		//Add the buttons to the buttonPanel.
 		buttonPanel.add(resetButton,BorderLayout.WEST);
 		buttonPanel.add(addButton, BorderLayout.CENTER);
-		
-		addButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				String topic = inputTopic.getText();
-				String about = inputAbout.getText();
-				String begin = inputBegin.getText();
-				String end = inputEnd.getText();
-
-				if(inputTopic.getText().equals("") || 
-						inputAbout.getText().equals("") ||
-						inputBegin.getText().equals("") ||
-						inputEnd.getText().equals("") ){
-					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
-					
-				}else{
-					//if(checkInputBeginEnd()){
-						addTableRow(topic,about,begin,end);
-					//}
-				}
-				//checkInputBeginEnd();
-			}
-		});
-		
-		resetButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				resetInputsAddFrame();
-			}
-		});
-		
+		//Add the panels to the addFrame.
 		addFrame.add(addPanel,BorderLayout.CENTER);
 		addFrame.add(buttonPanel, BorderLayout.SOUTH);
+		//Disable the default visibility.
 		addFrame.setVisible(false);
+		//Center the add Frame on the screen.
 		centerWindow(addFrame);
 	}
-	
+
+	/**
+	 * Sets the addFrame to visible.
+	 */
 	private void setAddFrameVisible(){
 		addFrame.setVisible(true);
 	}
-	
+
 	/**
 	 * Resets the all input fields of the addFrame.
 	 */
@@ -546,7 +631,7 @@ public class GUI {
 		inputBegin.setText("");
 		inputEnd.setText("");
 	}
-	
+
 	/**
 	 * Loads the time format preference.
 	 */
@@ -554,18 +639,18 @@ public class GUI {
 		int currentFormate = remPref.getTimeFormate();
 		String beginOutput = "[ ";
 		String endOutput = "[ ";
-		
+
 		//Check if Begin and End have the length of 8.
 		if(currentFormate == 'a'){
-			//timeformate A
+			//time format A
 			beginOutput += "yyyyMMdd";
 			endOutput += "yyyyMMdd";
 		}else if(currentFormate == 'b'){
-			//timeformate B
+			//time format B
 			beginOutput += "MMddyyyy";
 			endOutput += "MMddyyyy";
 		}else{
-			//timeformate C
+			//time format C
 			beginOutput += "ddMMyyyy";
 			endOutput += "ddMMyyyy";
 		}
@@ -575,7 +660,7 @@ public class GUI {
 		beginInfoLabel.setText(beginOutput);
 		endInfoLabel.setText(endOutput);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -593,10 +678,10 @@ public class GUI {
 		String subCEndM = tempTextEnd.substring(4,6);
 		String subCEndY= tempTextEnd.substring(4,8);
 		int currentFormate = remPref.getTimeFormate();
-		
+
 		String beginOutput = "[ ";
 		String endOutput = "[ ";
-		
+
 		//Check if Begin and End have the length of 8.
 		if(tempTextBegin.length()==8 && tempTextBegin.length()==8){
 			if(currentFormate == 'a'){
@@ -623,7 +708,7 @@ public class GUI {
 
 		beginInfoLabel.setText(beginOutput);
 		endInfoLabel.setText(endOutput);
-		
+
 		return ret;
 		/*
 		if(subAEndY.equals(year) && subAEndM.equals(month) ){
@@ -641,19 +726,19 @@ public class GUI {
 		}
 		*/
 	}
-	
+
 	//Info-panel***************************************************************************************************************
 	/**
-	 * set the info panel with date label.
+	 * Set the info panel with date label.
 	 */
 	private void setInfoPanel(){
 		infoDateLabel.setText("Date: "+Time.getDate("yyyy.MM.dd"));
 		saveStateLabel.setText("[saved]");
-		
+
 		infoPanel.add(infoDateLabel, BorderLayout.CENTER);
 		infoPanel.add(saveStateLabel, BorderLayout.EAST);
 	}
-	
+
 	/**
 	 * Set the time format labels of the addFrame.
 	 */
@@ -668,12 +753,13 @@ public class GUI {
 			infoDateLabel.setText("Date: "+Time.getDate()+"[default]");
 		}
 	}
-	
+
 	//Settings-window**********************************************************************************************************
 	/**
 	 * Setting up the settings window
 	 */
 	private void setSettingsWindow(){
+		//Declare all compounds for the settings window.
 		JLabel filePathLabel = new JLabel("Path of the tasks file:");
 		JButton saveSettingsButton = new JButton("save settings");
 		JButton getPathButton = new JButton("Change");
@@ -685,11 +771,13 @@ public class GUI {
 		JLabel timeCheckBoxB = new JLabel("MMddyyyy");
 		JLabel timeCheckBoxC = new JLabel("ddMMyyyy");
 
+		//Set the basic settings for the settings window.
 		settingsWindow.setLocationRelativeTo(null);
 		settingsWindow.setSize(new Dimension(512, 350));
 		settingsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		settingsPanel.setLayout(null);
 
+		//Try to get the user file directory from the preference instance.
 		try{
 			tempUserPrefsPath =remPref.getUserPath();
 			loadTimeFormatePreferences();
@@ -699,70 +787,7 @@ public class GUI {
 			}
 		}
 
-		getPathButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				getFilePath();
-				//saveSettings();
-			}
-		});
-
-		lookBox.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				if(isLookBox){
-					isLookBox = false;
-					selectedLook.setText("Nimbus");
-					haveColorCheckBoxChanged=true;
-					JOptionPane.showMessageDialog(null, "After a restart is the default look activated.");
-				}else{
-					isLookBox = true;
-					selectedLook.setText("Default");
-					haveColorCheckBoxChanged=true;
-					JOptionPane.showMessageDialog(null, "After a restart is the Nimbus look activated.");
-				}
-				//saveSettings();
-			}
-		});
-
-		useColorsBox.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				if(isColorBox){
-					isColorBox = false;
-					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Disable Colors.");
-					}
-				}else{
-					isColorBox = true;
-					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Enable Colors.");
-					}
-				}
-			}
-		});
-
-		saveSettingsButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				//If the userPath have changed to nothing:
-				if(tempUserPrefsPath.equals( userfilesDirectoryInput.getText() )){
-					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Userpath dont changed [loadTable].");
-					}
-				}else{
-					//Else do this:
-					//loadTableItemsFromFile();
-					loadFromJSON(table,"/tasks.json");
-					loadFromJSON(tableArchiv, "/archive.json");
-					//TODO
-					if(debugMode){
-						System.out.println(Time.getTimeDebug()+" Userpath have changed [loadTable].");
-					}
-				}
-				saveSettings();
-				setDateLable();
-				loadAddFramePreference();
-				JOptionPane.showMessageDialog(null, "settings saved");
-			}
-		});
-
+		//Set the bounds of the labels and text fields.
 		filePathLabel.setBounds(10, 100, 340,28);
 		filePathLabel.setLocation(40,20);
 		userfilesDirectoryInput.setBounds(10, 100, 318,28);
@@ -781,7 +806,7 @@ public class GUI {
 		//Checkbox gui look, label that changes
 		selectedLook.setBounds(10, 100, 340, 28);
 		selectedLook.setLocation(350,80);
-		
+
 		//CheckBox time format
 		useTimeFormateA.setBounds(10, 100, 340, 28);
 		useTimeFormateB.setBounds(10, 100, 340, 28);
@@ -789,7 +814,7 @@ public class GUI {
 		useTimeFormateA.setLocation(210,160);
 		useTimeFormateB.setLocation(210,180);
 		useTimeFormateC.setLocation(210,200);
-		
+
 		//CheckBox time format label
 		timeFormatLabel.setBounds(10,100,300,28);
 		timeFormatLabel.setLocation(40,140);
@@ -799,15 +824,103 @@ public class GUI {
 		timeCheckBoxA.setLocation(40,160);
 		timeCheckBoxB.setLocation(40,180);
 		timeCheckBoxC.setLocation(40,200);
-		
+
 		//Color checkbox label
 		selectedColorLabel.setBounds(10,100,150,28);
 		selectedColorLabel.setLocation(40,100);
 		//Color checkbox
 		useColorsBox.setBounds(10, 10, 20, 28);
 		useColorsBox.setLocation(210,100);
-		
-		
+
+		/* The action listener of the getPathButton.
+		 * If the button is pressed a new window appear.
+		 * The user must select a directory where the user files
+		 * are stored.
+		 */
+		getPathButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				getFilePath();
+				//saveSettings();
+			}
+		});
+
+		/* The action listener of the lookBox checkbox.
+		 * If the box is selected or deselected and the saveSettings button is pressed the program checks if the
+		 * look checkbox is set to selected. If it is selected the GUI-look will be Nimbus.
+		 * If it is not selected the GUI-look will be the default java swing look.
+		 * The look changes appear after a program restart.
+		 */
+		lookBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(isLookBox){
+					isLookBox = false;
+					selectedLook.setText("Nimbus");
+					haveColorCheckBoxChanged=true;
+					JOptionPane.showMessageDialog(null, "After a restart is the default look activated.");
+				}else{
+					isLookBox = true;
+					selectedLook.setText("Default");
+					haveColorCheckBoxChanged=true;
+					JOptionPane.showMessageDialog(null, "After a restart is the Nimbus look activated.");
+				}
+				//saveSettings();
+			}
+		});
+
+		/* The action listener of the useColorBox checkbox.
+		 * If the box is selected or deselected and the saveSettings button is pressed the program checks if the
+		 * color checkbox is selected or not. If it is selected the tables row will be colored. Otherwise they were
+		 * set to white.
+		 */
+		useColorsBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(isColorBox){
+					isColorBox = false;
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Disable Colors.");
+					}
+				}else{
+					isColorBox = true;
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Enable Colors.");
+					}
+				}
+			}
+		});
+
+		/* The action listener of the saveSettingsButton button.
+		 * If the button is pressed the preferences will be saved.
+		 * If the directory of the user files has changed and no files
+		 * where found to load, the tables where cleaned.
+		 * Also the settings will be saved and the date label of the main window is set set.
+		 */
+		saveSettingsButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//If the userPath have changed to nothing:
+				if(tempUserPrefsPath.equals( userfilesDirectoryInput.getText() )){
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Userpath dont changed [loadTable].");
+					}
+				}else{
+					//Else do this:
+					//loadTableItemsFromFile();
+					loadFromJSON(tableTasks,"/tasks.json");
+					loadFromJSON(tableArchive, "/archive.json");
+					if(debugMode){
+						System.out.println(Time.getTimeDebug()+" Userpath have changed [loadTable].");
+					}
+				}
+				saveSettings();
+				setDateLable();
+				loadAddFramePreference();
+				JOptionPane.showMessageDialog(null, "settings saved");
+			}
+		});
+
+		/* The action listener of the useTimeFormateA checkbox.
+		 * If this checkbox is set the other to formats are set
+		 * to false.
+		 */
 		useTimeFormateA.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				useTimeFormateB.setSelected(false);
@@ -815,7 +928,11 @@ public class GUI {
 				selectedTimeFormate = 'a';
 			}
 		});
-		
+
+		/* The action listener of the useTimeFormateB checkbox.
+		 * If this checkbox is set the other to formats are set
+		 * to false.
+		 */
 		useTimeFormateB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				useTimeFormateA.setSelected(false);
@@ -823,7 +940,11 @@ public class GUI {
 				selectedTimeFormate = 'b';
 			}
 		});
-		
+
+		/* The action listener of the useTimeFormateC checkbox.
+		 * If this checkbox is set the other to formats are set
+		 * to false.
+		 */
 		useTimeFormateC.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				useTimeFormateA.setSelected(false);
@@ -831,8 +952,7 @@ public class GUI {
 				selectedTimeFormate = 'c';
 			}
 		});
-		
-		
+
 		//Add all elements to the settingsPanel
 		settingsPanel.add(filePathLabel);
 		settingsPanel.add(userfilesDirectoryInput);
@@ -843,7 +963,7 @@ public class GUI {
 		settingsPanel.add(selectedLook);
 		settingsPanel.add(selectedColorLabel);
 		settingsPanel.add(useColorsBox);
-		
+
 		settingsPanel.add(timeFormatLabel);
 		settingsPanel.add(timeCheckBoxA);
 		settingsPanel.add(timeCheckBoxB);
@@ -851,9 +971,12 @@ public class GUI {
 		settingsPanel.add(useTimeFormateA);
 		settingsPanel.add(useTimeFormateB);
 		settingsPanel.add(useTimeFormateC);
+		//Add the settingsPanel to the settingsWindow
 		settingsWindow.add(settingsPanel, BorderLayout.CENTER);
 		settingsWindow.add(saveSettingsButton, BorderLayout.SOUTH);
+		//Make the settingsWindow visible by default.
 		settingsWindow.setVisible(true);
+		//Center the window on the screen.
 		centerWindow(settingsWindow);
 	}
 	
@@ -967,10 +1090,10 @@ public class GUI {
 	 * Set a Table
 	 */
 	private void setTable(){
-		table.setFillsViewportHeight(true);
-		mainPanel.add(table.getTableHeader(), BorderLayout.PAGE_START);
-		mainPanel.add(table, BorderLayout.CENTER);
-		table.getTableHeader().setReorderingAllowed(false);
+		tableTasks.setFillsViewportHeight(true);
+		mainPanel.add(tableTasks.getTableHeader(), BorderLayout.PAGE_START);
+		mainPanel.add(tableTasks, BorderLayout.CENTER);
+		tableTasks.getTableHeader().setReorderingAllowed(false);
 	}
 	
 	/**
@@ -981,10 +1104,10 @@ public class GUI {
 	 * This method is only yoused in the addNewTaskFrame.
 	 */
 	private void addTableRow(String topic, String about, String begin, String end){
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		DefaultTableModel model = (DefaultTableModel) tableTasks.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status[0]});
 		//writeTableItemsToFile();
-		saveTableToJSON(table, columnNames, "/tasks.json");
+		saveTableToJSON(tableTasks, columnNames, "/tasks.json");
 	}
 	
 	/**
@@ -994,7 +1117,7 @@ public class GUI {
 	 * "Topic","About","Begin","End", "Status"
 	 */
 	private void addTableRow(String topic, String about, String begin, String end, String status){
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		DefaultTableModel model = (DefaultTableModel) tableTasks.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status});
 	}
 	
@@ -1009,13 +1132,13 @@ public class GUI {
 	 * Method to remove selected items from the table.
 	 */
 	private void removeTableRow(){
-		int[] rows = table.getSelectedRows();
-		TableModel tm= table.getModel();
+		int[] rows = tableTasks.getSelectedRows();
+		TableModel tm= tableTasks.getModel();
 		while(rows.length>0){
-			((DefaultTableModel)tm).removeRow(table.convertRowIndexToModel(rows[0]));
-			rows = table.getSelectedRows();
+			((DefaultTableModel)tm).removeRow(tableTasks.convertRowIndexToModel(rows[0]));
+			rows = tableTasks.getSelectedRows();
 		}
-		table.clearSelection();
+		tableTasks.clearSelection();
 	}
 
 	/**
@@ -1023,7 +1146,7 @@ public class GUI {
 	 */
 	private void emptyTable(){
 		try{
-			DefaultTableModel dm = (DefaultTableModel) table.getModel();
+			DefaultTableModel dm = (DefaultTableModel) tableTasks.getModel();
 			int rowCount = dm.getRowCount();
 			//Remove rows one by one from the end of the table
 			for (int i = rowCount - 1; i >= 0; i--) {
@@ -1045,18 +1168,18 @@ public class GUI {
 	 */
 	private void updateTableRow(){
 		try{
-			int[] row = table.getSelectedRows();
-			String value= (String) table.getModel().getValueAt(row[0], 4);
+			int[] row = tableTasks.getSelectedRows();
+			String value= (String) tableTasks.getModel().getValueAt(row[0], 4);
 			if(value == status[0]){
-				table.getModel().setValueAt(status[1], row[0], 4);
+				tableTasks.getModel().setValueAt(status[1], row[0], 4);
 			}else if(value == status[1]){
-				table.getModel().setValueAt(status[2], row[0], 4);
+				tableTasks.getModel().setValueAt(status[2], row[0], 4);
 			}else if(value == status[2]){
-				table.getModel().setValueAt(status[3], row[0], 4);
+				tableTasks.getModel().setValueAt(status[3], row[0], 4);
 			}else if(value == status[3]){
-				table.getModel().setValueAt(status[4], row[0], 4);
+				tableTasks.getModel().setValueAt(status[4], row[0], 4);
 			}else{
-				table.getModel().setValueAt(status[0], row[0], 4);
+				tableTasks.getModel().setValueAt(status[0], row[0], 4);
 			}
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null, "You have to select a row.");
@@ -1074,8 +1197,8 @@ public class GUI {
 			setTableRowWhite();
 		}
 		//loadTableItemsFromFile(); TODO
-		loadFromJSON(table,"/tasks.json");
-		loadFromJSON(tableArchiv, "/archive.json");
+		loadFromJSON(tableTasks,"/tasks.json");
+		loadFromJSON(tableArchive, "/archive.json");
 	}
 
 	/**
@@ -1083,11 +1206,11 @@ public class GUI {
 	 */
 	private void sortTable(){
 		//get the table values
-		int tableRows = table.getRowCount();
+		int tableRows = tableTasks.getRowCount();
 		String[][] tableValuesUnSort= new String[tableRows][5];
-		for(int i = 0 ; i < table.getRowCount(); i++){
+		for(int i = 0 ; i < tableTasks.getRowCount(); i++){
 			for(int j = 0 ; j < 5;j++){
-				tableValuesUnSort[i][j] =(String) table.getValueAt(i,j);
+				tableValuesUnSort[i][j] =(String) tableTasks.getValueAt(i,j);
 			}
 		}
 		
@@ -1098,7 +1221,7 @@ public class GUI {
 		boolean changedCompletly;
 		do{
 			changedCompletly = true;
-			for(int i = 0 ; i < table.getRowCount()-1; i++){
+			for(int i = 0 ; i < tableTasks.getRowCount()-1; i++){
 				tempA = Integer.parseInt(tableValuesUnSort[i][3]);
 				tempB = Integer.parseInt(tableValuesUnSort[(i+1)][3]);
 				if(tempA > tempB){
@@ -1113,7 +1236,7 @@ public class GUI {
 		//Empty the table
 		emptyTable();
 		//add the sorted elements back into the table.
-		for(int i = 0 ; i < table.getRowCount(); i++){
+		for(int i = 0 ; i < tableTasks.getRowCount(); i++){
 			addTableRow(tableValuesUnSort[i][0],
 						tableValuesUnSort[i][1],
 						tableValuesUnSort[i][2],
@@ -1127,7 +1250,7 @@ public class GUI {
 	 * Colorize table rows dependent on the 'end' value
 	 */
 	private void setTableRowColor(){
-		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+		tableTasks.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -1164,23 +1287,16 @@ public class GUI {
 					c.setBackground(new Color(160,166,207));//blue
 				}
 				
-				//Check the status
-				/*
-				if(tableStatus.equals(status[4])){
-					c.setBackground(Color.LIGHT_GRAY);
-				}
-				*/
-				
 				return c;
 			}
 		});
 	}
 
 	/**
-	 * Resets the colorized table rows.
+	 * Resets the colored table rows.
 	 */
 	private void setTableRowWhite(){
-		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+		tableTasks.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 			final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -1194,7 +1310,7 @@ public class GUI {
 	 * Check if any item of the Table has changed.
 	 */
 	private void checkIfTableHasChanged(){
-		table.getModel().addTableModelListener(new TableModelListener(){
+		tableTasks.getModel().addTableModelListener(new TableModelListener(){
 			public void tableChanged(TableModelEvent tme){
 				saveStateLabel.setText("[changed]");
 			}
@@ -1203,70 +1319,75 @@ public class GUI {
 	}
 	
 	/**
-	 * Check if the color checkbox is set in the preferences.
+	 * Check if the color check box is set in the preferences.
 	 */
 	private void checkColorBox(){
 		if(remPref.getColorCheckBox() == true){
 			setTableRowColor();
+			setArchiveTableRowColor();
 		}
 	}
-	//Archiv*******************************************************************************************************************
+	//Archive******************************************************************************************************************
 	/**
-	 * Set a archiv table
+	 * Set a archive table
 	 */
-	private void setArchivTable(){
+	private void setArchiveTable(){
 		//scrollArchiv.setRowHeaderView(tableArchiv.getTableHeader());
 		//scrollArchiv.setColumnHeaderView(new JTable(streams,columnNames));
-		tableArchiv .setFillsViewportHeight(true);
-		archivPanel.add(tableArchiv .getTableHeader(), BorderLayout.PAGE_START);
-		archivPanel.add(tableArchiv , BorderLayout.CENTER);
-		tableArchiv .getTableHeader().setReorderingAllowed(false);
+		tableArchive .setFillsViewportHeight(true);
+		archivePanel.add(tableArchive .getTableHeader(), BorderLayout.PAGE_START);
+		archivePanel.add(tableArchive , BorderLayout.CENTER);
+		tableArchive .getTableHeader().setReorderingAllowed(false);
 	}
 	
 	/**
 	 *Shift the selected rows of the Tasks table in the archive table.
 	 */
-	private void shiftTableItemsinArchiv(){
-		int[] rows = table.getSelectedRows();
-		TableModel tm= table.getModel();
+	private void shiftTableItemsinArchive(){
+		int[] rows = tableTasks.getSelectedRows();
+		TableModel tm= tableTasks.getModel();
 		for(int i = 0 ; i < rows.length; i++){
-			addTableRow(tableArchiv, (String) table.getValueAt(i,0),
-									(String) table.getValueAt(i,1),
-									(String) table.getValueAt(i,2),
-									(String) table.getValueAt(i,3),
-									(String) table.getValueAt(i,4));
+			addTableRow(tableArchive, (String) tableTasks.getValueAt(i,0),
+									(String) tableTasks.getValueAt(i,1),
+									(String) tableTasks.getValueAt(i,2),
+									(String) tableTasks.getValueAt(i,3),
+									(String) tableTasks.getValueAt(i,4));
 		}
 		
 		while(rows.length>0){
-			((DefaultTableModel)tm).removeRow(table.convertRowIndexToModel(rows[0]));
-			rows = table.getSelectedRows();
+			((DefaultTableModel)tm).removeRow(tableTasks.convertRowIndexToModel(rows[0]));
+			rows = tableTasks.getSelectedRows();
 		}
 		
-		//add the remove function
+		//add the remove function TODO
 		
-		table.clearSelection();
+		tableTasks.clearSelection();
 	}
 	
 	/**
-	 * Colorize table rows dependent on the 'end' value
+	 * The colored table rows dependent on the 'end' value.
 	 */
 	private void setArchiveTableRowColor(){
-		tableArchiv.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+		tableArchive.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				//If you select a row and the row gets blue.
-					c.setBackground(Color.LIGHT_GRAY);
-					if(isSelected){
-						c.setBackground(new Color(160,166,207));//blue
-					}
+				c.setBackground(Color.LIGHT_GRAY);
+				if(isSelected){
+					c.setBackground(new Color(160,166,207));//blue
+				}
 				return c;
 			}
-			});
+		});
 	}
 	
 	//JSON*********************************************************************************************************************
 	/**
+	 * Save all items of the JTable in an JSON file.
 	 * 
+	 * @param tempTable
+	 * @param tableHead
+	 * @param path
 	 */
 	private void saveTableToJSON(JTable tempTable, String[] tableHead ,String path){
 		File tempFile = new File(remPref.getUserPath().toString()+path);
@@ -1283,6 +1404,11 @@ public class GUI {
 	}
 	
 	
+	/**
+	 * Load all items for a JTable from an JSON file.
+	 * @param tempTable
+	 * @param path
+	 */
 	private void loadFromJSON(JTable tempTable, String path){
 		FileReader reader;
 		File tempFile = new File(remPref.getUserPath().toString()+path);
@@ -1317,7 +1443,7 @@ public class GUI {
 	
 	//Debug********************************************************************************************************************
 	/**
-	 * prints out a heading in a terminal if the debugmode is activated 
+	 * Prints out a heading in a terminal if the debug mode is activated.
 	 */
 	private void setDebugMode(){
 		if(debugMode){
