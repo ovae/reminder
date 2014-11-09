@@ -22,6 +22,8 @@ public class Time {
 	
 	/**
 	 * 
+	 * @param str
+	 * @return
 	 */
 	public static String getDate(String str){
 		SimpleDateFormat ft = new SimpleDateFormat (str);

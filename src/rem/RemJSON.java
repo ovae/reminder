@@ -16,7 +16,15 @@ public class RemJSON {
 	private List taskList = new LinkedList();
 	JSONObject Mainobj = new JSONObject();
 
-	
+	/**
+	 * Add a task to the JSON object list.
+	 * @param tableHead
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
 	@SuppressWarnings("unchecked")
 	public void setTask(String[] tableHead, String topic, String about, String begin, String end, String status){
 		JSONObject obj = new JSONObject();
@@ -30,7 +38,8 @@ public class RemJSON {
 	}
 	
 	/**
-	 * 
+	 * Write the JSON object list to a file.
+	 * @param path
 	 */
 	public void writeJsonToFile(File path){
 			FileWriter file;
@@ -60,6 +69,8 @@ public class RemJSON {
 	
 	/**
 	 * 
+	 * @param tempFile
+	 * @return
 	 */
 	@SuppressWarnings("null")
 	public Object loadJsonFile(File tempFile){

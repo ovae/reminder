@@ -49,6 +49,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+
 /**
  * @author ovae
  * @version alpha 0.0.8
@@ -180,7 +181,6 @@ public class GUI {
 				checkIfTableHasChanged();
 				checkLook();
 				checkColorBox();
-
 			}
 		});
 	}
