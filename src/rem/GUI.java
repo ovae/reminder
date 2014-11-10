@@ -16,16 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.swing.AbstractListModel;
+import javax.swing.DefaultRowSorter;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,8 +31,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.JViewport;
-import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -43,6 +39,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -661,72 +658,6 @@ public class GUI {
 		endInfoLabel.setText(endOutput);
 	}
 
-	/**
-	 * 
-	 */
-	private boolean checkInputBeginEnd(){
-		boolean ret=false;
-		String tempTextBegin = inputBegin.getText();
-		String tempTextEnd = inputEnd.getText();
-		String month = Time.getCurrentMonth();
-		String year = Time.getCurrentYear();
-		
-		String subAEndY = tempTextEnd.substring(0,4);
-		String subAEndM = tempTextEnd.substring(4,6);
-		String subBEndM = tempTextEnd.substring(0,2);
-		String subBEndY = tempTextEnd.substring(4,8);
-		String subCEndM = tempTextEnd.substring(4,6);
-		String subCEndY= tempTextEnd.substring(4,8);
-		int currentFormate = remPref.getTimeFormate();
-
-		String beginOutput = "[ ";
-		String endOutput = "[ ";
-
-		//Check if Begin and End have the length of 8.
-		if(tempTextBegin.length()==8 && tempTextBegin.length()==8){
-			if(currentFormate == 'a'){
-				//timeformate A
-				beginOutput += "yyyyMMdd";
-				endOutput += "yyyyMMdd";
-			}else if(currentFormate == 'b'){
-				//timeformate B
-				beginOutput += "MMddyyyy";
-				endOutput += "MMddyyyy";
-			}else{
-				//timeformate C
-				beginOutput += "ddMMyyyy";
-				endOutput += "ddMMyyyy";
-			}
-			ret=true;
-		}else{
-			beginOutput += " Error";
-			endOutput += " Error";
-			ret=false;
-		}
-		beginOutput += " ]";
-		endOutput += " ]";
-
-		beginInfoLabel.setText(beginOutput);
-		endInfoLabel.setText(endOutput);
-
-		return ret;
-		/*
-		if(subAEndY.equals(year) && subAEndM.equals(month) ){
-			//timeformate A
-			endInfoLabel.setText("[A Ok]");
-		}else if(subBEndY.equals(year) && subBEndM.equals(month) ){
-			//timeformate B
-			endInfoLabel.setText("[B Ok]");
-		}else if(subCEndY.equals(year) && subCEndM.equals(month) ){
-			//timeformate C
-			endInfoLabel.setText("[C Ok]");
-		}else{
-			//set lables to error
-			endInfoLabel.setText(endOutput+" Error]");
-		}
-		*/
-	}
-
 	//Info-panel***************************************************************************************************************
 	/**
 	 * Set the info panel with date label.
@@ -1120,7 +1051,16 @@ public class GUI {
 		DefaultTableModel model = (DefaultTableModel) tableTasks.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status});
 	}
-	
+
+	/**
+	 * 
+	 * @param tempTable
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
 	private void addTableRow(JTable tempTable, String topic, String about, String begin, String end, String status){
 			DefaultTableModel model = (DefaultTableModel) tempTable.getModel();
 			model.addRow(new Object[]{topic, about, begin, end, status});
@@ -1202,51 +1142,6 @@ public class GUI {
 	}
 
 	/**
-	 * Sort the Table by the end date.
-	 */
-	private void sortTable(){
-		//get the table values
-		int tableRows = tableTasks.getRowCount();
-		String[][] tableValuesUnSort= new String[tableRows][5];
-		for(int i = 0 ; i < tableTasks.getRowCount(); i++){
-			for(int j = 0 ; j < 5;j++){
-				tableValuesUnSort[i][j] =(String) tableTasks.getValueAt(i,j);
-			}
-		}
-		
-		//sort the elements
-		int tempA = 0;
-		int tempB = 0;
-		int tempChange =0;
-		boolean changedCompletly;
-		do{
-			changedCompletly = true;
-			for(int i = 0 ; i < tableTasks.getRowCount()-1; i++){
-				tempA = Integer.parseInt(tableValuesUnSort[i][3]);
-				tempB = Integer.parseInt(tableValuesUnSort[(i+1)][3]);
-				if(tempA > tempB){
-					tempChange = tempA;
-					tableValuesUnSort[i][3] =""+tempB+"";
-					tableValuesUnSort[(i+1)][3] = ""+tempChange+"";
-					 changedCompletly = false;
-				}
-			}
-		}while(!changedCompletly);
-		
-		//Empty the table
-		emptyTable();
-		//add the sorted elements back into the table.
-		for(int i = 0 ; i < tableTasks.getRowCount(); i++){
-			addTableRow(tableValuesUnSort[i][0],
-						tableValuesUnSort[i][1],
-						tableValuesUnSort[i][2],
-						tableValuesUnSort[i][3],
-						tableValuesUnSort[i][4]);
-		}
-		
-	}
-
-	/**
 	 * Colorize table rows dependent on the 'end' value
 	 */
 	private void setTableRowColor(){
@@ -1305,7 +1200,7 @@ public class GUI {
 		}
 		});
 	}
-	
+
 	/**
 	 * Check if any item of the Table has changed.
 	 */
@@ -1317,7 +1212,7 @@ public class GUI {
 			
 		});
 	}
-	
+
 	/**
 	 * Check if the color check box is set in the preferences.
 	 */
@@ -1338,6 +1233,11 @@ public class GUI {
 		archivePanel.add(tableArchive .getTableHeader(), BorderLayout.PAGE_START);
 		archivePanel.add(tableArchive , BorderLayout.CENTER);
 		tableArchive .getTableHeader().setReorderingAllowed(false);
+		
+		
+		//sort the table by colomn
+		//TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableArchive.getModel());
+		//tableArchive.setRowSorter(sorter);
 	}
 	
 	/**
