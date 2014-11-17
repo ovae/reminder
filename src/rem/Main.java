@@ -1,6 +1,6 @@
 package bin.rem;
 
-import bin.rem.GUI;
+import bin.rem.RemGUI;
 
 public class Main {
 
@@ -9,9 +9,10 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GUI gui = new GUI();
+		
+		RemGUI RemGui = new RemGUI();
 
-		gui.init();
-		gui.start();
+		RemGui.init();
+		RemGui.start();
 	}
 }
