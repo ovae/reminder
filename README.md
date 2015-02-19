@@ -9,7 +9,7 @@ A small program to write down your tasks.
 
 * Install make 
 
-* Open a terminal of your choice. Change in the JstreamWriter directory
+* Open a terminal of your choice. Change in the reminder directory
 and enter the following command:
 ```
 	$> make
