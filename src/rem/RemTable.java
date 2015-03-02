@@ -71,4 +71,11 @@ public abstract class RemTable extends JTable{
 	public void setTableHeader(final String[] columnNames){
 		this.columnNames = columnNames;
 	}
+
+
+	public void addRow(String valueOf, String valueOf2, int valueOf3,
+			int valueOf4, String valueOf5) {
+		// TODO Auto-generated method stub
+		
+	}
 }

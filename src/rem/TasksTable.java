@@ -3,6 +3,7 @@ package rem;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JLabel;
@@ -14,6 +15,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+/**
+ * 
+ * @author ovae.
+ * @version 20150302
+ */
 public class TasksTable extends RemTable {
 
 	private String[] columnNames;
@@ -80,6 +86,20 @@ public class TasksTable extends RemTable {
 	public void addTableRow(JTable tempTable, String topic, String about, String begin, String end, String status){
 			DefaultTableModel model = (DefaultTableModel) tempTable.getModel();
 			model.addRow(new Object[]{topic, about, begin, end, status});
+	}
+
+	/**
+	 * 
+	 * @param tempTable
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
+	public void addRow(String topic, String about, int begin, int end, String status){
+		DefaultTableModel model = (DefaultTableModel) this.getModel();
+		model.addRow(new Object[]{topic, about, begin, end, status});
 	}
 
 	/**
@@ -234,6 +254,17 @@ public class TasksTable extends RemTable {
 		});
 	}
 
+	public ArrayList<String> getTableContent(){
+		ArrayList<String> list = new ArrayList<>();
+		for(int i=0; i<this.getRowCount(); i++){
+			list.add("["+(String) this.getValueAt(i,0)
+					+"]["+(String) this.getValueAt(i,1)
+					+"]["+(String) this.getValueAt(i,2)
+					+"]["+(String) this.getValueAt(i,3)
+					+"]["+(String) this.getValueAt(i,4)+"]\n");
+		}
+		return list;
+	}
 	@Override
 	public void removeRow(int rowNumber) {
 		// TODO Auto-generated method stub
