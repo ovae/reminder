@@ -1,18 +1,8 @@
-package bin.rem;
-
-import bin.rem.RemGUI;
+package rem;
 
 public class Main {
 
-	/**
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		RemGUI RemGui = new RemGUI();
-
-		RemGui.init();
-		RemGui.start();
+	public static void main(String[] args){
+		System.out.println("hello");
 	}
 }
