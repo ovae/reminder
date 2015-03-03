@@ -10,19 +10,12 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -30,12 +23,19 @@ import rem.files.FileHandler;
 import subWindows.AddTaskFrame;
 import subWindows.InfoFrame;
 
+/**
+ * The main window of this program.
+ * @author ovae.
+ * @version 20150303
+ */
 public class MainWindow extends JFrame{
 
+	//Main menu configuration
 	private int windowHeight;
 	private int windowWidth;
-	private JPanel mainPanel;
 
+	//JPanels for the basic structure
+	private JPanel mainPanel;
 	private JToolBar toolbar;
 	private JPanel contentPanel;
 	private InfoPanel infoPanel;
@@ -69,9 +69,10 @@ public class MainWindow extends JFrame{
 	private File archiveFile;
 
 	/**
-	 * 
+	 * Creates a new MainWindow.
 	 */
 	public MainWindow(){
+		//Initialise all attributes.
 		this.windowHeight = 512;
 		this.windowWidth = 800;
 		this.mainPanel = new JPanel(new BorderLayout());
@@ -105,17 +106,21 @@ public class MainWindow extends JFrame{
 		taskFile = new File("userfiles/tasks.txt");
 		archiveFile = new File("userfiles/archive.txt");
 
-		//submenus
+		//sub menus
 		this.addTaskFrame = new AddTaskFrame(this);
 		this.infoFrame = new InfoFrame();
 		centerWindow(infoFrame);
 		centerWindow(addTaskFrame);
 
+		//Basic menu structure.
 		windowStructure();
 		this.pack();
 		this.setVisible(true);
 	}
 
+	/**
+	 * Set all basic window settings.
+	 */
 	private void windowSettings(){
 		this.setTitle("Reminder");
 		this.setSize(new Dimension(windowWidth,windowHeight));
@@ -126,6 +131,9 @@ public class MainWindow extends JFrame{
 		centerWindow(this);
 	}
 
+	/**
+	 * The window structure. All components are used in separated threads.
+	 */
 	private void windowStructure(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -138,13 +146,16 @@ public class MainWindow extends JFrame{
 		});
 	}
 
+	/**
+	 * Sets up all toolbar components.
+	 */
 	private void settingUpTheToolbar(){
 		toolbar.setFloatable(false);
 
-		/* The action listener of the newButton.
+		/* The action listener of the newTaskButton.
 		 * If the newButton is pressed:
-		 * the required preferences for the AddFrame are loaded,
-		 * by default all the inputs are reset.
+		 * the required preferences for the AddTaskFrame are loaded,
+		 * by default all the inputs are reseted.
 		 */
 		newTaskButton.addActionListener(new ActionListener(){
 			@Override
@@ -155,7 +166,7 @@ public class MainWindow extends JFrame{
 
 		/* The action listener of the removeButton.
 		 * If the removeButton is pressed and the user has select at least one table row,
-		 * the selected rows will be removed and the task and archive tables are saved.
+		 * the selected rows will be removed.
 		 */
 		removeButton.addActionListener(new ActionListener(){
 			@Override
@@ -170,7 +181,6 @@ public class MainWindow extends JFrame{
 		/* The action listener of the doneButton.
 		 * If the doneButton is pressed the status cell of the selected
 		 * row will be changed in its state.
-		 * After that the task and archive table are saved.
 		 */
 		doneButton.addActionListener(new ActionListener(){
 			@Override
@@ -190,6 +200,7 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		//If the infoButton is pressed it opens an infoFrame.
 		infoButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -197,6 +208,7 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		//Saves the task and archive table.
 		saveButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
@@ -210,6 +222,7 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		//Add all components to the toolbar.
 		toolbar.add(newTaskButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
@@ -221,6 +234,7 @@ public class MainWindow extends JFrame{
 		mainPanel.add(toolbar, BorderLayout.NORTH);
 	}
 
+	//Setting up the basic window panel structure.
 	private void settingUpTheContentPanel(){
 		settingUpTaskTable();
 		tabbedPane.addTab("Latest", tasksScrollPane);
@@ -232,8 +246,7 @@ public class MainWindow extends JFrame{
 		mainPanel.add(infoPanel, BorderLayout.SOUTH);
 	}
 
-//------------------------------------------------
-
+	//Setting up the taskTables.
 	private void settingUpTaskTable(){
 		//Task tab
 		String[] columnNames = {"Topic", "About", "Begin", "End", "Status"};
@@ -253,9 +266,9 @@ public class MainWindow extends JFrame{
 
 		archiveTab.add(archiveTable, BorderLayout.CENTER);
 		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.NORTH);
-
 	}
 
+	//Load the table content from files in the table.
 	private void loadTableContent(){
 		try {
 			FileHandler.loadFile(taskTable, taskFile);
@@ -268,9 +281,7 @@ public class MainWindow extends JFrame{
 		}
 	}
 
-	/**
-	 *Shift the selected rows of the Tasks table in the archive table.
-	 */
+	//Shift the selected rows of the Tasks table in the archive table.
 	private void shiftTableItemsinArchive(){
 		int[] rows = taskTable.getSelectedRows();
 		TableModel tm= taskTable.getModel();
@@ -281,22 +292,22 @@ public class MainWindow extends JFrame{
 									(String) taskTable.getValueAt(i,3),
 									(String) taskTable.getValueAt(i,4));
 		}
-		
+
 		while(rows.length>0){
 			((DefaultTableModel)tm).removeRow(taskTable.convertRowIndexToModel(rows[0]));
 			rows = taskTable.getSelectedRows();
 		}
-		
-		//add the remove function TODO
-		
+
 		taskTable.clearSelection();
 	}
 
+	//Get the task table Object.
 	public RemTable getTaskTable(){
 		return taskTable;
 	}
+
 	/**
-	 * Sets the frame parameter centered in the screen
+	 * Sets the frame parameter centred in the screen
 	 * @param frame
 	 */
 	private static void centerWindow(JFrame frame) {

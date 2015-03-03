@@ -5,8 +5,8 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  * 
- * @author ove
- * @version 20150131
+ * @author ovae.
+ * @version 20150303
  */
 public abstract class RemTable extends JTable{
 	

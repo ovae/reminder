@@ -16,6 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * A GregorianCalendar.
+ * @author ovae.
+ * @version 20150303.
+ */
 public class RemGregorianCalendar extends JPanel{
 	
 	private Date date = new Date();
