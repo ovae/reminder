@@ -36,7 +36,7 @@ public class MainWindow extends JFrame{
 
 	private JToolBar toolbar;
 	private JPanel contentPanel;
-	private JPanel infoPanel;
+	private InfoPanel infoPanel;
 
 	//TabbedPane
 	private JTabbedPane tabbedPane;
@@ -49,6 +49,7 @@ public class MainWindow extends JFrame{
 	private RemGregorianCalendar calendarPane;
 	private JScrollPane scrollCalendar;
 
+	//Toolbar buttons
 	private JButton newTaskButton;
 	private JButton removeButton;
 	private JButton doneButton;
@@ -74,7 +75,7 @@ public class MainWindow extends JFrame{
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.toolbar = new JToolBar();
 		this.contentPanel = new JPanel(new BorderLayout());
-		this.infoPanel = new JPanel();
+		this.infoPanel = new InfoPanel();
 
 		//JPanels
 		this.tabbedPane = new JTabbedPane();
@@ -109,6 +110,7 @@ public class MainWindow extends JFrame{
 		centerWindow(addTaskFrame);
 
 		windowStructure();
+		this.pack();
 		this.setVisible(true);
 	}
 
@@ -128,7 +130,6 @@ public class MainWindow extends JFrame{
 				windowSettings();
 				settingUpTheToolbar();
 				settingUpTheContentPanel();
-				settingUpTheInfoPanel();
 				
 				loadTableContent();
 			}
@@ -224,11 +225,7 @@ public class MainWindow extends JFrame{
 		tabbedPane.addTab("Calendar", scrollCalendar);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
-	}
-
-	private void settingUpTheInfoPanel(){
-		JLabel time = new JLabel("Info Panel");
-		infoPanel.add(time);
+		
 		mainPanel.add(infoPanel, BorderLayout.SOUTH);
 	}
 
