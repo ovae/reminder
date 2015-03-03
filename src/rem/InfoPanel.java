@@ -40,11 +40,11 @@ public class InfoPanel extends JPanel{
 		this.add(dateLabel, BorderLayout.WEST);
 	}
 	
-	private void setStateSaved(){
+	public void setStateSaved(){
 		programState.setText("[saved]");
 	}
 	
-	private void setStateChanged(){
+	public void setStateChanged(){
 		programState.setText("[changed]");
 	}
 }

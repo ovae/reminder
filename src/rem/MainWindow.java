@@ -21,6 +21,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -201,6 +203,7 @@ public class MainWindow extends JFrame{
 				try {
 					FileHandler.writeFile(taskTable.getTableContent(),taskFile);
 					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
+					infoPanel.setStateSaved();
 				} catch (IOException e1) {
 					System.err.println("Failed to write to file.");
 				}
@@ -241,6 +244,8 @@ public class MainWindow extends JFrame{
 		tasksTab.add(taskTable, BorderLayout.CENTER);
 		tasksTab.add(taskTable.getTableHeader(), BorderLayout.NORTH);
 
+		taskTable.checkIfTableHasChanged(infoPanel);
+
 		//Archive tab
 		String[] columnNamesArchive = {"Topic", "About", "Begin", "End", "Result"};
 		archiveTable.setTableHeader(columnNamesArchive);
@@ -255,8 +260,11 @@ public class MainWindow extends JFrame{
 		try {
 			FileHandler.loadFile(taskTable, taskFile);
 			FileHandler.loadFile(archiveTable, archiveFile);
+			
 		} catch (IOException e) {
 			System.err.println("Failed to load a file.");
+		}finally{
+			infoPanel.setStateSaved();
 		}
 	}
 

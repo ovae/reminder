@@ -41,8 +41,9 @@ public class RemGregorianCalendar extends JPanel{
 	private int yearState;
 	private int currentState;
 	private String myDateState;
+
 	@SuppressWarnings("deprecation")
-	RemGregorianCalendar(){
+	public RemGregorianCalendar(){
 		currentDay = date.getDate();
 		currentMonth = date.getMonth();
 		currentYear = date.getYear();

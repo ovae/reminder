@@ -245,10 +245,10 @@ public class TasksTable extends RemTable {
 	/**
 	 * Check if any item of the Table has changed.
 	 */
-	public void checkIfTableHasChanged(final JLabel label){
+	public void checkIfTableHasChanged(final InfoPanel infoPanel){
 		this.getModel().addTableModelListener(new TableModelListener(){
 			public void tableChanged(TableModelEvent tme){
-				label.setText("[changed]");
+				infoPanel.setStateChanged();
 			}
 		});
 	}
