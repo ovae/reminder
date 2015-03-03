@@ -263,6 +263,7 @@ public class MainWindow extends JFrame{
 		String[] columnNamesArchive = {"Topic", "About", "Begin", "End", "Result"};
 		archiveTable.setTableHeader(columnNamesArchive);
 		archiveTable.setTableModel();
+		archiveTable.setTableRowColor();
 
 		archiveTab.add(archiveTable, BorderLayout.CENTER);
 		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.NORTH);
