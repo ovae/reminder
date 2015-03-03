@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -21,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import rem.files.FileHandler;
 import subWindows.AddTaskFrame;
@@ -43,7 +45,7 @@ public class MainWindow extends JFrame{
 	private JPanel tasksTab;
 	private JPanel archiveTab;
 	private TasksTable taskTable;
-	private JTable archiveTable;
+	private TasksTable archiveTable;
 	private RemGregorianCalendar calendarPane;
 	private JScrollPane scrollCalendar;
 
@@ -51,12 +53,17 @@ public class MainWindow extends JFrame{
 	private JButton removeButton;
 	private JButton doneButton;
 	private JButton saveButton;
+	private JButton archiveButton;
 	private JButton settingsButton;
 	private JButton infoButton;
 	
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
 	private InfoFrame infoFrame;
+
+	//Files
+	private File taskFile;
+	private File archiveFile;
 
 	/**
 	 * 
@@ -69,24 +76,33 @@ public class MainWindow extends JFrame{
 		this.contentPanel = new JPanel(new BorderLayout());
 		this.infoPanel = new JPanel();
 
+		//JPanels
 		this.tabbedPane = new JTabbedPane();
 		this.tasksTab = new JPanel(new BorderLayout());
 		this.archiveTab = new JPanel(new BorderLayout());
 		this.tasksScrollPane = new JScrollPane(tasksTab);
 		this.archiveScrollPane = new JScrollPane(archiveTab);
 		
+		//tabbed elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
-		//this.archiveTable = new RemTable();
+		this.archiveTable = new TasksTable(new DefaultTableModel());
 		calendarPane = new RemGregorianCalendar();
 		scrollCalendar = new JScrollPane(calendarPane);
 
+		//toolbar
 		this.newTaskButton = new JButton("new");
 		this.removeButton = new JButton("remove");
 		this.doneButton = new JButton("done");
 		this.saveButton = new JButton("save");
+		this.archiveButton = new JButton("archive");
 		this.settingsButton = new JButton("settings");
 		this.infoButton = new JButton("info");
 
+		//Files
+		taskFile = new File("userfiles/tasks.txt");
+		archiveFile = new File("userfiles/archive.txt");
+
+		//submenus
 		this.addTaskFrame = new AddTaskFrame(this);
 		this.infoFrame = new InfoFrame();
 		centerWindow(infoFrame);
@@ -160,6 +176,17 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		/* The action listener of the shiftToArchive button.
+		 * Copies the selected rows of the task table in the archive table
+		 * and removes the selected rows from the task table.
+		 */
+		archiveButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				shiftTableItemsinArchive();
+			}
+		});
+
 		infoButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -171,7 +198,8 @@ public class MainWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				try {
-					FileHandler.writeFile(taskTable.getTableContent());
+					FileHandler.writeFile(taskTable.getTableContent(),taskFile);
+					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
 				} catch (IOException e1) {
 					System.err.println("Failed to write to file.");
 				}
@@ -182,6 +210,8 @@ public class MainWindow extends JFrame{
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
 		toolbar.add(saveButton);
+		toolbar.add(archiveButton);
+		this.toolbar.addSeparator(new Dimension(3, 10));
 		toolbar.add(settingsButton);
 		toolbar.add(infoButton);
 		mainPanel.add(toolbar, BorderLayout.NORTH);
@@ -205,20 +235,56 @@ public class MainWindow extends JFrame{
 //------------------------------------------------
 
 	private void settingUpTaskTable(){
+		//Task tab
 		String[] columnNames = {"Topic", "About", "Begin", "End", "Status"};
 		taskTable.setTableHeader(columnNames);
 		taskTable.setTableModel();
 		taskTable.setTableRowColor();
+
 		tasksTab.add(taskTable, BorderLayout.CENTER);
 		tasksTab.add(taskTable.getTableHeader(), BorderLayout.NORTH);
+
+		//Archive tab
+		String[] columnNamesArchive = {"Topic", "About", "Begin", "End", "Result"};
+		archiveTable.setTableHeader(columnNamesArchive);
+		archiveTable.setTableModel();
+
+		archiveTab.add(archiveTable, BorderLayout.CENTER);
+		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.NORTH);
+
 	}
 
 	private void loadTableContent(){
 		try {
-			FileHandler.loadFile(taskTable);
+			FileHandler.loadFile(taskTable, taskFile);
+			FileHandler.loadFile(archiveTable, archiveFile);
 		} catch (IOException e) {
 			System.err.println("Failed to load a file.");
 		}
+	}
+
+	/**
+	 *Shift the selected rows of the Tasks table in the archive table.
+	 */
+	private void shiftTableItemsinArchive(){
+		int[] rows = taskTable.getSelectedRows();
+		TableModel tm= taskTable.getModel();
+		for(int i = 0 ; i < rows.length; i++){
+			taskTable.addRow(archiveTable, (String) taskTable.getValueAt(i,0),
+									(String) taskTable.getValueAt(i,1),
+									(String) taskTable.getValueAt(i,2),
+									(String) taskTable.getValueAt(i,3),
+									(String) taskTable.getValueAt(i,4));
+		}
+		
+		while(rows.length>0){
+			((DefaultTableModel)tm).removeRow(taskTable.convertRowIndexToModel(rows[0]));
+			rows = taskTable.getSelectedRows();
+		}
+		
+		//add the remove function TODO
+		
+		taskTable.clearSelection();
 	}
 
 	public RemTable getTaskTable(){

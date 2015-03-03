@@ -83,7 +83,7 @@ public class TasksTable extends RemTable {
 	 * @param end
 	 * @param status
 	 */
-	public void addTableRow(JTable tempTable, String topic, String about, String begin, String end, String status){
+	public void addRow(RemTable tempTable, String topic, String about, String begin, String end, String status){
 			DefaultTableModel model = (DefaultTableModel) tempTable.getModel();
 			model.addRow(new Object[]{topic, about, begin, end, status});
 	}
@@ -220,19 +220,18 @@ public class TasksTable extends RemTable {
 	/**
 	 *Shift the selected rows of the Tasks table in the archive table.
 	 */
-	public void shiftTableItemsinOtherTable(JTable table){
+	public void shiftTableItemsinOtherTable(RemTable table){
 		int[] rows = this.getSelectedRows();
 		if(rows.length == 0){
 			JOptionPane.showMessageDialog(null, "You have to select a row to archive them");
 		}
 		TableModel tm= this.getModel();
 		for(int row: rows){
-			this.addTableRow(table, (String) this.getValueAt(row,0),
+			this.addRow(table, (String) this.getValueAt(row,0),
 					(String) this.getValueAt(row,1),
 					(String) this.getValueAt(row,2),
 					(String) this.getValueAt(row,3),
 					(String) this.getValueAt(row,4));
-				//System.out.println(this.getValueAt(row,0)+""+this.getValueAt(row,1)+"-"+this.getValueAt(row,2)+"-"+this.getValueAt(row,3)+"-"+this.getValueAt(row,4));
 		}
 		while(rows.length>0){
 			((DefaultTableModel)tm).removeRow(this.convertRowIndexToModel(rows[0]));
@@ -276,4 +275,5 @@ public class TasksTable extends RemTable {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

@@ -35,16 +35,10 @@ public abstract class RemTable extends JTable{
 	 */
 	public abstract void addRow(final String topic, final String about, final String begin, final String end);
 	
-	/**
-	 * 
-	 * @param topic
-	 * @param about
-	 * @param begin
-	 * @param end
-	 * @param status
-	 */
 	public abstract void addRow(final String topic, final String about, final String begin, final String end, final String status);
 	
+	public abstract void addRow(final RemTable tempTable, final String topic, final String about, final String begin, final String end,final String status);
+
 	/**
 	 * Remove a single Row
 	 */

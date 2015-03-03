@@ -21,8 +21,14 @@ public class FileHandler {
 		
 	}
 
-	public static void loadFile(RemTable table) throws IOException{
-		File load = new File("tasks.txt");
+	/**
+	 * 
+	 * @param table
+	 * @param filename
+	 * @throws IOException
+	 */
+	public static void loadFile(final RemTable table, final File filename) throws IOException{
+		File load = filename;
 		BufferedReader reader = null;
 		Pattern pattern = Pattern.compile("(\\[\\s*\\w*\\s*])(\\[\\s*\\w*\\s*\\])(\\[\\s*\\w*\\s*\\])(\\[\\s*\\w*\\s*\\])(\\[\\s*\\w*\\s*\\])");
 		try{
@@ -43,8 +49,14 @@ public class FileHandler {
 		}
 	}
 
-	public static void writeFile(final ArrayList<String> list) throws IOException{
-		File write = new File("tasks.txt");
+	/**
+	 * 
+	 * @param list
+	 * @param filename
+	 * @throws IOException
+	 */
+	public static void writeFile(final ArrayList<String> list, final File filename) throws IOException{
+		File write = filename;
 		PrintWriter writer  =null;
 		try{
 			writer = new PrintWriter(new BufferedWriter(new FileWriter(write)));
