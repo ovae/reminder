@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -30,9 +32,9 @@ public class FileHandler {
 	public static void loadFile(final RemTable table, final File filename) throws IOException{
 		File load = filename;
 		BufferedReader reader = null;
-		Pattern pattern = Pattern.compile("(\\[\\s*\\w*\\s*])(\\[\\s*\\w*\\s*\\])(\\[\\s*\\w*\\s*\\])(\\[\\s*\\w*\\s*\\])(\\[\\s*\\w*\\s*\\])");
+		Pattern pattern = Pattern.compile("(\\[\\s*.*\\s*])(\\[\\s*.*\\s*\\])(\\[\\s*.*\\s*\\])(\\[\\s*.*\\s*\\])(\\[\\s*.*\\s*\\])");
 		try{
-			reader = new BufferedReader(new FileReader(load));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(load), "UTF-8"));
 			String line = null;
 			while( (line = reader.readLine()) != null){
 				Matcher matcher = pattern.matcher(line);
