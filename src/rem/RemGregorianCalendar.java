@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  * @version 20150303.
  */
 public class RemGregorianCalendar extends JPanel{
-	
+
 	private Date date = new Date();
 	private int currentDay;
 	private int currentMonth;
@@ -38,7 +38,7 @@ public class RemGregorianCalendar extends JPanel{
 	private JPanel[] panelWeekdays = new JPanel[7];
 	private JLabel[][] ticketLabel = new JLabel[35][9];
 	private int[] daysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-	
+
 	private JButton statePast = new JButton("\u25C4");
 	private JButton stateFuture = new JButton("\u25BA");
 	private int monthState;
@@ -70,7 +70,7 @@ public class RemGregorianCalendar extends JPanel{
 			}
 		}
 	}
-	
+
 	private void setTopPanel(){
 		topPanel.setLayout(new BorderLayout());
 		topPanel.add(weekInfoPanel, BorderLayout.NORTH);
@@ -90,12 +90,12 @@ public class RemGregorianCalendar extends JPanel{
 		intern.add(monthLabel);
 		intern.add(new JLabel("  "));
 		intern.add(new JLabel("Day: "+currentDay));
-		
+
 
 		weekInfoPanel.add(statePast, BorderLayout.WEST);
 		weekInfoPanel.add(stateFuture, BorderLayout.EAST);
 		weekInfoPanel.add(intern, BorderLayout.CENTER);
-		
+
 		statePast.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -126,14 +126,14 @@ public class RemGregorianCalendar extends JPanel{
 			}
 		});
 	}
-	
+
 	private void setWeekdaysPanel(){
 		weekdaysPanel.setLayout(new GridLayout(0,7));
 		for(int n = 0; n < 7; n++) {
 			panelWeekdays[n] = new JPanel();
 			weekdaysPanel.add(panelWeekdays[n]);
 		}
-		
+
 		for(int i = 0; i < 7; i++) {
 			panelWeekdays[i].setLayout(new BorderLayout());
 			panelWeekdays[i].setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -146,7 +146,7 @@ public class RemGregorianCalendar extends JPanel{
 		panelWeekdays[5].add(new JLabel("    Saturday"), BorderLayout.CENTER);
 		panelWeekdays[6].add(new JLabel("    Sunday"), BorderLayout.CENTER);
 	}
-	
+
 	private void createPanel(){
 		this.setLayout(new BorderLayout());
 		this.add(topPanel, BorderLayout.NORTH);
@@ -162,7 +162,7 @@ public class RemGregorianCalendar extends JPanel{
 				//ticketLabel[m][n].setBorder(BorderFactory.createLineBorder(Color.GRAY));
 			}
 		}
-		
+
 		for(int m = 1; m < 35; m++) {
 			for(int n = 0; n < 9; n++) {
 				if(m==3 && n==0){
@@ -172,14 +172,14 @@ public class RemGregorianCalendar extends JPanel{
 			}
 		}
 	}
-	
+
 	private void setCenPanelContent(){
 		setUpTicketLabel();
 		int tempDays = 1;
 		for(int m = 0; m < 5; m++) {
 			for(int n = 0; n < 7; n++) {
 				myDateState = ""+yearState+""+monthState+""+tempDays;
-				
+
 				if(tempDays < (daysInMonth[monthState] +1)){
 					panelHolder[m][n].setLayout(new GridLayout(3,3));
 					panelHolder[m][n].setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -196,7 +196,7 @@ public class RemGregorianCalendar extends JPanel{
 							panelHolder[m][n].setBackground(Color.LIGHT_GRAY);
 						}
 					}
-					
+
 					for(int k = 0; k< 9; k++){
 						if(k==4){
 							panelHolder[m][n].add(new JLabel("  "+tempDays+""));
@@ -208,13 +208,13 @@ public class RemGregorianCalendar extends JPanel{
 				}
 			}
 		}
-		
+
 	}
-	
+
 	private void loadTickets(){
-		
+
 	}
-	
+
 	private void refreshCalendar(){
 		for(int m = 0; m < 5; m++) {
 			for(int n = 0; n < 7; n++) {

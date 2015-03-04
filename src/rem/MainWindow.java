@@ -8,14 +8,22 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.plaf.FileChooserUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -30,6 +38,9 @@ import subWindows.InfoFrame;
  */
 public class MainWindow extends JFrame{
 
+	//Program info
+	private String version ="0.2.5";
+	
 	//Main menu configuration
 	private int windowHeight;
 	private int windowWidth;
@@ -37,14 +48,30 @@ public class MainWindow extends JFrame{
 	//JPanels for the basic structure
 	private JPanel mainPanel;
 	private JToolBar toolbar;
+	private JPanel controlPanel;
 	private JPanel contentPanel;
 	private InfoPanel infoPanel;
+
+	//Menu
+	private JMenuBar menuBar;
+	private JMenu menuFiles;
+	private JMenu menuTask;
+	private JMenu menuHelp;
+	private JMenuItem menuOpenFiles;
+	private JMenuItem menuItemSave;
+	private JMenuItem menuClose;
+	private JMenuItem menuItemSettings;
+	private JMenuItem menuItemColours;
+	private JMenuItem menuItemAbout;
+	private JMenuItem menuItemNewTask;
+	private JMenuItem menuItemRemoveTask;
 
 	//TabbedPane
 	private JTabbedPane tabbedPane;
 	private JScrollPane tasksScrollPane;
 	private JScrollPane archiveScrollPane;
 	private JPanel tasksTab;
+
 	private JPanel archiveTab;
 	private TasksTable taskTable;
 	private TasksTable archiveTable;
@@ -57,9 +84,7 @@ public class MainWindow extends JFrame{
 	private JButton doneButton;
 	private JButton saveButton;
 	private JButton archiveButton;
-	private JButton settingsButton;
-	private JButton infoButton;
-	
+
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
 	private InfoFrame infoFrame;
@@ -77,6 +102,8 @@ public class MainWindow extends JFrame{
 		this.windowWidth = 800;
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.toolbar = new JToolBar();
+		//toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.Y_AXIS));
+		this.controlPanel = new JPanel(new BorderLayout());
 		this.contentPanel = new JPanel(new BorderLayout());
 		this.infoPanel = new InfoPanel();
 
@@ -93,14 +120,26 @@ public class MainWindow extends JFrame{
 		calendarPane = new RemGregorianCalendar();
 		scrollCalendar = new JScrollPane(calendarPane);
 
+		//Menu
+		menuBar = new JMenuBar();
+		menuFiles = new JMenu("Files");
+		menuHelp = new JMenu("Help");
+		menuTask = new JMenu("Task");
+		menuOpenFiles = new JMenuItem("Open File");
+		menuItemSave = new JMenuItem("Save");
+		menuClose = new JMenuItem("Close");
+		menuItemSettings = new JMenuItem("Settings");
+		menuItemColours = new JMenuItem("Colours");
+		menuItemAbout = new JMenuItem("About");
+		menuItemNewTask = new JMenuItem("New Task");
+		menuItemRemoveTask = new JMenuItem("Remove Task");
+
 		//toolbar
-		this.newTaskButton = new JButton("new");
-		this.removeButton = new JButton("remove");
-		this.doneButton = new JButton("done");
-		this.saveButton = new JButton("save");
-		this.archiveButton = new JButton("archive");
-		this.settingsButton = new JButton("settings");
-		this.infoButton = new JButton("info");
+		this.newTaskButton = new JButton("New");
+		this.removeButton = new JButton("Remove");
+		this.doneButton = new JButton("Done");
+		this.saveButton = new JButton("Save");
+		this.archiveButton = new JButton("Archive");
 
 		//Files
 		taskFile = new File("userfiles/tasks.txt");
@@ -114,7 +153,7 @@ public class MainWindow extends JFrame{
 
 		//Basic menu structure.
 		windowStructure();
-		this.pack();
+		//this.pack();
 		this.setVisible(true);
 	}
 
@@ -122,12 +161,22 @@ public class MainWindow extends JFrame{
 	 * Set all basic window settings.
 	 */
 	private void windowSettings(){
-		this.setTitle("Reminder");
 		this.setSize(new Dimension(windowWidth,windowHeight));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(640, windowHeight));
 		this.setLayout(new BorderLayout());
 		this.setContentPane(mainPanel);
+		this.setTitle("Reminder");
+		try {
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Ocean".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (Exception e) {
+			// If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		centerWindow(this);
 	}
 
@@ -138,6 +187,7 @@ public class MainWindow extends JFrame{
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				windowSettings();
+				settingUpTheMenu();
 				settingUpTheToolbar();
 				settingUpTheContentPanel();
 				
@@ -146,6 +196,82 @@ public class MainWindow extends JFrame{
 		});
 	}
 
+	/**
+	 * Sets up all menu components.
+	 */
+	private void settingUpTheMenu(){
+		controlPanel.add(menuBar, BorderLayout.NORTH);
+		menuBar.add(menuFiles);
+			menuFiles.add(menuOpenFiles);
+			menuFiles.add(menuItemSave);
+			menuFiles.add(menuClose);
+		menuBar.add(menuTask);
+			menuTask.add(menuItemNewTask);
+			menuTask.add(menuItemRemoveTask);
+		menuBar.add(menuHelp);
+			menuHelp.add(menuItemSettings);
+			menuHelp.add(menuItemColours);
+			menuHelp.add(menuItemAbout);
+
+		menuOpenFiles.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				//JFileChooser chooser = new JFileChooser("user.dir");
+			}
+		});
+
+		menuItemNewTask.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				addTaskFrame.setVisible(true);
+			}
+		});
+
+		menuItemRemoveTask.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(p==0){
+					taskTable.removeRow();
+				}
+			}
+		});
+
+		menuItemColours.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				infoFrame.setVisible(true);
+			}
+		});
+
+		menuItemAbout.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				JOptionPane.showMessageDialog(null, "Reminder "+version,"Program Info", 1);
+			}
+		});
+
+		menuItemSave.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				try {
+					FileHandler.writeFile(taskTable.getTableContent(),taskFile);
+					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
+					infoPanel.setStateSaved();
+				} catch (IOException e1) {
+					System.err.println("Failed to write to file.");
+				}
+			}
+		});
+
+		menuClose.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+	}
+	
 	/**
 	 * Sets up all toolbar components.
 	 */
@@ -200,14 +326,6 @@ public class MainWindow extends JFrame{
 			}
 		});
 
-		//If the infoButton is pressed it opens an infoFrame.
-		infoButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				infoFrame.setVisible(true);
-			}
-		});
-
 		//Saves the task and archive table.
 		saveButton.addActionListener(new ActionListener(){
 			@Override
@@ -229,9 +347,7 @@ public class MainWindow extends JFrame{
 		toolbar.add(saveButton);
 		toolbar.add(archiveButton);
 		this.toolbar.addSeparator(new Dimension(3, 10));
-		toolbar.add(settingsButton);
-		toolbar.add(infoButton);
-		mainPanel.add(toolbar, BorderLayout.NORTH);
+		controlPanel.add(toolbar, BorderLayout.SOUTH);
 	}
 
 	//Setting up the basic window panel structure.
@@ -241,8 +357,9 @@ public class MainWindow extends JFrame{
 		tabbedPane.addTab("Archive", archiveScrollPane);
 		tabbedPane.addTab("Calendar", scrollCalendar);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
+
+		mainPanel.add(controlPanel, BorderLayout.NORTH);
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
-		
 		mainPanel.add(infoPanel, BorderLayout.SOUTH);
 	}
 

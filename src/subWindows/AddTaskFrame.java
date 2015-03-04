@@ -107,6 +107,7 @@ public class AddTaskFrame extends JFrame{
 						inputEnd.getText().trim().isEmpty() ){
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
+					
 					parentFrame.getTaskTable().addRow(inputTopic.getText(), inputAbout.getText(), inputBegin.getText(), inputEnd.getText());
 				}
 			}

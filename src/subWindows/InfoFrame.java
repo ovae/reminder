@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,7 +32,6 @@ public class InfoFrame extends JFrame{
 
 	public InfoFrame(){
 		infoPanel = new JPanel();
-		head = new JLabel("Declaration on the choice of color");
 		green = new JTextField();
 		gray = new JTextField();
 		red = new JTextField();
@@ -47,6 +47,7 @@ public class InfoFrame extends JFrame{
 		blueLabel = new JLabel("Selected row");
 		whiteLabel = new JLabel("Default value");
 		settingUpInfoFrame();
+		infoPanel.setBorder(BorderFactory.createTitledBorder("Declaration on the choice of colour"));
 		this.setVisible(false);
 	}
 
@@ -56,8 +57,7 @@ public class InfoFrame extends JFrame{
 		this.setSize(new Dimension(350,290));
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
-		
-		
+
 		//Set the background color for every text field.
 		green.setBackground(new Color(126, 207, 88));
 		gray.setBackground(Color.LIGHT_GRAY);
@@ -66,7 +66,7 @@ public class InfoFrame extends JFrame{
 		yellow.setBackground(new Color(255,210,120));
 		blue.setBackground(new Color(160,166,207));
 		white.setBackground(Color.WHITE);
-		
+
 		//Disable the ability to edit the text fields.
 		green.setEditable(false);
 		gray.setEditable(false);
@@ -76,10 +76,6 @@ public class InfoFrame extends JFrame{
 		blue.setEditable(false);
 		white.setEditable(false);
 
-		//Set the bounds of the heading label
-		head.setBounds(10, 100, 240,28);
-		head.setLocation(20, 20);
-		
 		//Set the bounds for every text field.
 		green.setBounds(10, 100, 100,28);
 		gray.setBounds(10, 100, 100,28);
@@ -88,7 +84,7 @@ public class InfoFrame extends JFrame{
 		yellow.setBounds(10, 100, 100,28);
 		blue.setBounds(10, 100, 100,28);
 		white.setBounds(10, 100, 100,28);
-		
+
 		//Set the bounds for every text field label.
 		greenLabel.setBounds(10, 100, 300,28);
 		grayLabel.setBounds(10, 100, 300,28);
@@ -119,7 +115,6 @@ public class InfoFrame extends JFrame{
 		//Disable the layout of the infoPanel.
 		infoPanel.setLayout(null);
 		//Add all text field to the infoPanel.
-		infoPanel.add(head);
 		infoPanel.add(gray);
 		infoPanel.add(green);
 		infoPanel.add(yellow);
