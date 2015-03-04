@@ -148,6 +148,9 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask.setIcon(new ImageIcon("icons/remove.png"));
 		menuItemChangeStatus.setIcon(new ImageIcon("icons/done.png"));
 		menuItemArchive.setIcon(new ImageIcon("icons/archive.png"));
+		menuItemAbout.setIcon(new ImageIcon("icons/info.png"));
+		menuItemSettings.setIcon(new ImageIcon("icons/Settings.png"));
+		menuItemColours.setIcon(new ImageIcon("icons/Colour.png"));
 
 		//toolbar
 		this.newTaskButton = new JButton(new ImageIcon("icons/add.png"));
