@@ -1,6 +1,7 @@
 package rem;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -65,6 +67,8 @@ public class MainWindow extends JFrame{
 	private JMenuItem menuItemAbout;
 	private JMenuItem menuItemNewTask;
 	private JMenuItem menuItemRemoveTask;
+	private JMenuItem menuItemChangeStatus;
+	private JMenuItem menuItemArchive;
 
 	//TabbedPane
 	private JTabbedPane tabbedPane;
@@ -131,15 +135,17 @@ public class MainWindow extends JFrame{
 		menuItemSettings = new JMenuItem("Settings");
 		menuItemColours = new JMenuItem("Colours");
 		menuItemAbout = new JMenuItem("About");
-		menuItemNewTask = new JMenuItem("New Task");
-		menuItemRemoveTask = new JMenuItem("Remove Task");
+		menuItemNewTask = new JMenuItem("New task");
+		menuItemRemoveTask = new JMenuItem("Remove task");
+		menuItemChangeStatus = new JMenuItem("Change status");
+		menuItemArchive = new JMenuItem("Archive Task");
 
 		//toolbar
-		this.newTaskButton = new JButton("New");
-		this.removeButton = new JButton("Remove");
-		this.doneButton = new JButton("Done");
+		this.newTaskButton = new JButton(new ImageIcon("icons/add.png"));
+		this.removeButton = new JButton(new ImageIcon("icons/remove.png"));
+		this.doneButton = new JButton(new ImageIcon("icons/done.png"));
 		this.saveButton = new JButton("Save");
-		this.archiveButton = new JButton("Archive");
+		this.archiveButton = new JButton(new ImageIcon("icons/archive.png"));
 
 		//Files
 		taskFile = new File("userfiles/tasks.txt");
@@ -200,7 +206,7 @@ public class MainWindow extends JFrame{
 	 * Sets up all menu components.
 	 */
 	private void settingUpTheMenu(){
-		controlPanel.add(menuBar, BorderLayout.NORTH);
+		controlPanel.add(menuBar, BorderLayout.WEST);
 		menuBar.add(menuFiles);
 			menuFiles.add(menuOpenFiles);
 			menuFiles.add(menuItemSave);
@@ -208,6 +214,8 @@ public class MainWindow extends JFrame{
 		menuBar.add(menuTask);
 			menuTask.add(menuItemNewTask);
 			menuTask.add(menuItemRemoveTask);
+			menuTask.add(menuItemChangeStatus);
+			menuTask.add(menuItemArchive);
 		menuBar.add(menuHelp);
 			menuHelp.add(menuItemSettings);
 			menuHelp.add(menuItemColours);
@@ -234,6 +242,20 @@ public class MainWindow extends JFrame{
 				if(p==0){
 					taskTable.removeRow();
 				}
+			}
+		});
+
+		menuItemChangeStatus.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				taskTable.updateTableRow();
+			}
+		});
+
+		menuItemArchive.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				shiftTableItemsinArchive();
 			}
 		});
 
@@ -276,8 +298,6 @@ public class MainWindow extends JFrame{
 	 * Sets up all toolbar components.
 	 */
 	private void settingUpTheToolbar(){
-		toolbar.setFloatable(false);
-
 		/* The action listener of the newTaskButton.
 		 * If the newButton is pressed:
 		 * the required preferences for the AddTaskFrame are loaded,
@@ -341,13 +361,28 @@ public class MainWindow extends JFrame{
 		});
 
 		//Add all components to the toolbar.
+		newTaskButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
+		removeButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
+		doneButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
+		archiveButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
+
+		newTaskButton.setToolTipText("new task");
+		removeButton.setToolTipText("remove");
+		doneButton.setToolTipText("change status");
+		archiveButton.setToolTipText("archive");
+
+		newTaskButton.setBorder(null);
+		removeButton.setBorder(null);
+		doneButton.setBorder(null);
+		archiveButton.setBorder(null);
+
 		toolbar.add(newTaskButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
-		toolbar.add(saveButton);
 		toolbar.add(archiveButton);
 		this.toolbar.addSeparator(new Dimension(3, 10));
-		controlPanel.add(toolbar, BorderLayout.SOUTH);
+		toolbar.setFloatable(false);
+		controlPanel.add(toolbar, BorderLayout.CENTER);
 	}
 
 	//Setting up the basic window panel structure.
