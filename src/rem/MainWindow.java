@@ -140,6 +140,15 @@ public class MainWindow extends JFrame{
 		menuItemChangeStatus = new JMenuItem("Change status");
 		menuItemArchive = new JMenuItem("Archive Task");
 
+		//Set icon for the menu items
+		menuOpenFiles.setIcon(new ImageIcon("icons/OpenFile.png"));
+		menuItemSave.setIcon(new ImageIcon("icons/Save.png"));
+		menuClose.setIcon(new ImageIcon("icons/Exit.png"));
+		menuItemNewTask.setIcon(new ImageIcon("icons/add.png"));
+		menuItemRemoveTask.setIcon(new ImageIcon("icons/remove.png"));
+		menuItemChangeStatus.setIcon(new ImageIcon("icons/done.png"));
+		menuItemArchive.setIcon(new ImageIcon("icons/archive.png"));
+
 		//toolbar
 		this.newTaskButton = new JButton(new ImageIcon("icons/add.png"));
 		this.removeButton = new JButton(new ImageIcon("icons/remove.png"));
@@ -255,7 +264,7 @@ public class MainWindow extends JFrame{
 		menuItemArchive.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				shiftTableItemsinArchive();
+				taskTable.shiftTableItemsinOtherTable(archiveTable);
 			}
 		});
 
@@ -317,10 +326,10 @@ public class MainWindow extends JFrame{
 		removeButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if(p==0){
+				//int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				//if(p==0){
 					taskTable.removeRow();
-				}
+				//}
 			}
 		});
 
@@ -342,7 +351,7 @@ public class MainWindow extends JFrame{
 		archiveButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				shiftTableItemsinArchive();
+				taskTable.shiftTableItemsinOtherTable(archiveTable);
 			}
 		});
 
@@ -432,26 +441,6 @@ public class MainWindow extends JFrame{
 		}finally{
 			infoPanel.setStateSaved();
 		}
-	}
-
-	//Shift the selected rows of the Tasks table in the archive table.
-	private void shiftTableItemsinArchive(){
-		int[] rows = taskTable.getSelectedRows();
-		TableModel tm= taskTable.getModel();
-		for(int i = 0 ; i < rows.length; i++){
-			taskTable.addRow(archiveTable, (String) taskTable.getValueAt(i,0),
-									(String) taskTable.getValueAt(i,1),
-									(String) taskTable.getValueAt(i,2),
-									(String) taskTable.getValueAt(i,3),
-									(String) taskTable.getValueAt(i,4));
-		}
-
-		while(rows.length>0){
-			((DefaultTableModel)tm).removeRow(taskTable.convertRowIndexToModel(rows[0]));
-			rows = taskTable.getSelectedRows();
-		}
-
-		taskTable.clearSelection();
 	}
 
 	//Get the task table Object.

@@ -107,10 +107,17 @@ public class TasksTable extends RemTable {
 	 */
 	public void removeRow(){
 		int[] rows = this.getSelectedRows();
-		TableModel tm= this.getModel();
-		while(rows.length>0){
-			((DefaultTableModel)tm).removeRow(this.convertRowIndexToModel(rows[0]));
-			rows = this.getSelectedRows();
+		if(rows.length < 1){
+			JOptionPane.showMessageDialog(null, "You have to select at least one row.");
+			return;
+		}
+		int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if(p==0){
+			TableModel tm= this.getModel();
+			while(rows.length>0){
+				((DefaultTableModel)tm).removeRow(this.convertRowIndexToModel(rows[0]));
+				rows = this.getSelectedRows();
+			}
 		}
 		this.clearSelection();
 	}
@@ -222,8 +229,9 @@ public class TasksTable extends RemTable {
 	 */
 	public void shiftTableItemsinOtherTable(RemTable table){
 		int[] rows = this.getSelectedRows();
-		if(rows.length == 0){
-			JOptionPane.showMessageDialog(null, "You have to select a row to archive them");
+		if(rows.length < 1){
+			JOptionPane.showMessageDialog(null, "You have to select at least one row.");
+			return;
 		}
 		TableModel tm= this.getModel();
 		for(int row: rows){
@@ -238,7 +246,6 @@ public class TasksTable extends RemTable {
 			rows = this.getSelectedRows();
 		}
 
-		//add the remove function TODO
 		this.clearSelection();
 	}
 
