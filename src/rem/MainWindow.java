@@ -141,23 +141,23 @@ public class MainWindow extends JFrame{
 		menuItemArchive = new JMenuItem("Archive Task");
 
 		//Set icon for the menu items
-		menuOpenFiles.setIcon(new ImageIcon("icons/OpenFile.png"));
-		menuItemSave.setIcon(new ImageIcon("icons/Save.png"));
-		menuClose.setIcon(new ImageIcon("icons/Exit.png"));
-		menuItemNewTask.setIcon(new ImageIcon("icons/add.png"));
-		menuItemRemoveTask.setIcon(new ImageIcon("icons/remove.png"));
-		menuItemChangeStatus.setIcon(new ImageIcon("icons/done.png"));
-		menuItemArchive.setIcon(new ImageIcon("icons/archive.png"));
-		menuItemAbout.setIcon(new ImageIcon("icons/info.png"));
-		menuItemSettings.setIcon(new ImageIcon("icons/Settings.png"));
-		menuItemColours.setIcon(new ImageIcon("icons/Colour.png"));
+		menuOpenFiles.setIcon(new ImageIcon(getClass().getResource("/icons/OpenFile.png")));
+		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
+		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
+		menuItemNewTask.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
+		menuItemRemoveTask.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
+		menuItemChangeStatus.setIcon(new ImageIcon(getClass().getResource("/icons/done.png")));
+		menuItemArchive.setIcon(new ImageIcon(getClass().getResource("/icons/archive.png")));
+		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
+		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
+		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
 
 		//toolbar
-		this.newTaskButton = new JButton(new ImageIcon("icons/add.png"));
-		this.removeButton = new JButton(new ImageIcon("icons/remove.png"));
-		this.doneButton = new JButton(new ImageIcon("icons/done.png"));
-		this.saveButton = new JButton("Save");
-		this.archiveButton = new JButton(new ImageIcon("icons/archive.png"));
+		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
+		this.removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
+		this.doneButton = new JButton(new ImageIcon(getClass().getResource("/icons/done.png")));
+		this.saveButton = new JButton(new ImageIcon(getClass().getResource("/icons/Save.png")));
+		this.archiveButton = new JButton(new ImageIcon(getClass().getResource("/icons/archive.png")));
 
 		//Files
 		taskFile = new File("userfiles/tasks.txt");
@@ -185,6 +185,7 @@ public class MainWindow extends JFrame{
 		this.setLayout(new BorderLayout());
 		this.setContentPane(mainPanel);
 		this.setTitle("Reminder");
+		this.setIconImage(new ImageIcon(getClass().getResource("/icons/main.png")).getImage());
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Ocean".equals(info.getName())) {
