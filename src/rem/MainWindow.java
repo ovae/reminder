@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -75,6 +77,7 @@ public class MainWindow extends JFrame{
 	private JScrollPane tasksScrollPane;
 	private JScrollPane archiveScrollPane;
 	private JPanel tasksTab;
+	private JPanel calendarTab;
 
 	private JPanel archiveTab;
 	private TasksTable taskTable;
@@ -123,6 +126,7 @@ public class MainWindow extends JFrame{
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		calendarPane = new RemGregorianCalendar();
 		scrollCalendar = new JScrollPane(calendarPane);
+		calendarTab = new CalendarPanel();
 
 		//Menu
 		menuBar = new JMenuBar();
@@ -139,7 +143,11 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask = new JMenuItem("Remove task");
 		menuItemChangeStatus = new JMenuItem("Change status");
 		menuItemArchive = new JMenuItem("Archive Task");
+		menuFiles.setMnemonic(KeyEvent.VK_F);
+		menuTask.setMnemonic(KeyEvent.VK_T);
+		menuHelp.setMnemonic(KeyEvent.VK_H);
 
+		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		//Set icon for the menu items
 		menuOpenFiles.setIcon(new ImageIcon(getClass().getResource("/icons/OpenFile.png")));
 		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
@@ -151,7 +159,13 @@ public class MainWindow extends JFrame{
 		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
 		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
 		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
-
+		menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
+		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, SHORTCUT_MASK));
+		menuItemNewTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
+		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
+		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));
+		menuItemChangeStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
+		
 		//toolbar
 		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
 		this.removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
@@ -220,6 +234,7 @@ public class MainWindow extends JFrame{
 	 */
 	private void settingUpTheMenu(){
 		controlPanel.add(menuBar, BorderLayout.WEST);
+		//this.setJMenuBar(menuBar);
 		menuBar.add(menuFiles);
 			menuFiles.add(menuOpenFiles);
 			menuFiles.add(menuItemSave);
@@ -404,6 +419,7 @@ public class MainWindow extends JFrame{
 		tabbedPane.addTab("Latest", tasksScrollPane);
 		tabbedPane.addTab("Archive", archiveScrollPane);
 		tabbedPane.addTab("Calendar", scrollCalendar);
+		tabbedPane.addTab("Test", calendarTab);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
 		mainPanel.add(controlPanel, BorderLayout.NORTH);
@@ -439,9 +455,8 @@ public class MainWindow extends JFrame{
 		try {
 			FileHandler.loadFile(taskTable, taskFile);
 			FileHandler.loadFile(archiveTable, archiveFile);
-			
 		} catch (IOException e) {
-			System.err.println("Failed to load a file.");
+			JOptionPane.showMessageDialog(null, "Unable to load files.");
 		}finally{
 			infoPanel.setStateSaved();
 		}

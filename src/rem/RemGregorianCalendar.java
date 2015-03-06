@@ -8,7 +8,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -179,7 +181,6 @@ public class RemGregorianCalendar extends JPanel{
 		for(int m = 0; m < 5; m++) {
 			for(int n = 0; n < 7; n++) {
 				myDateState = ""+yearState+""+monthState+""+tempDays;
-
 				if(tempDays < (daysInMonth[monthState] +1)){
 					panelHolder[m][n].setLayout(new GridLayout(3,3));
 					panelHolder[m][n].setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -206,6 +207,9 @@ public class RemGregorianCalendar extends JPanel{
 					}
 					tempDays++;
 				}
+				if(n==6 && m==4){
+					panelHolder[m][n].add(new JLabel("  "+checkWeekday()+""));
+				}
 			}
 		}
 
@@ -223,5 +227,19 @@ public class RemGregorianCalendar extends JPanel{
 		}
 		setUpPanelHolder();
 		setCenPanelContent();
+	}
+	
+	private int currentDayOfTheYear(){
+		int day=0;
+		for(int i=0; i<currentMonth; i++){
+			day+=daysInMonth[i];
+		}
+		return day+currentDay;
+	}
+
+	public String checkWeekday(){
+		Calendar cal = Calendar.getInstance(); 
+		return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH);
+		//return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.ENGLISH);
 	}
 }
