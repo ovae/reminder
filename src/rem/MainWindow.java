@@ -31,6 +31,8 @@ import javax.swing.plaf.FileChooserUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import rem.calendar.CalendarPanel;
+import rem.calendar.RemGregorianCalendar;
 import rem.files.FileHandler;
 import subWindows.AddTaskFrame;
 import subWindows.InfoFrame;
@@ -161,6 +163,7 @@ public class MainWindow extends JFrame{
 		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
 		menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
 		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, SHORTCUT_MASK));
+		menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
 		menuItemNewTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
 		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
 		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));

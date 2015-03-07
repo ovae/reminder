@@ -1,4 +1,4 @@
-package rem;
+package rem.calendar;
 
 import java.util.Calendar;
 import java.util.Date;

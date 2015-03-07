@@ -1,4 +1,4 @@
-package rem;
+package rem.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,7 +16,7 @@ public class CalendarPanel extends JPanel{
 
 	private JPanel controlPanel;
 	private JPanel calendarPanel;
-	private ArrayList<JPanel> days;
+	private ArrayList<CalendarDayPanelComponent> days;
 	private Calendar cal;
 	private Date date;
 	private int[] daysInMonth;
@@ -26,7 +26,7 @@ public class CalendarPanel extends JPanel{
 		controlPanel = new JPanel();
 		calendarPanel = new JPanel();
 		calendarPanel.setLayout(new GridLayout(5,7));
-		days = new ArrayList<JPanel>();
+		days = new ArrayList<CalendarDayPanelComponent>();
 		cal = Calendar.getInstance();
 		date = new Date();
 		
@@ -59,10 +59,10 @@ public class CalendarPanel extends JPanel{
 		int index = 1;
 		int weekdaycounter=1;
 		for(JPanel panel: days){
-			panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-			panel.add(new JLabel(""+index));
+			//panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 			if(weekdaycounter==6 || weekdaycounter==7){
-				panel.setBackground(Color.LIGHT_GRAY);
+				//panel.setBackgroundColour(Color.LIGHT_GRAY);
+				((CalendarDayPanelComponent) panel).setBackgroundColour();
 			}
 
 			calendarPanel.add(panel);
@@ -80,7 +80,7 @@ public class CalendarPanel extends JPanel{
 
 	private void prepaireTheDaysList(){
 		for(int i=1; i<35; i++){
-			days.add(new JPanel());
+			days.add(new CalendarDayPanelComponent(i));
 		}
 	}
 }
