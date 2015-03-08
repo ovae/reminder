@@ -25,6 +25,6 @@ public class RemDate {
 		this.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 		this.dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 		this.year = calendar.get(Calendar.YEAR) - 1900;
-		
 	}
+
 }

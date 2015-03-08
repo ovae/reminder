@@ -149,26 +149,6 @@ public class MainWindow extends JFrame{
 		menuTask.setMnemonic(KeyEvent.VK_T);
 		menuHelp.setMnemonic(KeyEvent.VK_H);
 
-		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		//Set icon for the menu items
-		menuOpenFiles.setIcon(new ImageIcon(getClass().getResource("/icons/OpenFile.png")));
-		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
-		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
-		menuItemNewTask.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
-		menuItemRemoveTask.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
-		menuItemChangeStatus.setIcon(new ImageIcon(getClass().getResource("/icons/done.png")));
-		menuItemArchive.setIcon(new ImageIcon(getClass().getResource("/icons/archive.png")));
-		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
-		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
-		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
-		menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
-		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, SHORTCUT_MASK));
-		menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
-		menuItemNewTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
-		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
-		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));
-		menuItemChangeStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
-		
 		//toolbar
 		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
 		this.removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
@@ -323,6 +303,26 @@ public class MainWindow extends JFrame{
 				System.exit(0);
 			}
 		});
+
+		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+		//Set icon for the menu items
+		menuOpenFiles.setIcon(new ImageIcon(getClass().getResource("/icons/OpenFile.png")));
+		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
+		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
+		menuItemNewTask.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
+		menuItemRemoveTask.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
+		menuItemChangeStatus.setIcon(new ImageIcon(getClass().getResource("/icons/done.png")));
+		menuItemArchive.setIcon(new ImageIcon(getClass().getResource("/icons/archive.png")));
+		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
+		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
+		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
+		menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
+		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, SHORTCUT_MASK));
+		menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
+		menuItemNewTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
+		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
+		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));
+		menuItemChangeStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
 	}
 	
 	/**
@@ -421,8 +421,8 @@ public class MainWindow extends JFrame{
 		settingUpTaskTable();
 		tabbedPane.addTab("Latest", tasksScrollPane);
 		tabbedPane.addTab("Archive", archiveScrollPane);
-		tabbedPane.addTab("Calendar", scrollCalendar);
-		tabbedPane.addTab("Test", calendarTab);
+		//tabbedPane.addTab("Calendar", scrollCalendar);
+		tabbedPane.addTab("Calendar", calendarTab);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
 		mainPanel.add(controlPanel, BorderLayout.NORTH);

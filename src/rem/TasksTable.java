@@ -35,6 +35,7 @@ public class TasksTable extends RemTable {
 		status[2] = "half-finished";
 		status[3] = "finished";
 		status[4] = "delivered";
+		this.getTableHeader().setReorderingAllowed(false);
 	}
 
 	public void setTableHeader(String[] header){
