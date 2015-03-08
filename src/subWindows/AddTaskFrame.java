@@ -23,22 +23,26 @@ import rem.files.FileHandler;
 /**
  * 
  * @author ovae.
- *
+ * @version 20150308.
  */
 public class AddTaskFrame extends JFrame{
-	
+
 	private JTextField inputTopic = new JTextField("");
 	private JTextField inputAbout = new JTextField("");
-	
+
 	private JTextField inputBegin = new JTextField("");
 	private JTextField inputEnd = new JTextField("");
 	private JLabel beginInfoLabel = new JLabel("");
 	private JLabel endInfoLabel = new JLabel("");
 	private JButton addButton = new JButton("add");
 	private JButton resetButton = new JButton("reset");
-	
+
 	private MainWindow parentFrame;
-	
+
+	/**
+	 * 
+	 * @param parentFrame
+	 */
 	public AddTaskFrame(final MainWindow parentFrame){
 		if(parentFrame.equals(null)){
 			throw new IllegalArgumentException("The paarent frame can not be null.");
@@ -52,7 +56,10 @@ public class AddTaskFrame extends JFrame{
 		this.setLayout(new BorderLayout());
 		init();
 	}
-	
+
+	/**
+	 * 
+	 */
 	public void init(){
 		//set the basic setting for the frame.
 		//Declare all needed compounds.
@@ -159,5 +166,4 @@ public class AddTaskFrame extends JFrame{
 		inputBegin.setText("");
 		inputEnd.setText("");
 	}
-
 }

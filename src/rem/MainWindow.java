@@ -122,8 +122,8 @@ public class MainWindow extends JFrame{
 		this.archiveTab = new JPanel(new BorderLayout());
 		this.tasksScrollPane = new JScrollPane(tasksTab);
 		this.archiveScrollPane = new JScrollPane(archiveTab);
-		
-		//tabbed elements
+
+		//Tabbed elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		calendarPane = new RemGregorianCalendar();
@@ -145,9 +145,6 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask = new JMenuItem("Remove task");
 		menuItemChangeStatus = new JMenuItem("Change status");
 		menuItemArchive = new JMenuItem("Archive Task");
-		menuFiles.setMnemonic(KeyEvent.VK_F);
-		menuTask.setMnemonic(KeyEvent.VK_T);
-		menuHelp.setMnemonic(KeyEvent.VK_H);
 
 		//toolbar
 		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
@@ -183,16 +180,6 @@ public class MainWindow extends JFrame{
 		this.setContentPane(mainPanel);
 		this.setTitle("Reminder");
 		this.setIconImage(new ImageIcon(getClass().getResource("/icons/main.png")).getImage());
-		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Ocean".equals(info.getName())) {
-					UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (Exception e) {
-			// If Nimbus is not available, you can set the GUI to another look and feel.
-		}
 		centerWindow(this);
 	}
 
@@ -304,7 +291,6 @@ public class MainWindow extends JFrame{
 			}
 		});
 
-		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		//Set icon for the menu items
 		menuOpenFiles.setIcon(new ImageIcon(getClass().getResource("/icons/OpenFile.png")));
 		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
@@ -316,6 +302,9 @@ public class MainWindow extends JFrame{
 		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
 		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
 		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
+
+		//Set short cuts.
+		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
 		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, SHORTCUT_MASK));
 		menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
@@ -323,8 +312,13 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
 		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));
 		menuItemChangeStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
+
+		//Set mnemonics
+		menuFiles.setMnemonic(KeyEvent.VK_F);
+		menuTask.setMnemonic(KeyEvent.VK_T);
+		menuHelp.setMnemonic(KeyEvent.VK_H);
 	}
-	
+
 	/**
 	 * Sets up all toolbar components.
 	 */
@@ -440,7 +434,6 @@ public class MainWindow extends JFrame{
 
 		tasksTab.add(taskTable, BorderLayout.CENTER);
 		tasksTab.add(taskTable.getTableHeader(), BorderLayout.NORTH);
-
 		taskTable.checkIfTableHasChanged(infoPanel);
 
 		//Archive tab

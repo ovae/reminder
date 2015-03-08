@@ -19,7 +19,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
+/**
+ * 
+ * @author ovae.
+ * @version 20150308.
+ */
 public class CalendarPanel extends JPanel{
 
 	private JPanel controlPanel;
@@ -27,14 +31,17 @@ public class CalendarPanel extends JPanel{
 	private JPanel headerPanel;
 	private JPanel calendarPanel;
 	private ArrayList<CalendarDayPanelComponent> days;
-	private Date date;
 	private int[] daysInMonth;
 
+	//control buttons
 	private JButton statePast = new JButton("\u25C4");
 	private JButton stateFuture = new JButton("\u25BA");
 	private JLabel monthLabel;
 	private JLabel yearLabel;
 
+	/**
+	 * 
+	 */
 	public CalendarPanel(){
 		this.setLayout(new BorderLayout());
 		controlPanel = new JPanel(new BorderLayout());
@@ -45,11 +52,10 @@ public class CalendarPanel extends JPanel{
 		monthLabel = new JLabel(""+Calendar.getInstance().get(Calendar.MONTH));
 		yearLabel = new JLabel(""+Calendar.getInstance().get(Calendar.YEAR));
 		days = new ArrayList<CalendarDayPanelComponent>();
-		date = new Date();
-		
+
 		int[] monthCOnfigurationOne = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
 		int[] monthCOnfigurationTwo = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-		if(date.getYear()%4 ==0){
+		if(Calendar.getInstance().get(Calendar.YEAR)%4 ==0){
 			daysInMonth = monthCOnfigurationOne;
 		}else{
 			daysInMonth = monthCOnfigurationTwo;
@@ -60,7 +66,10 @@ public class CalendarPanel extends JPanel{
 		setUpCalendarPanel();
 		setUpNavigationPanel();
 	}
-	
+
+	/**
+	 * 
+	 */
 	private void setUpomponents(){
 		controlPanel.add(navigatePanel, BorderLayout.NORTH);
 		controlPanel.add(headerPanel, BorderLayout.SOUTH);
@@ -68,8 +77,10 @@ public class CalendarPanel extends JPanel{
 		this.add(calendarPanel, BorderLayout.CENTER);
 	}
 
+	/**
+	 * 
+	 */
 	private void setUpControlPanel(){
-		//controlPanel.add(new JLabel("Control Panel"));
 		JPanel weekdaysPanel = new JPanel();
 		JPanel[] panelWeekdays = new JPanel[7];
 		weekdaysPanel.setLayout(new GridLayout(0,7));
@@ -90,9 +101,11 @@ public class CalendarPanel extends JPanel{
 		panelWeekdays[5].add(new JLabel("    Saturday"), BorderLayout.CENTER);
 		panelWeekdays[6].add(new JLabel("    Sunday"), BorderLayout.CENTER);
 		headerPanel.add(weekdaysPanel, BorderLayout.CENTER);
-		//calendarPanel.add(weekdaysPanel, BorderLayout.NORTH);
 	}
 
+	/**
+	 * 
+	 */
 	private void setUpNavigationPanel(){
 		JPanel bar = new JPanel();
 		bar.setLayout(new GridLayout(1,5));
@@ -107,8 +120,10 @@ public class CalendarPanel extends JPanel{
 		navigatePanel.add(stateFuture, BorderLayout.EAST);
 	}
 
+	/**
+	 * 
+	 */
 	private void setUpCalendarPanel(){
-		int daysOfTheSelectedMonth = daysInMonth[Calendar.getInstance().get(Calendar.DAY_OF_MONTH)];
 		int selectedMonth = Calendar.MONTH;
 		int selectedYear = Calendar.YEAR;
 		int gap = prepaireTheDaysList(selectedMonth, selectedYear);
@@ -131,11 +146,16 @@ public class CalendarPanel extends JPanel{
 				weekdaycounter++;
 			}
 			if(index == selectedMonth){
-				
 			}
 		}
 	}
 
+	/**
+	 * 
+	 * @param month
+	 * @param year
+	 * @return gap
+	 */
 	private int prepaireTheDaysList(final int month, final int year){
 		int gap = (new GregorianCalendar(year, month, 1).get(Calendar.DAY_OF_WEEK) +4);
 		int weekday = 1;
@@ -148,46 +168,15 @@ public class CalendarPanel extends JPanel{
 				weekday++;
 			}
 		}
-		
+
 		for(CalendarDayPanelComponent day : days){
 			if(day.getTableHeader() != 0){
 				Random t = new Random();
 				for(int i=0; i<t.nextInt(5); i++){
-				day.addTask("task "+i);
+				day.addTask("taskydjyedmyüö "+i);
 				}
 			}
 		}
 		return gap;
-	}
-
-	/*
-	 * 
-	 */
-	private String weekdayOfTheFirstDayOfTheMonth(){
-		ArrayList<String> weekdays = new ArrayList<>();
-		weekdays.add("MONDAY");
-		weekdays.add("TUESDAY");
-		weekdays.add("WEDNESDAY");
-		weekdays.add("THURSDAY");
-		weekdays.add("FRIDAY");
-		weekdays.add("SATURDAY");
-		weekdays.add("SUNDAY");
-		String currentWeekDay = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH);
-		int currentDayOfTheMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-		int positionOfWeekDay = weekdays.indexOf(currentWeekDay);
-		boolean abziebar=true;
-		/*
-		while(abziebar){
-			if((currentDayOfTheMonth -7) < 1){
-				abziebar = false;
-				break;
-			}
-			currentDayOfTheMonth-=7;
-		}
-		*/
-		/*if((positionOfWeekDay-currentDayOfTheMonth) <1){
-			return weekdays.get(((positionOfWeekDay-currentDayOfTheMonth)+7));
-		}*/
-		return weekdays.get(positionOfWeekDay+currentDayOfTheMonth-1);
 	}
 }

@@ -10,6 +10,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * @author ovae.
+ * @version 20150308.
+ */
 public class InfoFrame extends JFrame{
 
 	//Declare all needed compounds
@@ -30,6 +35,9 @@ public class InfoFrame extends JFrame{
 	JLabel blueLabel;
 	JLabel whiteLabel;
 
+	/**
+	 * 
+	 */
 	public InfoFrame(){
 		infoPanel = new JPanel();
 		green = new JTextField();
@@ -51,6 +59,9 @@ public class InfoFrame extends JFrame{
 		this.setVisible(false);
 	}
 
+	/**
+	 * 
+	 */
 	private void settingUpInfoFrame(){
 		//set the basic setting for the frame.
 		this.setLocationRelativeTo(null);

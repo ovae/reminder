@@ -4,9 +4,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * 
+ * The RemTable is a specialised JTable, with 5 columns.
  * @author ovae.
- * @version 20150303
+ * @version 20150303.
  */
 public abstract class RemTable extends JTable{
 	
@@ -24,8 +24,7 @@ public abstract class RemTable extends JTable{
 		this.columnNames[4] = "colomn4" ;
 		this.setModel(new DefaultTableModel(tableContent, columnNames));
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param topic
@@ -34,16 +33,37 @@ public abstract class RemTable extends JTable{
 	 * @param end
 	 */
 	public abstract void addRow(final String topic, final String about, final String begin, final String end);
-	
+
+	/**
+	 * 
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
 	public abstract void addRow(final String topic, final String about, final String begin, final String end, final String status);
-	
+
+	/**
+	 * 
+	 * @param tempTable
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
 	public abstract void addRow(final RemTable tempTable, final String topic, final String about, final String begin, final String end,final String status);
 
 	/**
 	 * Remove a single Row
+	 * @param rowNumber
 	 */
 	public abstract void removeRow(final int rowNumber);
 
+	/**
+	 * 
+	 */
 	public abstract void removeRows();
 
 	/**
@@ -66,10 +86,13 @@ public abstract class RemTable extends JTable{
 		this.columnNames = columnNames;
 	}
 
-
-	public void addRow(String valueOf, String valueOf2, int valueOf3,
-			int valueOf4, String valueOf5) {
-		// TODO Auto-generated method stub
-		
-	}
+	/**
+	 * 
+	 * @param valueOf
+	 * @param valueOf2
+	 * @param valueOf3
+	 * @param valueOf4
+	 * @param valueOf5
+	 */
+	public void addRow(String valueOf, String valueOf2, int valueOf3, int valueOf4, String valueOf5){}
 }

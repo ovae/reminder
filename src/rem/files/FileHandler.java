@@ -16,15 +16,20 @@ import java.util.regex.Matcher;
 
 import rem.RemTable;
 
+/**
+ * FileHandler to load and write to a file.
+ * @author ovae.
+ * @version 20150308.
+ */
 public class FileHandler {
 
-	
-	private FileHandler(){
-		
-	}
+	/**
+	 * An instantiation is disable, because all methods are static.
+	 */
+	private FileHandler(){}
 
 	/**
-	 * 
+	 * Load from file into JTable.
 	 * @param table
 	 * @param filename
 	 * @throws IOException
@@ -52,7 +57,7 @@ public class FileHandler {
 	}
 
 	/**
-	 * 
+	 * Write from ArrayList to file.
 	 * @param list
 	 * @param filename
 	 * @throws IOException
