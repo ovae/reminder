@@ -51,7 +51,7 @@ public class CalendarPanel extends JPanel{
 	 */
 	public CalendarPanel(){
 		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-		monthState = Calendar.getInstance().get(Calendar.MONTH)+1;
+		monthState = Calendar.getInstance().get(Calendar.MONTH);
 		yearState = Calendar.getInstance().get(Calendar.YEAR);
 		currentMonth = monthState;
 		currentYear = yearState;
@@ -176,7 +176,7 @@ public class CalendarPanel extends JPanel{
 	 */
 	private void setUpCalendarPanel(){
 		prepaireTheDaysList();
-		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK) +3);
+		int gap = getGap();
 		int index = 2-gap;
 		int weekdaycounter=1;
 		for(JPanel panel: days){
@@ -203,7 +203,7 @@ public class CalendarPanel extends JPanel{
 	 * @return gap
 	 */
 	private void prepaireTheDaysList(){
-		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+3);
+		int gap = getGap();
 		if(gap > 7){
 			gap -=7;
 		}
@@ -212,7 +212,7 @@ public class CalendarPanel extends JPanel{
 			days.add(new CalendarDayPanelComponent(0));
 		}
 		for(int i=gap; i<(calendarWidth*calendarHeight); i++){
-			if(i<daysInMonth[monthState-1]+gap){
+			if(i<daysInMonth[monthState]+gap){
 				days.add(new CalendarDayPanelComponent(weekday));
 				weekday++;
 			}
@@ -231,5 +231,12 @@ public class CalendarPanel extends JPanel{
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	private int getGap(){
+		return (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+6);
 	}
 }
