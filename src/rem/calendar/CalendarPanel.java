@@ -50,7 +50,7 @@ public class CalendarPanel extends JPanel{
 	 * 
 	 */
 	public CalendarPanel(){
-		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)-1;
+		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		monthState = Calendar.getInstance().get(Calendar.MONTH)+1;
 		yearState = Calendar.getInstance().get(Calendar.YEAR);
 		currentMonth = monthState;
@@ -65,7 +65,7 @@ public class CalendarPanel extends JPanel{
 		headerPanel = new JPanel(new BorderLayout());
 		calendarPanel = new JPanel();
 		calendarPanel.setLayout(new GridLayout(calendarHeight,calendarWidth));
-		monthLabel = new JLabel(""+monthState);
+		monthLabel = new JLabel(""+(monthState+1));
 		yearLabel = new JLabel(""+yearState);
 		days = new ArrayList<CalendarDayPanelComponent>();
 
@@ -176,7 +176,7 @@ public class CalendarPanel extends JPanel{
 	 */
 	private void setUpCalendarPanel(){
 		prepaireTheDaysList();
-		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK) +4);
+		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK) +3);
 		int index = 2-gap;
 		int weekdaycounter=1;
 		for(JPanel panel: days){
@@ -204,6 +204,9 @@ public class CalendarPanel extends JPanel{
 	 */
 	private void prepaireTheDaysList(){
 		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+3);
+		if(gap > 7){
+			gap -=7;
+		}
 		int weekday = 1;
 		for(int i=1;i<gap;i++){
 			days.add(new CalendarDayPanelComponent(0));
@@ -213,6 +216,10 @@ public class CalendarPanel extends JPanel{
 				days.add(new CalendarDayPanelComponent(weekday));
 				weekday++;
 			}
+		}
+		int r = (calendarWidth*calendarHeight)-days.size();
+		for(int i=0;i<r;i++){
+			days.add(new CalendarDayPanelComponent(0));
 		}
 
 		//Add tasks to the CalendarDayPanelComponent table.
