@@ -2,19 +2,15 @@ package rem.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,29 +29,49 @@ public class CalendarPanel extends JPanel{
 	private ArrayList<CalendarDayPanelComponent> days;
 	private int[] daysInMonth;
 
+	//Sizes
+	private final int calendarHeight;
+	private final int calendarWidth;
+
 	//control buttons
 	private JButton statePast = new JButton("\u25C4");
 	private JButton stateFuture = new JButton("\u25BA");
 	private JLabel monthLabel;
 	private JLabel yearLabel;
 
+	//States
+	private int dayState;
+	private int monthState;
+	private int yearState;
+	private int currentMonth;
+	private int currentYear;
+
 	/**
 	 * 
 	 */
 	public CalendarPanel(){
+		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)-1;
+		monthState = Calendar.getInstance().get(Calendar.MONTH)+1;
+		yearState = Calendar.getInstance().get(Calendar.YEAR);
+		currentMonth = monthState;
+		currentYear = yearState;
+
+		calendarWidth = 7;
+		calendarHeight = 6;
+
 		this.setLayout(new BorderLayout());
 		controlPanel = new JPanel(new BorderLayout());
 		navigatePanel = new JPanel();
 		headerPanel = new JPanel(new BorderLayout());
 		calendarPanel = new JPanel();
-		calendarPanel.setLayout(new GridLayout(6,7));
-		monthLabel = new JLabel(""+Calendar.getInstance().get(Calendar.MONTH));
-		yearLabel = new JLabel(""+Calendar.getInstance().get(Calendar.YEAR));
+		calendarPanel.setLayout(new GridLayout(calendarHeight,calendarWidth));
+		monthLabel = new JLabel(""+monthState);
+		yearLabel = new JLabel(""+yearState);
 		days = new ArrayList<CalendarDayPanelComponent>();
 
 		int[] monthCOnfigurationOne = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
 		int[] monthCOnfigurationTwo = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-		if(Calendar.getInstance().get(Calendar.YEAR)%4 ==0){
+		if(yearState%4 ==0){
 			daysInMonth = monthCOnfigurationOne;
 		}else{
 			daysInMonth = monthCOnfigurationTwo;
@@ -108,44 +124,71 @@ public class CalendarPanel extends JPanel{
 	 */
 	private void setUpNavigationPanel(){
 		JPanel bar = new JPanel();
-		bar.setLayout(new GridLayout(1,5));
-		bar.add(new JLabel("Year:"));
+		bar.setLayout(new GridLayout(1,7));
+		bar.add(new JLabel("Year: "));
 		bar.add(yearLabel);
-		bar.add(new JLabel("Month:"));
+		bar.add(new JLabel("Month: "));
 		bar.add(monthLabel);
-		bar.add(new JLabel("Day: "+ Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+		bar.add(new JLabel("Day: "+ dayState));
 
 		navigatePanel.add(statePast, BorderLayout.WEST);
 		navigatePanel.add(bar, BorderLayout.CENTER);
 		navigatePanel.add(stateFuture, BorderLayout.EAST);
+
+		statePast.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				monthState--;
+				if(monthState <0 ){
+					monthState=11;
+					yearState--;
+				}
+				monthLabel.setText(""+(monthState+1)+"");
+				yearLabel.setText(""+yearState+"");
+				refreshCalendar();
+			}
+		});
+
+		stateFuture.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				monthState++;
+				if(monthState >= 12 ){
+					monthState=0;
+					yearState+=1;
+				}
+				monthLabel.setText(""+(monthState+1)+"");
+				yearLabel.setText(""+yearState+"");
+				refreshCalendar();
+			}
+		});
+	}
+
+	private void refreshCalendar(){
+		calendarPanel.repaint();
 	}
 
 	/**
 	 * 
 	 */
 	private void setUpCalendarPanel(){
-		int selectedMonth = Calendar.MONTH;
-		int selectedYear = Calendar.YEAR;
-		int gap = prepaireTheDaysList(selectedMonth, selectedYear);
+		prepaireTheDaysList();
+		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK) +4);
 		int index = 2-gap;
 		int weekdaycounter=1;
 		for(JPanel panel: days){
-			//panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 			if(weekdaycounter==6 || weekdaycounter==7){
 				((CalendarDayPanelComponent) panel).setBackgroundColour();
 			}
-			if(index == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
+			if(index == dayState && currentMonth == monthState && currentYear == yearState){
 				((CalendarDayPanelComponent) panel).setActuelDayColour();
 			}
-
 			calendarPanel.add(panel);
 			index++;
 			if(weekdaycounter == 7){
 				weekdaycounter =1;
 			}else{
 				weekdaycounter++;
-			}
-			if(index == selectedMonth){
 			}
 		}
 	}
@@ -156,27 +199,27 @@ public class CalendarPanel extends JPanel{
 	 * @param year
 	 * @return gap
 	 */
-	private int prepaireTheDaysList(final int month, final int year){
-		int gap = (new GregorianCalendar(year, month, 1).get(Calendar.DAY_OF_WEEK) +4);
+	private void prepaireTheDaysList(){
+		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+3);
 		int weekday = 1;
 		for(int i=1;i<gap;i++){
 			days.add(new CalendarDayPanelComponent(0));
 		}
-		for(int i=gap; i<(6*7); i++){
-			if(i<daysInMonth[month]+gap){
+		for(int i=gap; i<(calendarWidth*calendarHeight); i++){
+			if(i<daysInMonth[monthState-1]+gap){
 				days.add(new CalendarDayPanelComponent(weekday));
 				weekday++;
 			}
 		}
 
+		//Add tasks to the CalendarDayPanelComponent table.
 		for(CalendarDayPanelComponent day : days){
 			if(day.getTableHeader() != 0){
 				Random t = new Random();
 				for(int i=0; i<t.nextInt(5); i++){
-				day.addTask("taskydjyedmyüö "+i);
+				day.addTask("task "+i);
 				}
 			}
 		}
-		return gap;
 	}
 }
