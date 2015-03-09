@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -66,12 +68,26 @@ public class FileHandler {
 		File write = filename;
 		PrintWriter writer  =null;
 		try{
-			writer = new PrintWriter(new BufferedWriter(new FileWriter(write)));
-			for(String row: list){
-				writer.write(row);
+			writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(write), "UTF-8"));
+			if(checkNotUnix()){
+				for(String row: list){
+					writer.write(row);
+				}
+			}else{
+				for(String row: list){
+					writer.write(row);
+					writer.write("\r\n");
+				}
 			}
 		}finally{
 			writer.close();
 		}
+	}
+
+	private static boolean checkNotUnix(){
+		if( !System.getProperty("os.name").equals("Linux")){
+			return false;
+		}
+		return true;
 	}
 }

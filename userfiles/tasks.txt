@@ -1,7 +1,7 @@
 [Theoretische Informatik][Übungblatt 01][20150302][20150307][not_started]
 [Theoretische Informatik][Übungblatt 01][20150302][20150308][not_started]
 [Theoretische Informatik][Übungblatt 01][20150302][20150309][not_started]
-[HelloHello][AouHello][20150306][20150306][not_started]
+[HelloHellodaedsv][AouHello][20150306][20150306][not_started]
 [TheoretischeInf][Übung][20150303][20150308][not_started]
 [TheoretischeInf][Übung][20150303][20150309][not_started]
 [TheoretischeInf][Übung][20150303][20150310][not_started]
