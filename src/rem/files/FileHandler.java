@@ -72,11 +72,11 @@ public class FileHandler {
 			if(checkNotUnix()){
 				for(String row: list){
 					writer.write(row);
+					writer.write("\r\n");
 				}
 			}else{
 				for(String row: list){
 					writer.write(row);
-					writer.write("\r\n");
 				}
 			}
 		}finally{
@@ -86,8 +86,8 @@ public class FileHandler {
 
 	private static boolean checkNotUnix(){
 		if( !System.getProperty("os.name").equals("Linux")){
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

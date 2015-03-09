@@ -15,6 +15,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import rem.TasksTable;
+
 /**
  * 
  * @author ovae.
@@ -46,10 +48,13 @@ public class CalendarPanel extends JPanel{
 	private int currentMonth;
 	private int currentYear;
 
+	//Table object
+	private TasksTable table;
 	/**
 	 * 
 	 */
-	public CalendarPanel(){
+	public CalendarPanel(final TasksTable table){
+		this.table = table;
 		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		monthState = Calendar.getInstance().get(Calendar.MONTH);
 		yearState = Calendar.getInstance().get(Calendar.YEAR);
@@ -223,6 +228,7 @@ public class CalendarPanel extends JPanel{
 		}
 
 		//Add tasks to the CalendarDayPanelComponent table.
+		/*
 		for(CalendarDayPanelComponent day : days){
 			if(day.getTableHeader() != 0){
 				Random t = new Random();
@@ -230,7 +236,49 @@ public class CalendarPanel extends JPanel{
 				day.addTask("task "+i);
 				}
 			}
+		}*/
+
+		ArrayList<String> endList = new ArrayList<>();
+		ArrayList<String> aboutList = new ArrayList<>();
+		ArrayList<String> topicList = new ArrayList<>();
+		for(int i=0; i<table.getRowCount(); i++){
+			topicList.add((String) table.getValueAt(i,0));
+			aboutList.add((String) table.getValueAt(i,1));
+			endList.add((String) table.getValueAt(i,3));
 		}
+		int gapE = getGap();
+		if(gapE > 7){
+			gapE -=7;
+		}
+		int index = gapE-13;
+		for(CalendarDayPanelComponent day : days){
+			
+			String vergleich = yearState+""+(monthState+1)+""+(index+1);
+			if(monthState <=9 && index<=9){
+				vergleich = yearState+"0"+(monthState+1)+"0"+(index+1);
+			}
+			if(monthState <=9 && index>=9){
+				vergleich = yearState+"0"+(monthState+1)+""+(index+1);
+			}
+			if(monthState >=9 && index<=9){
+				vergleich = yearState+""+(monthState+1)+"0"+(index+1);
+			}
+			if(monthState >=9 && index>=9){
+				vergleich = yearState+""+(monthState+1)+""+(index+1);
+			}
+				
+				if(endList.contains(vergleich)){
+					//topicList.get(endList.indexOf(vergleich))
+					day.addTask(aboutList.get(endList.indexOf(vergleich)));
+					System.out.println(vergleich+" := "+aboutList.get(endList.indexOf(vergleich)));
+				}
+				if(daysInMonth[monthState] == index){
+					break;
+				}else{
+					index++;
+				}
+		}
+
 	}
 	
 	/**

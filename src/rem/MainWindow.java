@@ -128,7 +128,7 @@ public class MainWindow extends JFrame{
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		calendarPane = new RemGregorianCalendar();
 		scrollCalendar = new JScrollPane(calendarPane);
-		calendarTab = new CalendarPanel();
+		calendarTab = new CalendarPanel(taskTable);
 
 		//Menu
 		//Initialise all menus and menu items.
