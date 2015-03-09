@@ -129,7 +129,7 @@ public class CalendarPanel extends JPanel{
 		bar.add(yearLabel);
 		bar.add(new JLabel("Month: "));
 		bar.add(monthLabel);
-		bar.add(new JLabel("Day: "+ dayState));
+		bar.add(new JLabel("Day: "+ (dayState+1)));
 
 		navigatePanel.add(statePast, BorderLayout.WEST);
 		navigatePanel.add(bar, BorderLayout.CENTER);
@@ -165,7 +165,10 @@ public class CalendarPanel extends JPanel{
 	}
 
 	private void refreshCalendar(){
+		days.clear();
+		calendarPanel.removeAll();
 		calendarPanel.repaint();
+		setUpCalendarPanel();
 	}
 
 	/**

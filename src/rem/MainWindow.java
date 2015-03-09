@@ -123,7 +123,7 @@ public class MainWindow extends JFrame{
 		this.tasksScrollPane = new JScrollPane(tasksTab);
 		this.archiveScrollPane = new JScrollPane(archiveTab);
 
-		//Tabbed elements
+		//TabbedPane elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		calendarPane = new RemGregorianCalendar();
@@ -131,6 +131,7 @@ public class MainWindow extends JFrame{
 		calendarTab = new CalendarPanel();
 
 		//Menu
+		//Initialise all menus and menu items.
 		menuBar = new JMenuBar();
 		menuFiles = new JMenu("Files");
 		menuHelp = new JMenu("Help");
@@ -146,7 +147,7 @@ public class MainWindow extends JFrame{
 		menuItemChangeStatus = new JMenuItem("Change status");
 		menuItemArchive = new JMenuItem("Archive Task");
 
-		//toolbar
+		//Toolbar
 		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
 		this.removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
 		this.doneButton = new JButton(new ImageIcon(getClass().getResource("/icons/done.png")));

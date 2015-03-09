@@ -70,6 +70,16 @@ public class AddTaskFrame extends JFrame{
 		JLabel enterBegin = new JLabel("Begin: ");
 		JLabel enterEnd = new JLabel("End: ");
 
+		//Set a input format for begin and end input fields.
+		NumberFormat inputFormate = NumberFormat.getNumberInstance(); 
+		inputFormate.setMaximumIntegerDigits(8);
+		inputFormate.setGroupingUsed(false); 
+		inputBegin = new JFormattedTextField(inputFormate);
+
+		inputFormate.setMaximumIntegerDigits(8);
+		inputFormate.setGroupingUsed(false); 
+		inputEnd = new JFormattedTextField(inputFormate);
+
 		//Set the bounds of the Labels
 		enterTopic.setBounds(10, 100, 100, 28);
 		enterAbout.setBounds(10, 100, 100, 28);
