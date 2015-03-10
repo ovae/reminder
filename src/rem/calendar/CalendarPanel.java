@@ -294,7 +294,6 @@ public class CalendarPanel extends JPanel{
 		}
 		int index = gapE-13;
 		for(CalendarDayPanelComponent day : days){
-			
 			String vergleich = yearState+""+(monthState+1)+""+(index+1);
 			if(monthState <=9 && index<=9){
 				vergleich = yearState+"0"+(monthState+1)+"0"+(index+1);
@@ -308,11 +307,13 @@ public class CalendarPanel extends JPanel{
 			if(monthState >=9 && index>=9){
 				vergleich = yearState+""+(monthState+1)+""+(index+1);
 			}
-				
-				if(endList.contains(vergleich)){
-					//topicList.get(endList.indexOf(vergleich))
-					day.addTask(aboutList.get(endList.indexOf(vergleich)));
-					System.out.println(vergleich+" := "+aboutList.get(endList.indexOf(vergleich)));
+				int innerDex = 0;
+				for(String end: endList){
+					if(end.equals(vergleich)){
+						day.addTask(aboutList.get(innerDex));
+						//System.out.println(vergleich+" := "+aboutList.get(innerDex));
+					}
+					innerDex++;
 				}
 				if(daysInMonth[monthState] == index){
 					break;
@@ -320,8 +321,7 @@ public class CalendarPanel extends JPanel{
 					index++;
 				}
 		}
-		System.out.println("\n");
-
+		//System.out.println("\n");
 	}
 	
 	/**
