@@ -343,10 +343,7 @@ public class MainWindow extends JFrame{
 		removeButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				//if(p==0){
-					taskTable.removeRow();
-				//}
+				taskTable.removeRow();
 			}
 		});
 

@@ -38,6 +38,8 @@ public class CalendarPanel extends JPanel{
 	//control buttons
 	private JButton statePast = new JButton("\u25C4");
 	private JButton stateFuture = new JButton("\u25BA");
+	private JButton refreshButton = new JButton("\u21BA");
+	private JButton homeButton = new JButton("\u2302");
 	private JLabel monthLabel;
 	private JLabel yearLabel;
 
@@ -122,23 +124,33 @@ public class CalendarPanel extends JPanel{
 		panelWeekdays[5].add(new JLabel("    Saturday"), BorderLayout.CENTER);
 		panelWeekdays[6].add(new JLabel("    Sunday"), BorderLayout.CENTER);
 		headerPanel.add(weekdaysPanel, BorderLayout.CENTER);
+		
 	}
 
 	/**
 	 * 
 	 */
 	private void setUpNavigationPanel(){
+		JPanel refreshPanel = new JPanel(new BorderLayout());
+		JPanel homePanel = new JPanel(new BorderLayout());
 		JPanel bar = new JPanel();
+		JPanel controlbar = new JPanel(new BorderLayout());
+
+		refreshPanel.add(refreshButton);
+		homePanel.add(homeButton);
+
 		bar.setLayout(new GridLayout(1,7));
 		bar.add(new JLabel("Year: "));
 		bar.add(yearLabel);
 		bar.add(new JLabel("Month: "));
 		bar.add(monthLabel);
-		bar.add(new JLabel("Day: "+ (dayState+1)));
+		bar.add(new JLabel("Day: "+ (dayState)));
 
-		navigatePanel.add(statePast, BorderLayout.WEST);
-		navigatePanel.add(bar, BorderLayout.CENTER);
-		navigatePanel.add(stateFuture, BorderLayout.EAST);
+		//SetToolTipTexts
+		statePast.setToolTipText("Previous month");
+		stateFuture.setToolTipText("Next month");
+		refreshButton.setToolTipText("refresh");
+		homeButton.setToolTipText("This month");
 
 		statePast.addActionListener(new ActionListener(){
 			@Override
@@ -167,12 +179,41 @@ public class CalendarPanel extends JPanel{
 				refreshCalendar();
 			}
 		});
+
+		refreshButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				refreshCalendar();
+			}
+		});
+
+		homeButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				monthState = currentMonth;
+				yearState = currentYear;
+				monthLabel.setText(""+(currentMonth+1));
+				yearLabel.setText(""+currentYear);
+				refreshCalendar();
+			}
+		});
+
+		controlbar.add(statePast, BorderLayout.WEST);
+		controlbar.add(bar, BorderLayout.CENTER);
+		controlbar.add(stateFuture, BorderLayout.EAST);
+
+		navigatePanel.add(refreshPanel, BorderLayout.WEST);
+		navigatePanel.add(controlbar, BorderLayout.CENTER);
+		navigatePanel.add(homePanel, BorderLayout.EAST);
 	}
 
+	/**
+	 * 
+	 */
 	private void refreshCalendar(){
 		days.clear();
 		calendarPanel.removeAll();
-		calendarPanel.repaint();
+		calendarPanel.revalidate();
 		setUpCalendarPanel();
 	}
 
@@ -238,6 +279,7 @@ public class CalendarPanel extends JPanel{
 			}
 		}*/
 
+		//Add the tasks from the taskTable to the calendar.
 		ArrayList<String> endList = new ArrayList<>();
 		ArrayList<String> aboutList = new ArrayList<>();
 		ArrayList<String> topicList = new ArrayList<>();
@@ -278,6 +320,7 @@ public class CalendarPanel extends JPanel{
 					index++;
 				}
 		}
+		System.out.println("\n");
 
 	}
 	
