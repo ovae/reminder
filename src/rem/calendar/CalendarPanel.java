@@ -128,7 +128,7 @@ public class CalendarPanel extends JPanel{
 	}
 
 	/**
-	 * 
+	 * Creates all elements of the navigation panel.
 	 */
 	private void setUpNavigationPanel(){
 		JPanel refreshPanel = new JPanel(new BorderLayout());
@@ -208,7 +208,7 @@ public class CalendarPanel extends JPanel{
 	}
 
 	/**
-	 * 
+	 * Refresh's the calendar content.
 	 */
 	private void refreshCalendar(){
 		days.clear();
@@ -243,7 +243,7 @@ public class CalendarPanel extends JPanel{
 	}
 
 	/**
-	 * 
+	 * Prepares the days list, witch contains a JPanel for each day of the month.
 	 * @param month
 	 * @param year
 	 * @return gap
@@ -267,17 +267,6 @@ public class CalendarPanel extends JPanel{
 		for(int i=0;i<r;i++){
 			days.add(new CalendarDayPanelComponent(0));
 		}
-
-		//Add tasks to the CalendarDayPanelComponent table.
-		/*
-		for(CalendarDayPanelComponent day : days){
-			if(day.getTableHeader() != 0){
-				Random t = new Random();
-				for(int i=0; i<t.nextInt(5); i++){
-				day.addTask("task "+i);
-				}
-			}
-		}*/
 
 		//Add the tasks from the taskTable to the calendar.
 		ArrayList<String> endList = new ArrayList<>();
@@ -311,7 +300,6 @@ public class CalendarPanel extends JPanel{
 				for(String end: endList){
 					if(end.equals(vergleich)){
 						day.addTask(aboutList.get(innerDex));
-						//System.out.println(vergleich+" := "+aboutList.get(innerDex));
 					}
 					innerDex++;
 				}
@@ -321,11 +309,10 @@ public class CalendarPanel extends JPanel{
 					index++;
 				}
 		}
-		//System.out.println("\n");
 	}
-	
+
 	/**
-	 * 
+	 * Returns the gap between the first day of the month and the begin of the week.
 	 */
 	private int getGap(){
 		return (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+6);
