@@ -210,7 +210,7 @@ public class CalendarPanel extends JPanel{
 	/**
 	 * Refresh's the calendar content.
 	 */
-	private void refreshCalendar(){
+	public void refreshCalendar(){
 		days.clear();
 		calendarPanel.removeAll();
 		calendarPanel.revalidate();

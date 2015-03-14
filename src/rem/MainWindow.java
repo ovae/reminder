@@ -121,7 +121,7 @@ public class MainWindow extends JFrame{
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		this.calendarPane = new RemGregorianCalendar();
-		this.scrollCalendar = new JScrollPane(calendarPane);
+		//this.scrollCalendar = new JScrollPane(calendarPane);
 		this.calendarTab = new CalendarPanel(taskTable);
 
 		//Menu
@@ -190,6 +190,8 @@ public class MainWindow extends JFrame{
 				settingUpTheContentPanel();
 				
 				loadTableContent();
+				//Refresh the calendarTab.
+				((CalendarPanel) calendarTab).refreshCalendar();
 			}
 		});
 	}
@@ -217,7 +219,10 @@ public class MainWindow extends JFrame{
 		menuOpenFiles.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				//JFileChooser chooser = new JFileChooser("user.dir");
+				JFileChooser chooser = new JFileChooser("user.dir");
+				chooser.showOpenDialog(null);
+				System.out.println(chooser.getSelectedFile());
+				File filename = chooser.getSelectedFile();
 			}
 		});
 
