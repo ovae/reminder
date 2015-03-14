@@ -299,7 +299,7 @@ public class CalendarPanel extends JPanel{
 				int innerDex = 0;
 				for(String end: endList){
 					if(end.equals(vergleich)){
-						day.addTask(aboutList.get(innerDex));
+						day.addTask(topicList.get(innerDex)+": "+aboutList.get(innerDex));
 					}
 					innerDex++;
 				}

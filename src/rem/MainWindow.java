@@ -1,7 +1,6 @@
 package rem;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -10,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -25,11 +23,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.plaf.FileChooserUI;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import rem.calendar.CalendarPanel;
 import rem.calendar.RemGregorianCalendar;
@@ -126,9 +120,9 @@ public class MainWindow extends JFrame{
 		//TabbedPane elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
-		calendarPane = new RemGregorianCalendar();
-		scrollCalendar = new JScrollPane(calendarPane);
-		calendarTab = new CalendarPanel(taskTable);
+		this.calendarPane = new RemGregorianCalendar();
+		this.scrollCalendar = new JScrollPane(calendarPane);
+		this.calendarTab = new CalendarPanel(taskTable);
 
 		//Menu
 		//Initialise all menus and menu items.
@@ -431,7 +425,7 @@ public class MainWindow extends JFrame{
 		taskTable.setTableRowColor();
 
 		tasksTab.add(taskTable, BorderLayout.CENTER);
-		tasksTab.add(taskTable.getTableHeader(), BorderLayout.NORTH);
+		tasksTab.add(taskTable.getTableHeader(), BorderLayout.PAGE_START);
 		taskTable.checkIfTableHasChanged(infoPanel);
 
 		//Archive tab
@@ -441,7 +435,7 @@ public class MainWindow extends JFrame{
 		archiveTable.setTableRowColor();
 
 		archiveTab.add(archiveTable, BorderLayout.CENTER);
-		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.NORTH);
+		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.PAGE_START);
 	}
 
 	//Load the table content from files in the table.
