@@ -28,13 +28,14 @@ import javax.swing.table.DefaultTableModel;
 import rem.calendar.CalendarPanel;
 import rem.calendar.RemGregorianCalendar;
 import rem.files.FileHandler;
-import subWindows.AddTaskFrame;
-import subWindows.InfoFrame;
+import rem.subWindows.AddTaskFrame;
+import rem.subWindows.InfoFrame;
+import rem.subWindows.SettingsFrame;
 
 /**
  * The main window of this program.
  * @author ovae.
- * @version 20150303
+ * @version 20150315.
  */
 public class MainWindow extends JFrame{
 
@@ -79,7 +80,6 @@ public class MainWindow extends JFrame{
 	private TasksTable taskTable;
 	private TasksTable archiveTable;
 	private RemGregorianCalendar calendarPane;
-	private JScrollPane scrollCalendar;
 
 	//Toolbar buttons
 	private JButton newTaskButton;
@@ -91,6 +91,7 @@ public class MainWindow extends JFrame{
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
 	private InfoFrame infoFrame;
+	private SettingsFrame settingsFrame;
 
 	//Files
 	private File taskFile;
@@ -121,7 +122,6 @@ public class MainWindow extends JFrame{
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		this.calendarPane = new RemGregorianCalendar();
-		//this.scrollCalendar = new JScrollPane(calendarPane);
 		this.calendarTab = new CalendarPanel(taskTable);
 
 		//Menu
@@ -155,8 +155,10 @@ public class MainWindow extends JFrame{
 		//sub menus
 		this.addTaskFrame = new AddTaskFrame(this);
 		this.infoFrame = new InfoFrame();
+		this.settingsFrame = new SettingsFrame(this);
 		centerWindow(infoFrame);
 		centerWindow(addTaskFrame);
+		centerWindow(settingsFrame);
 
 		//Basic menu structure.
 		windowStructure();
@@ -254,6 +256,13 @@ public class MainWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				taskTable.shiftTableItemsinOtherTable(archiveTable);
+			}
+		});
+
+		menuItemSettings.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				settingsFrame.setVisible(true);
 			}
 		});
 
@@ -412,7 +421,6 @@ public class MainWindow extends JFrame{
 		settingUpTaskTable();
 		tabbedPane.addTab("Latest", tasksScrollPane);
 		tabbedPane.addTab("Archive", archiveScrollPane);
-		//tabbedPane.addTab("Calendar", scrollCalendar);
 		tabbedPane.addTab("Calendar", calendarTab);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
@@ -469,5 +477,13 @@ public class MainWindow extends JFrame{
 		int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
 		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
 		frame.setLocation(x, y);
+	}
+
+	public void setTaskFilePath(final File file){
+		this.taskFile = file;
+	}
+
+	public void setArchiveFilePath(final File file){
+		this.archiveFile = file;
 	}
 }

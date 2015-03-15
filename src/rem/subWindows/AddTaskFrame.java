@@ -1,4 +1,4 @@
-package subWindows;
+package rem.subWindows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -162,11 +162,6 @@ public class AddTaskFrame extends JFrame{
 		this.add(buttonPanel, BorderLayout.SOUTH);
 		//Disable the default visibility.
 		this.setVisible(false);
-	}
-
-	//Sets the addFrame to visible.
-	public void setVisible(Boolean visible){
-		this.setVisible(visible);
 	}
 
 	//Resets the all input fields of the addFrame.

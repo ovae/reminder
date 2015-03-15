@@ -1,4 +1,4 @@
-package subWindows;
+package rem.subWindows;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -147,8 +147,4 @@ public class InfoFrame extends JFrame{
 		this.add(infoPanel);
 	}
 
-	//Sets the addFrame to visible.
-	public void setVisible(Boolean visible){
-		this.setVisible(visible);
-	}
 }
