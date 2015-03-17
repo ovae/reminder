@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -37,6 +38,9 @@ public class SettingsFrame extends JFrame{
 	private JButton changeTaskPathButton;
 	private JButton changeArchivePathButton;
 
+	private File tasksFile;
+	private File archiveFile;
+
 	public SettingsFrame(final MainWindow parentFrame){
 		super("Settings");
 		mainPanel = new JPanel(new BorderLayout());
@@ -55,6 +59,15 @@ public class SettingsFrame extends JFrame{
 		this.changeArchivePathButton = new JButton("\u21A9");
 
 		this.setUpAllComponents();
+
+		//load the JTextfield contents
+		try{
+			this.tasksPathField.setText(parentFrame.getPreferences().loadTasksFilePath());
+			this.archivePathField.setText(parentFrame.getPreferences().loadArchiveFilePath());
+		}catch(Exception e){
+			
+		}
+
 		this.setVisible(false);
 	}
 
@@ -106,9 +119,12 @@ public class SettingsFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser("user.dir");
-				chooser.showOpenDialog(null);
-				tasksPathField.setText(chooser.getSelectedFile().toString());
-				//parentFrame.setTaskFilePath(chooser.getSelectedFile());
+				int result = chooser.showOpenDialog(null);
+				if(result == 0){
+					tasksPathField.setText(chooser.getSelectedFile().toString());
+					tasksFile = chooser.getSelectedFile();
+					System.out.println(""+chooser.getSelectedFile());
+				}
 			}
 		});
 
@@ -116,9 +132,29 @@ public class SettingsFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser("user.dir");
-				chooser.showOpenDialog(null);
-				archivePathField.setText(chooser.getSelectedFile().toString());
+				int result = chooser.showOpenDialog(null);
+				if(result == 0){
+					archivePathField.setText(chooser.getSelectedFile().toString());
+					archiveFile = chooser.getSelectedFile();
+				}
+			}
+		});
+
+		saveButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				parentFrame.getPreferences().storeTasksFilePath(""+tasksFile);
+				parentFrame.getPreferences().storeArchiveFilePath(""+archiveFile);
+				//parentFrame.setTaskFilePath(chooser.getSelectedFile());
 				//parentFrame.setArchiveFilePath(chooser.getSelectedFile());
+				System.out.println("Saved.");
+			}
+		});
+
+		cancelButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
 			}
 		});
 

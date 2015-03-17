@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -28,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import rem.calendar.CalendarPanel;
 import rem.calendar.RemGregorianCalendar;
 import rem.files.FileHandler;
+import rem.preference.RemPreferences;
 import rem.subWindows.AddTaskFrame;
 import rem.subWindows.InfoFrame;
 import rem.subWindows.SettingsFrame;
@@ -40,7 +42,7 @@ import rem.subWindows.SettingsFrame;
 public class MainWindow extends JFrame{
 
 	//Program info
-	private String version ="0.2.5";
+	private String version ="0.3.0";
 	
 	//Main menu configuration
 	private int windowHeight;
@@ -96,6 +98,9 @@ public class MainWindow extends JFrame{
 	//Files
 	private File taskFile;
 	private File archiveFile;
+
+	//Preferences
+	private RemPreferences preferences;
 
 	/**
 	 * Creates a new MainWindow.
@@ -160,6 +165,9 @@ public class MainWindow extends JFrame{
 		centerWindow(addTaskFrame);
 		centerWindow(settingsFrame);
 
+		//Initialise the preferences
+		preferences = new RemPreferences();
+
 		//Basic menu structure.
 		windowStructure();
 		//this.pack();
@@ -205,7 +213,7 @@ public class MainWindow extends JFrame{
 		controlPanel.add(menuBar, BorderLayout.WEST);
 		//this.setJMenuBar(menuBar);
 		menuBar.add(menuFiles);
-			menuFiles.add(menuOpenFiles);
+			//menuFiles.add(menuOpenFiles);
 			menuFiles.add(menuItemSave);
 			menuFiles.add(menuClose);
 		menuBar.add(menuTask);
@@ -214,7 +222,7 @@ public class MainWindow extends JFrame{
 			menuTask.add(menuItemChangeStatus);
 			menuTask.add(menuItemArchive);
 		menuBar.add(menuHelp);
-			menuHelp.add(menuItemSettings);
+			//menuHelp.add(menuItemSettings);
 			menuHelp.add(menuItemColours);
 			menuHelp.add(menuItemAbout);
 
@@ -314,7 +322,7 @@ public class MainWindow extends JFrame{
 
 		//Set short cuts.
 		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
+		//menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
 		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, SHORTCUT_MASK));
 		menuItemSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
 		menuItemNewTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
@@ -485,5 +493,9 @@ public class MainWindow extends JFrame{
 
 	public void setArchiveFilePath(final File file){
 		this.archiveFile = file;
+	}
+
+	public RemPreferences getPreferences(){
+		return preferences;
 	}
 }
