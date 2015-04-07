@@ -20,7 +20,7 @@ import rem.MainWindow;
 /**
  * 
  * @author ovae.
- * @version 20150303
+ * @version 20150408.
  */
 public class SettingsFrame extends JFrame{
 

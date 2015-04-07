@@ -17,7 +17,7 @@ import javax.swing.table.TableModel;
 /**
  * 
  * @author ovae.
- * @version 20150302
+ * @version 20150408.
  */
 public class TasksTable extends RemTable {
 

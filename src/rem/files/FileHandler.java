@@ -17,7 +17,7 @@ import rem.RemTable;
 /**
  * FileHandler to load and write to a file.
  * @author ovae.
- * @version 20150308.
+ * @version 20150408.
  */
 public class FileHandler {
 

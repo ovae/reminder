@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 /**
  * 
  * @author ovae.
- * @version 20150308.
+ * @version 20150408.
  */
 public class InfoFrame extends JFrame{
 

@@ -6,7 +6,7 @@ import javax.swing.table.DefaultTableModel;
 /**
  * The RemTable is a specialised JTable, with 5 columns.
  * @author ovae.
- * @version 20150303.
+ * @version 20150408.
  */
 public abstract class RemTable extends JTable{
 

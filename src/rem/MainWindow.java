@@ -34,7 +34,7 @@ import rem.subWindows.SettingsFrame;
 /**
  * The main window of this program.
  * @author ovae.
- * @version 20150315.
+ * @version 20150408.
  */
 public class MainWindow extends JFrame{
 

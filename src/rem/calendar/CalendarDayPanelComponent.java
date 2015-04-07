@@ -11,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 /**
  * This component represents a day in the calendar with a list of tasks.
  * @author ovae.
- * @version 20150308.
+ * @version 20150408.
  */
 public class CalendarDayPanelComponent extends JPanel{
 

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
  * A JPanel with two JLabels, at the left the actual date
  * and at the left an information if the program have changed.
  * @author ovae.
- * @version 20150303
+ * @version 20150408.
  */
 public class InfoPanel extends JPanel{
 
