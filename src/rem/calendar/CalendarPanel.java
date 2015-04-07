@@ -222,14 +222,14 @@ public class CalendarPanel extends JPanel{
 	private void setUpCalendarPanel(){
 		prepaireTheDaysList();
 		int gap = getGap();
-		int index = -gap;
+		int index = 1-gap;
 		System.out.println("INDEX"+index);
 		int weekdaycounter=1;
 		for(JPanel panel: days){
 			if(weekdaycounter==6 || weekdaycounter==7){
 				((CalendarDayPanelComponent) panel).setBackgroundColour();
 			}
-			if(index+gap-1 == dayState && currentMonth == monthState && currentYear == yearState){
+			if(index+1 == dayState && currentMonth == monthState && currentYear == yearState){
 				((CalendarDayPanelComponent) panel).setActuelDayColour();
 			}
 			calendarPanel.add(panel);
