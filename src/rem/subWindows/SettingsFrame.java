@@ -2,7 +2,6 @@ package rem.subWindows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +23,8 @@ import rem.MainWindow;
  * @version 20150303
  */
 public class SettingsFrame extends JFrame{
+
+	private static final long serialVersionUID = 1L;
 
 	private JPanel mainPanel;
 	private JPanel contentPanel;

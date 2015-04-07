@@ -8,11 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.prefs.Preferences;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -27,7 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import rem.calendar.CalendarPanel;
-import rem.calendar.RemGregorianCalendar;
 import rem.files.FileHandler;
 import rem.preference.RemPreferences;
 import rem.subWindows.AddTaskFrame;
@@ -40,6 +37,8 @@ import rem.subWindows.SettingsFrame;
  * @version 20150315.
  */
 public class MainWindow extends JFrame{
+
+	private static final long serialVersionUID = 1L;
 
 	//Program info
 	private String version ="0.3.0";
@@ -81,7 +80,6 @@ public class MainWindow extends JFrame{
 	private JPanel archiveTab;
 	private TasksTable taskTable;
 	private TasksTable archiveTable;
-	private RemGregorianCalendar calendarPane;
 
 	//Toolbar buttons
 	private JButton newTaskButton;
@@ -126,7 +124,6 @@ public class MainWindow extends JFrame{
 		//TabbedPane elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
-		this.calendarPane = new RemGregorianCalendar();
 		this.calendarTab = new CalendarPanel(taskTable);
 
 		//Menu
@@ -171,6 +168,9 @@ public class MainWindow extends JFrame{
 		//Basic menu structure.
 		windowStructure();
 		//this.pack();
+	}
+
+	public void run(){
 		this.setVisible(true);
 	}
 
@@ -226,7 +226,7 @@ public class MainWindow extends JFrame{
 			menuHelp.add(menuItemColours);
 			menuHelp.add(menuItemAbout);
 
-		menuOpenFiles.addActionListener(new ActionListener(){
+		/*menuOpenFiles.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				JFileChooser chooser = new JFileChooser("user.dir");
@@ -234,7 +234,7 @@ public class MainWindow extends JFrame{
 				System.out.println(chooser.getSelectedFile());
 				File filename = chooser.getSelectedFile();
 			}
-		});
+		});*/
 
 		menuItemNewTask.addActionListener(new ActionListener(){
 			@Override

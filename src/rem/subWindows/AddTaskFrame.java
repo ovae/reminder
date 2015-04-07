@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,11 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import rem.MainWindow;
-import rem.files.FileHandler;
 
 /**
  * 
@@ -26,6 +23,8 @@ import rem.files.FileHandler;
  * @version 20150308.
  */
 public class AddTaskFrame extends JFrame{
+
+	private static final long serialVersionUID = 1L;
 
 	private JTextField inputTopic = new JTextField("");
 	private JTextField inputAbout = new JTextField("");

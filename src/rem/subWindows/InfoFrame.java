@@ -17,6 +17,8 @@ import javax.swing.JTextField;
  */
 public class InfoFrame extends JFrame{
 
+	private static final long serialVersionUID = 1L;
+
 	//Declare all needed compounds
 	JPanel infoPanel;
 	JLabel head;

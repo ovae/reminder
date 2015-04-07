@@ -1,7 +1,5 @@
 package rem;
 
-import javax.swing.JFrame;
-
 /**
  * The Main class is used to execute this program.
  * @author ovae.
@@ -14,6 +12,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		JFrame main = new MainWindow();
+		MainWindow main = new MainWindow();
+		main.run();
 	}
 }

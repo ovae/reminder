@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -22,11 +21,12 @@ import javax.swing.table.TableModel;
  */
 public class TasksTable extends RemTable {
 
+	private static final long serialVersionUID = 1L;
+
 	private String[] columnNames;
 	private String[] status;
 	private Object[][] tableContent;
-	private DefaultTableModel defaultTableModel;
-	
+
 	TasksTable(DefaultTableModel defaultTableModel) {
 		super(defaultTableModel);
 		status = new String[5];
@@ -166,6 +166,9 @@ public class TasksTable extends RemTable {
 	 */
 	public void setTableRowColor(){
 		this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
 				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -216,12 +219,15 @@ public class TasksTable extends RemTable {
 	 */
 	public void setTableRowWhite(){
 		this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-			final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				c.setBackground(Color.WHITE);
-			return c;
-		}
+				return c;
+			}
 		});
 	}
 
@@ -275,13 +281,11 @@ public class TasksTable extends RemTable {
 	@Override
 	public void removeRow(int rowNumber) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void removeRows() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

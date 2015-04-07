@@ -9,14 +9,14 @@ import javax.swing.table.DefaultTableModel;
  * @version 20150303.
  */
 public abstract class RemTable extends JTable{
-	
+
+	private static final long serialVersionUID = 1L;
+
 	private String[] columnNames;
 	private Object[][] tableContent;
-	private DefaultTableModel defaultTableModel;
-	
+
 	RemTable(DefaultTableModel defaultTableModel){
 		this.columnNames = new String[5];
-		this.defaultTableModel = defaultTableModel;
 		this.columnNames[0] = "colomn0" ;
 		this.columnNames[1] = "colomn1" ;
 		this.columnNames[2] = "colomn2" ;

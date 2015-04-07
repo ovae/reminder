@@ -15,6 +15,8 @@ import javax.swing.JPanel;
  */
 public class InfoPanel extends JPanel{
 
+	private static final long serialVersionUID = 1L;
+
 	//Label witch shows the program state, changed or saved.
 	private JLabel programState;
 	//Label to show the actual date.

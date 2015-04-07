@@ -3,7 +3,6 @@ package rem.calendar;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -15,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
  * @version 20150308.
  */
 public class CalendarDayPanelComponent extends JPanel{
+
+	private static final long serialVersionUID = 1L;
 
 	private JPanel mainPanel;
 	private JTable taskTable;

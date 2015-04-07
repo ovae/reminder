@@ -2,7 +2,13 @@ package rem.preference;
 
 import java.util.prefs.Preferences;
 
+/**
+ * 
+ * @author ovae.
+ * @version 20150408.
+ */
 public class RemPreferences{
+
 	private Preferences preferences;
 	private String taskPath;
 	private String archivePath;

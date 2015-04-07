@@ -1,11 +1,9 @@
 package rem.calendar;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
@@ -15,7 +13,6 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -25,11 +22,12 @@ import javax.swing.JPanel;
  */
 public class RemGregorianCalendar extends JPanel{
 
+	private static final long serialVersionUID = 1L;
+
 	private Date date = new Date();
 	private int currentDay;
 	private int currentMonth;
 	private int currentYear;
-	private int currentDayOfTheMonth;
 	private JPanel topPanel = new JPanel();
 		private JPanel weekInfoPanel = new JPanel();
 			private JLabel monthLabel;
@@ -44,10 +42,7 @@ public class RemGregorianCalendar extends JPanel{
 	private JButton statePast = new JButton("\u25C4");
 	private JButton stateFuture = new JButton("\u25BA");
 	private int monthState;
-	private int dayState;
 	private int yearState;
-	private int currentState;
-	private String myDateState;
 
 	@SuppressWarnings("deprecation")
 	public RemGregorianCalendar(){
@@ -58,7 +53,7 @@ public class RemGregorianCalendar extends JPanel{
 		yearState = currentYear+1900;
 		monthLabel= new JLabel(""+(currentMonth+1)+"");
 		yearLabel = new JLabel(""+(currentYear+1900));
-		myDateState = ""+yearLabel+""+monthLabel+""+currentDay;
+		//myDateState = ""+yearLabel+""+monthLabel+""+currentDay;
 		createPanel();
 		setTopPanel();
 		setCenPanelContent();
@@ -178,7 +173,7 @@ public class RemGregorianCalendar extends JPanel{
 		int tempDays = 1;
 		for(int m = 0; m < 5; m++) {
 			for(int n = 0; n < 7; n++) {
-				myDateState = ""+yearState+""+monthState+""+tempDays;
+				//myDateState = ""+yearState+""+monthState+""+tempDays;
 				if(tempDays < (daysInMonth[monthState] +1)){
 					panelHolder[m][n].setLayout(new GridLayout(3,3));
 					panelHolder[m][n].setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -223,13 +218,13 @@ public class RemGregorianCalendar extends JPanel{
 		setCenPanelContent();
 	}
 
-	private int currentDayOfTheYear(){
+	/*private int currentDayOfTheYear(){
 		int day=0;
 		for(int i=0; i<currentMonth; i++){
 			day+=daysInMonth[i];
 		}
 		return day+currentDay;
-	}
+	}*/
 
 	public String checkWeekday(){
 		Calendar cal = Calendar.getInstance(); 

@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -23,6 +22,8 @@ import rem.TasksTable;
  * @version 20150308.
  */
 public class CalendarPanel extends JPanel{
+
+	private static final long serialVersionUID = 1L;
 
 	private JPanel controlPanel;
 	private JPanel navigatePanel;
@@ -223,7 +224,6 @@ public class CalendarPanel extends JPanel{
 		prepaireTheDaysList();
 		int gap = getGap();
 		int index = 1-gap;
-		System.out.println("INDEX"+index);
 		int weekdaycounter=1;
 		for(JPanel panel: days){
 			if(weekdaycounter==6 || weekdaycounter==7){
