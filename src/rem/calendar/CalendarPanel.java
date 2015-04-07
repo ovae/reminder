@@ -124,7 +124,6 @@ public class CalendarPanel extends JPanel{
 		panelWeekdays[5].add(new JLabel("    Saturday"), BorderLayout.CENTER);
 		panelWeekdays[6].add(new JLabel("    Sunday"), BorderLayout.CENTER);
 		headerPanel.add(weekdaysPanel, BorderLayout.CENTER);
-		
 	}
 
 	/**
@@ -223,13 +222,18 @@ public class CalendarPanel extends JPanel{
 	private void setUpCalendarPanel(){
 		prepaireTheDaysList();
 		int gap = getGap();
-		int index = 2-gap;
+		if(gap > 7){
+			gap -=7;
+		}
+		gap--;
+		int index = -gap;
+		System.out.println("INDEX"+index);
 		int weekdaycounter=1;
 		for(JPanel panel: days){
 			if(weekdaycounter==6 || weekdaycounter==7){
 				((CalendarDayPanelComponent) panel).setBackgroundColour();
 			}
-			if(index == dayState && currentMonth == monthState && currentYear == yearState){
+			if(index+1 == dayState && currentMonth == monthState && currentYear == yearState){
 				((CalendarDayPanelComponent) panel).setActuelDayColour();
 			}
 			calendarPanel.add(panel);
@@ -281,7 +285,7 @@ public class CalendarPanel extends JPanel{
 		if(gapE > 7){
 			gapE -=7;
 		}
-		int index = gapE-13;
+		int index = gapE-(gapE+(gapE-1));
 		for(CalendarDayPanelComponent day : days){
 			String vergleich = yearState+""+(monthState+1)+""+(index+1);
 			if(monthState <=9 && index<=9){

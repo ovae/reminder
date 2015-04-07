@@ -93,7 +93,6 @@ public class RemGregorianCalendar extends JPanel{
 		intern.add(new JLabel("  "));
 		intern.add(new JLabel("Day: "+currentDay));
 
-
 		weekInfoPanel.add(statePast, BorderLayout.WEST);
 		weekInfoPanel.add(stateFuture, BorderLayout.EAST);
 		weekInfoPanel.add(intern, BorderLayout.CENTER);
@@ -101,7 +100,6 @@ public class RemGregorianCalendar extends JPanel{
 		statePast.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//JOptionPane.showMessageDialog(null, "< Past");
 				monthState--;
 				if(monthState <0 ){
 					monthState=11;
@@ -215,10 +213,6 @@ public class RemGregorianCalendar extends JPanel{
 
 	}
 
-	private void loadTickets(){
-
-	}
-
 	private void refreshCalendar(){
 		for(int m = 0; m < 5; m++) {
 			for(int n = 0; n < 7; n++) {
@@ -228,7 +222,7 @@ public class RemGregorianCalendar extends JPanel{
 		setUpPanelHolder();
 		setCenPanelContent();
 	}
-	
+
 	private int currentDayOfTheYear(){
 		int day=0;
 		for(int i=0; i<currentMonth; i++){
@@ -240,6 +234,5 @@ public class RemGregorianCalendar extends JPanel{
 	public String checkWeekday(){
 		Calendar cal = Calendar.getInstance(); 
 		return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH);
-		//return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.ENGLISH);
 	}
 }
