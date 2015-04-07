@@ -222,10 +222,6 @@ public class CalendarPanel extends JPanel{
 	private void setUpCalendarPanel(){
 		prepaireTheDaysList();
 		int gap = getGap();
-		if(gap > 7){
-			gap -=7;
-		}
-		gap--;
 		int index = -gap;
 		System.out.println("INDEX"+index);
 		int weekdaycounter=1;
@@ -233,7 +229,7 @@ public class CalendarPanel extends JPanel{
 			if(weekdaycounter==6 || weekdaycounter==7){
 				((CalendarDayPanelComponent) panel).setBackgroundColour();
 			}
-			if(index+1 == dayState && currentMonth == monthState && currentYear == yearState){
+			if(index+gap-1 == dayState && currentMonth == monthState && currentYear == yearState){
 				((CalendarDayPanelComponent) panel).setActuelDayColour();
 			}
 			calendarPanel.add(panel);
@@ -254,9 +250,6 @@ public class CalendarPanel extends JPanel{
 	 */
 	private void prepaireTheDaysList(){
 		int gap = getGap();
-		if(gap > 7){
-			gap -=7;
-		}
 		int weekday = 1;
 		for(int i=1;i<gap;i++){
 			days.add(new CalendarDayPanelComponent(0));
@@ -281,11 +274,8 @@ public class CalendarPanel extends JPanel{
 			aboutList.add((String) table.getValueAt(i,1));
 			endList.add((String) table.getValueAt(i,3));
 		}
-		int gapE = getGap();
-		if(gapE > 7){
-			gapE -=7;
-		}
-		int index = gapE-(gapE+(gapE-1));
+
+		int index = 1-gap;
 		for(CalendarDayPanelComponent day : days){
 			String vergleich = yearState+""+(monthState+1)+""+(index+1);
 			if(monthState <=9 && index<=9){
@@ -319,6 +309,10 @@ public class CalendarPanel extends JPanel{
 	 * Returns the gap between the first day of the month and the begin of the week.
 	 */
 	private int getGap(){
-		return (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+6);
+		int gap = (new GregorianCalendar(yearState, monthState, 1).get(Calendar.DAY_OF_WEEK)+6);
+		if(gap > 7){
+			gap -=7;
+		}
+		return gap--;
 	}
 }
