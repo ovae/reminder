@@ -59,7 +59,6 @@ public class MainWindow extends JFrame{
 	private JMenu menuFiles;
 	private JMenu menuTask;
 	private JMenu menuHelp;
-	private JMenuItem menuOpenFiles;
 	private JMenuItem menuItemSave;
 	private JMenuItem menuClose;
 	private JMenuItem menuItemSettings;
@@ -132,7 +131,6 @@ public class MainWindow extends JFrame{
 		menuFiles = new JMenu("Files");
 		menuHelp = new JMenu("Help");
 		menuTask = new JMenu("Task");
-		menuOpenFiles = new JMenuItem("Open File");
 		menuItemSave = new JMenuItem("Save");
 		menuClose = new JMenuItem("Close");
 		menuItemSettings = new JMenuItem("Settings");
@@ -227,16 +225,6 @@ public class MainWindow extends JFrame{
 			menuHelp.add(menuItemColours);
 			menuHelp.add(menuItemAbout);
 
-		/*menuOpenFiles.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				JFileChooser chooser = new JFileChooser("user.dir");
-				chooser.showOpenDialog(null);
-				System.out.println(chooser.getSelectedFile());
-				File filename = chooser.getSelectedFile();
-			}
-		});*/
-
 		menuItemNewTask.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
@@ -310,7 +298,6 @@ public class MainWindow extends JFrame{
 		});
 
 		//Set icon for the menu items
-		menuOpenFiles.setIcon(new ImageIcon(getClass().getResource("/icons/OpenFile.png")));
 		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
 		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
 		menuItemNewTask.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
