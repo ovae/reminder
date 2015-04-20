@@ -149,7 +149,7 @@ public class MainWindow extends JFrame{
 		this.archiveButton = new JButton(new ImageIcon(getClass().getResource("/icons/archive.png")));
 
 		//Files
-		System.out.println(System.getProperty("user.dir")+"/userfiles/tasks.txt");
+		//System.out.println(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		archiveFile = new File(System.getProperty("user.dir")+"/userfiles/archive.txt");
 

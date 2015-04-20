@@ -2,7 +2,9 @@ package rem.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -34,6 +36,7 @@ public class CalendarDayPanelComponent extends JPanel{
 		mainPanel = new JPanel(new BorderLayout());
 		this.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 		setUpTable(dayNumb);
+		 ClickEvent();
 	}
 
 	/**
@@ -89,5 +92,22 @@ public class CalendarDayPanelComponent extends JPanel{
 	 */
 	public int getTableHeader(){
 		return dayNumb;
+	}
+
+	/**
+	 * 
+	 */
+	private void ClickEvent(){
+		taskTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent e){
+				try{
+					int row=taskTable.rowAtPoint(e.getPoint());
+					int col= taskTable.columnAtPoint(e.getPoint());
+					JOptionPane.showMessageDialog(null,""+taskTable.getValueAt(row,col).toString(), "Day: "+dayNumb, JOptionPane.INFORMATION_MESSAGE);
+				}catch(ArrayIndexOutOfBoundsException f){
+					//This happens if the table has no elements.
+				}
+			}
+		});
 	}
 }
