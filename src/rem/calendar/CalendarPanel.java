@@ -224,16 +224,25 @@ public class CalendarPanel extends JPanel{
 		prepaireTheDaysList();
 		int gap = getGap();
 		int index = 1-gap;
+		int dayCounter = 1;
 		int weekdaycounter=1;
 		for(JPanel panel: days){
-			if(weekdaycounter==6 || weekdaycounter==7){
-				((CalendarDayPanelComponent) panel).setBackgroundColour();
-			}
+			panel.setBorder(null);
 			if(index+1 == dayState && currentMonth == monthState && currentYear == yearState){
 				((CalendarDayPanelComponent) panel).setActuelDayColour();
 			}
+			if(dayCounter >= gap && dayCounter <= daysInMonth[monthState]+gap-1){
+				if(weekdaycounter==6 || weekdaycounter==7){
+					((CalendarDayPanelComponent) panel).setBackgroundColourWeekend();
+				}
+			}
+			if(!(dayCounter >= gap && dayCounter <= daysInMonth[monthState]+gap-1)){
+				((CalendarDayPanelComponent) panel).setBackgroundColour();
+				
+			}
 			calendarPanel.add(panel);
 			index++;
+			dayCounter++;
 			if(weekdaycounter == 7){
 				weekdaycounter =1;
 			}else{

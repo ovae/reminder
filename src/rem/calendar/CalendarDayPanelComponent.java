@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,6 +25,7 @@ public class CalendarDayPanelComponent extends JPanel{
 	private Object[][] tableContent;
 	public final static int MAX_TASKS = 42;
 	private int dayNumb;
+	private JScrollPane scroll;
 
 	/**
 	 * 
@@ -34,7 +36,9 @@ public class CalendarDayPanelComponent extends JPanel{
 		this.dayNumb = dayNumb;
 		this.setLayout(new BorderLayout());
 		mainPanel = new JPanel(new BorderLayout());
-		this.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
+		scroll = new JScrollPane(mainPanel);
+		scroll.setBorder(null);
+		this.add(scroll, BorderLayout.CENTER);
 		setUpTable(dayNumb);
 		 ClickEvent();
 	}
@@ -47,6 +51,8 @@ public class CalendarDayPanelComponent extends JPanel{
 		taskTable = new JTable(new DefaultTableModel());
 		taskTable.setOpaque(false);
 		taskTable.setEnabled(false);
+		taskTable.getTableHeader().setBorder(BorderFactory.createRaisedSoftBevelBorder());
+		taskTable.setBorder(BorderFactory.createRaisedSoftBevelBorder());
 		taskTable.getTableHeader().setReorderingAllowed(false);
 
 		if(dayNumb == 0){
@@ -74,9 +80,19 @@ public class CalendarDayPanelComponent extends JPanel{
 	/**
 	 * Activates the colour of the JPanel background.
 	 */
+	public void setBackgroundColourWeekend(){
+		taskTable.setBackground(Color.LIGHT_GRAY);
+		// Saturday and Sonday. 
+		mainPanel.setBackground(Color.LIGHT_GRAY);
+	}
+
+	/**
+	 * 
+	 */
 	public void setBackgroundColour(){
 		taskTable.setBackground(Color.LIGHT_GRAY);
-		mainPanel.setBackground(Color.LIGHT_GRAY);
+		//mainPanel.setBackground(Color.MAGENTA);
+		scroll.setBorder(null);
 	}
 
 	/**
