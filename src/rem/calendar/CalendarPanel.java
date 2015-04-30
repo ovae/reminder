@@ -53,11 +53,15 @@ public class CalendarPanel extends JPanel{
 
 	//Table object
 	private TasksTable table;
+
+	//Atchive table
+	private TasksTable archive;
 	/**
 	 * 
 	 */
-	public CalendarPanel(final TasksTable table){
+	public CalendarPanel(final TasksTable table, final TasksTable archive){
 		this.table = table;
+		this.archive = archive;
 		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		monthState = Calendar.getInstance().get(Calendar.MONTH);
 		yearState = Calendar.getInstance().get(Calendar.YEAR);
@@ -278,10 +282,19 @@ public class CalendarPanel extends JPanel{
 		ArrayList<String> endList = new ArrayList<>();
 		ArrayList<String> aboutList = new ArrayList<>();
 		ArrayList<String> topicList = new ArrayList<>();
+
+		//Add the tasks from the tasks table to the calender lists.
 		for(int i=0; i<table.getRowCount(); i++){
 			topicList.add((String) table.getValueAt(i,0));
 			aboutList.add((String) table.getValueAt(i,1));
 			endList.add((String) table.getValueAt(i,3));
+		}
+
+		//Add the archive from the tasks table to the calender lists.
+		for(int i=0; i<archive.getRowCount(); i++){
+			topicList.add((String) "[A]"+archive.getValueAt(i,0));
+			aboutList.add((String) archive.getValueAt(i,1));
+			endList.add((String) archive.getValueAt(i,3));
 		}
 
 		int index = 1-gap;

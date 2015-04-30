@@ -56,8 +56,7 @@ public class MainWindow extends JFrame{
 
 	//Menu
 	private JMenuBar menuBar;
-	private JMenu menuFiles;
-	private JMenu menuTask;
+	private JMenu menuMenus;
 	private JMenu menuHelp;
 	private JMenuItem menuItemSave;
 	private JMenuItem menuClose;
@@ -68,6 +67,9 @@ public class MainWindow extends JFrame{
 	private JMenuItem menuItemRemoveTask;
 	private JMenuItem menuItemChangeStatus;
 	private JMenuItem menuItemArchive;
+
+	private JMenuItem menuItemRestore;
+	private JMenuItem menuItemRemoveArchiveTask;
 
 	//TabbedPane
 	private JTabbedPane tabbedPane;
@@ -86,6 +88,9 @@ public class MainWindow extends JFrame{
 	private JButton doneButton;
 	private JButton saveButton;
 	private JButton archiveButton;
+	
+	private JButton restoreTaskButton;
+	private JButton removeArchivedTaskButton;
 
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
@@ -123,14 +128,13 @@ public class MainWindow extends JFrame{
 		//TabbedPane elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
-		this.calendarTab = new CalendarPanel(taskTable);
+		this.calendarTab = new CalendarPanel(taskTable, archiveTable);
 
 		//Menu
 		//Initialise all menus and menu items.
 		menuBar = new JMenuBar();
-		menuFiles = new JMenu("Files");
+		menuMenus = new JMenu("\u2630 Menu");
 		menuHelp = new JMenu("Help");
-		menuTask = new JMenu("Task");
 		menuItemSave = new JMenuItem("Save");
 		menuClose = new JMenuItem("Close");
 		menuItemSettings = new JMenuItem("Settings");
@@ -139,7 +143,10 @@ public class MainWindow extends JFrame{
 		menuItemNewTask = new JMenuItem("New task");
 		menuItemRemoveTask = new JMenuItem("Remove task");
 		menuItemChangeStatus = new JMenuItem("Change status");
-		menuItemArchive = new JMenuItem("Archive Task");
+		menuItemArchive = new JMenuItem("Archive task");
+		
+		menuItemRestore = new JMenuItem("Restore taks");
+		menuItemRemoveArchiveTask = new JMenuItem("Remove archive task");
 
 		//Toolbar
 		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
@@ -147,9 +154,10 @@ public class MainWindow extends JFrame{
 		this.doneButton = new JButton(new ImageIcon(getClass().getResource("/icons/done.png")));
 		this.saveButton = new JButton(new ImageIcon(getClass().getResource("/icons/Save.png")));
 		this.archiveButton = new JButton(new ImageIcon(getClass().getResource("/icons/archive.png")));
+		this.restoreTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/restore.png")));
+		this.removeArchivedTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/removeArchive.png")));
 
 		//Files
-		//System.out.println(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		archiveFile = new File(System.getProperty("user.dir")+"/userfiles/archive.txt");
 
@@ -211,15 +219,22 @@ public class MainWindow extends JFrame{
 	private void settingUpTheMenu(){
 		controlPanel.add(menuBar, BorderLayout.WEST);
 		//this.setJMenuBar(menuBar);
-		menuBar.add(menuFiles);
-			//menuFiles.add(menuOpenFiles);
-			menuFiles.add(menuItemSave);
-			menuFiles.add(menuClose);
-		menuBar.add(menuTask);
-			menuTask.add(menuItemNewTask);
-			menuTask.add(menuItemRemoveTask);
-			menuTask.add(menuItemChangeStatus);
-			menuTask.add(menuItemArchive);
+		menuBar.add(menuMenus);
+			//menuMenus.add(menuOpenFiles);
+
+			menuMenus.add(menuItemNewTask);
+			menuMenus.add(menuItemRemoveTask);
+			menuMenus.add(menuItemChangeStatus);
+			menuMenus.add(menuItemArchive);
+
+			menuMenus.addSeparator();
+			menuMenus.add(menuItemRestore);
+			menuMenus.add(menuItemRemoveArchiveTask);
+			menuMenus.addSeparator();
+
+			menuMenus.add(menuItemSave);
+			menuMenus.add(menuClose);
+
 		menuBar.add(menuHelp);
 			//menuHelp.add(menuItemSettings);
 			menuHelp.add(menuItemColours);
@@ -297,6 +312,20 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		menuItemRestore.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				archiveTable.shiftTableItemsinOtherTable(taskTable);
+			}
+		});
+
+		menuItemRemoveArchiveTask.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				archiveTable.removeRows();
+			}
+		});
+
 		//Set icon for the menu items
 		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
 		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
@@ -307,6 +336,8 @@ public class MainWindow extends JFrame{
 		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
 		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
 		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
+		menuItemRestore.setIcon(new ImageIcon(getClass().getResource("/icons/restore.png")));
+		menuItemRemoveArchiveTask.setIcon(new ImageIcon(getClass().getResource("/icons/removeArchive.png")));
 
 		//Set short cuts.
 		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -317,10 +348,12 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
 		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));
 		menuItemChangeStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
+		menuItemRestore.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, SHORTCUT_MASK));
+		menuItemRemoveArchiveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
 
 		//Set mnemonics
-		menuFiles.setMnemonic(KeyEvent.VK_F);
-		menuTask.setMnemonic(KeyEvent.VK_T);
+		menuMenus.setMnemonic(KeyEvent.VK_F);
+		//menuTask.setMnemonic(KeyEvent.VK_T);
 		menuHelp.setMnemonic(KeyEvent.VK_H);
 	}
 
@@ -387,26 +420,50 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		restoreTaskButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				archiveTable.shiftTableItemsinOtherTable(taskTable);
+			}
+		});
+
+		removeArchivedTaskButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				archiveTable.removeRow();
+			}
+		});
+
+		/*
 		//Add all components to the toolbar.
 		newTaskButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
 		removeButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
 		doneButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
 		archiveButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
+		*/
 
 		newTaskButton.setToolTipText("new task");
 		removeButton.setToolTipText("remove");
 		doneButton.setToolTipText("change status");
 		archiveButton.setToolTipText("archive");
+		restoreTaskButton.setToolTipText("restore");
+		removeArchivedTaskButton.setToolTipText("remove archived task");
 
+		
 		newTaskButton.setBorder(null);
 		removeButton.setBorder(null);
 		doneButton.setBorder(null);
 		archiveButton.setBorder(null);
+		restoreTaskButton.setBorder(null);
+		removeArchivedTaskButton.setBorder(null);
 
 		toolbar.add(newTaskButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
 		toolbar.add(archiveButton);
+		this.toolbar.addSeparator(new Dimension(5, 10));
+		toolbar.add(restoreTaskButton);
+		toolbar.add(removeArchivedTaskButton);
 		this.toolbar.addSeparator(new Dimension(3, 10));
 		toolbar.setFloatable(false);
 		controlPanel.add(toolbar, BorderLayout.CENTER);
