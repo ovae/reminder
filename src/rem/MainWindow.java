@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -25,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import rem.calendar.CalendarPanel;
+import rem.constants.Icons;
 import rem.constants.Messages;
 import rem.files.FileHandler;
 import rem.preference.RemPreferences;
@@ -116,7 +116,6 @@ public class MainWindow extends JFrame{
 		this.windowWidth = 800;
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.toolbar = new JToolBar();
-		//toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.Y_AXIS));
 		this.controlPanel = new JPanel(new BorderLayout());
 		this.contentPanel = new JPanel(new BorderLayout());
 		this.infoPanel = new InfoPanel();
@@ -150,22 +149,22 @@ public class MainWindow extends JFrame{
 		menuItemRestore = new JMenuItem("Restore task");
 		menuItemRemoveArchiveTask = new JMenuItem("Remove task");
 
-		//Toolbar TODO
-		newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
-		removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
-		doneButton = new JButton(new ImageIcon(getClass().getResource("/icons/done.png")));
-		saveButton = new JButton(new ImageIcon(getClass().getResource("/icons/Save.png")));
-		archiveButton = new JButton(new ImageIcon(getClass().getResource("/icons/archive.png")));
-		restoreTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/restore.png")));
-		removeArchivedTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/archiveRemove.png")));
+		//Toolbar
+		newTaskButton = new JButton(Icons.ADD_TASK_ICON.getIcon());
+		removeButton = new JButton(Icons.REMOVE_TASK_ICON.getIcon());
+		doneButton = new JButton(Icons.DONE_ICON.getIcon());
+		saveButton = new JButton(Icons.SAVE_ICON.getIcon());
+		archiveButton = new JButton(Icons.ARCHIVE_ICON.getIcon());
+		restoreTaskButton = new JButton(Icons.RESTORE_ICON.getIcon());
+		removeArchivedTaskButton = new JButton(Icons.ARCHIVE_REMOVE_ICON.getIcon());
 
 		//Set rollovericons
-		newTaskButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/addHover.png")));
-		removeButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/removeHover.png")));
-		doneButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/doneHover.png")));
-		archiveButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/archiveHover.png")));
-		restoreTaskButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/restoreHover.png")));
-		removeArchivedTaskButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/archiveRemoveHover.png")));
+		newTaskButton.setRolloverIcon(Icons.ADD_TASK_HOVER_ICON.getIcon());
+		removeButton.setRolloverIcon(Icons.REMOVE_TASK_HOVER_ICON.getIcon());
+		doneButton.setRolloverIcon(Icons.DONE_HOVER_ICON.getIcon());
+		archiveButton.setRolloverIcon(Icons.ARCHIVE_HOVER_ICON.getIcon());
+		restoreTaskButton.setRolloverIcon(Icons.RESTORE_HOVER_ICON.getIcon());
+		removeArchivedTaskButton.setRolloverIcon(Icons.ARCHIVE_REMOVE_HOVER_ICON.getIcon());
 
 		//Files
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
@@ -184,7 +183,6 @@ public class MainWindow extends JFrame{
 
 		//Basic menu structure.
 		windowStructure();
-		//this.pack();
 	}
 
 	public void run(){
@@ -201,7 +199,7 @@ public class MainWindow extends JFrame{
 		this.setLayout(new BorderLayout());
 		this.setContentPane(mainPanel);
 		this.setTitle("Reminder");
-		this.setIconImage(new ImageIcon(getClass().getResource("/icons/main.png")).getImage());
+		this.setIconImage(Icons.MAIN_ICON.getIcon().getImage());
 		centerWindow(this);
 	}
 
@@ -215,7 +213,7 @@ public class MainWindow extends JFrame{
 				settingUpTheMenu();
 				settingUpTheToolbar();
 				settingUpTheContentPanel();
-				
+
 				loadTableContent();
 				//Refresh the calendarTab.
 				((CalendarPanel) calendarTab).refreshCalendar();
@@ -246,8 +244,8 @@ public class MainWindow extends JFrame{
 			menuMenus.add(menuClose);
 
 		menuBar.add(menuHelp);
-			//menuHelp.add(menuItemSettings);
 			menuHelp.add(menuItemColours);
+			//menuHelp.add(menuItemSettings);
 			menuHelp.add(menuItemAbout);
 
 		menuItemNewTask.addActionListener(new ActionListener(){
@@ -346,17 +344,17 @@ public class MainWindow extends JFrame{
 		});
 
 		//Set icon for the menu items TODO
-		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
-		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
-		menuItemNewTask.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
-		menuItemRemoveTask.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
-		menuItemChangeStatus.setIcon(new ImageIcon(getClass().getResource("/icons/done.png")));
-		menuItemArchive.setIcon(new ImageIcon(getClass().getResource("/icons/archive.png")));
-		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/about.png")));
-		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
-		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
-		menuItemRestore.setIcon(new ImageIcon(getClass().getResource("/icons/restore.png")));
-		menuItemRemoveArchiveTask.setIcon(new ImageIcon(getClass().getResource("/icons/archiveRemove.png")));
+		menuItemSave.setIcon(Icons.SAVE_ICON.getIcon());
+		menuClose.setIcon(Icons.EXIT_ICON.getIcon());
+		menuItemNewTask.setIcon(Icons.ADD_TASK_ICON.getIcon());
+		menuItemRemoveTask.setIcon(Icons.REMOVE_TASK_ICON.getIcon());
+		menuItemChangeStatus.setIcon(Icons.DONE_ICON.getIcon());
+		menuItemArchive.setIcon(Icons.ARCHIVE_ICON.getIcon());
+		menuItemAbout.setIcon(Icons.ABOUT_ICON.getIcon());
+		menuItemSettings.setIcon(Icons.SETTINGS_ICON.getIcon());
+		menuItemColours.setIcon(Icons.COLOUR_ICON.getIcon());
+		menuItemRestore.setIcon(Icons.RESTORE_ICON.getIcon());
+		menuItemRemoveArchiveTask.setIcon(Icons.ARCHIVE_REMOVE_ICON.getIcon());
 
 		//Set short cuts.
 		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -367,11 +365,11 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
 		menuItemArchive.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, SHORTCUT_MASK));
 		menuItemChangeStatus.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
-		menuItemRestore.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, SHORTCUT_MASK));
-		menuItemRemoveArchiveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
+		menuItemRestore.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, SHORTCUT_MASK));
+		menuItemRemoveArchiveTask.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, SHORTCUT_MASK));
 
 		//Set mnemonics
-		menuMenus.setMnemonic(KeyEvent.VK_F);
+		menuMenus.setMnemonic(KeyEvent.VK_M);
 		//menuTask.setMnemonic(KeyEvent.VK_T);
 		menuHelp.setMnemonic(KeyEvent.VK_H);
 	}
@@ -439,6 +437,7 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		//
 		restoreTaskButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -446,6 +445,7 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		//
 		removeArchivedTaskButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -459,7 +459,6 @@ public class MainWindow extends JFrame{
 		archiveButton.setToolTipText("archive");
 		restoreTaskButton.setToolTipText("restore");
 		removeArchivedTaskButton.setToolTipText("remove task");
-
 		
 		newTaskButton.setBorder(null);
 		removeButton.setBorder(null);
@@ -521,7 +520,7 @@ public class MainWindow extends JFrame{
 			FileHandler.loadFile(taskTable, taskFile);
 			FileHandler.loadFile(archiveTable, archiveFile);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Unable to load files.");
+			JOptionPane.showMessageDialog(null, Messages.UNABLE_TO_LOAD.getMsg());
 		}finally{
 			infoPanel.setStateSaved();
 		}
