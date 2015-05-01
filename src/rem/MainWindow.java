@@ -25,16 +25,19 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import rem.calendar.CalendarPanel;
+import rem.constants.Messages;
 import rem.files.FileHandler;
 import rem.preference.RemPreferences;
 import rem.subWindows.AddTaskFrame;
 import rem.subWindows.InfoFrame;
 import rem.subWindows.SettingsFrame;
+import rem.table.RemTable;
+import rem.table.TasksTable;
 
 /**
  * The main window of this program.
  * @author ovae.
- * @version 20150408.
+ * @version 20150501.
  */
 public class MainWindow extends JFrame{
 
@@ -143,19 +146,26 @@ public class MainWindow extends JFrame{
 		menuItemNewTask = new JMenuItem("New task");
 		menuItemRemoveTask = new JMenuItem("Remove task");
 		menuItemChangeStatus = new JMenuItem("Change status");
-		menuItemArchive = new JMenuItem("Archive task");
-		
-		menuItemRestore = new JMenuItem("Restore taks");
-		menuItemRemoveArchiveTask = new JMenuItem("Remove archive task");
+		menuItemArchive = new JMenuItem("Archive  task");
+		menuItemRestore = new JMenuItem("Restore task");
+		menuItemRemoveArchiveTask = new JMenuItem("Remove task");
 
-		//Toolbar
-		this.newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
-		this.removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
-		this.doneButton = new JButton(new ImageIcon(getClass().getResource("/icons/done.png")));
-		this.saveButton = new JButton(new ImageIcon(getClass().getResource("/icons/Save.png")));
-		this.archiveButton = new JButton(new ImageIcon(getClass().getResource("/icons/archive.png")));
-		this.restoreTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/restore.png")));
-		this.removeArchivedTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/removeArchive.png")));
+		//Toolbar TODO
+		newTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/add.png")));
+		removeButton = new JButton(new ImageIcon(getClass().getResource("/icons/remove.png")));
+		doneButton = new JButton(new ImageIcon(getClass().getResource("/icons/done.png")));
+		saveButton = new JButton(new ImageIcon(getClass().getResource("/icons/Save.png")));
+		archiveButton = new JButton(new ImageIcon(getClass().getResource("/icons/archive.png")));
+		restoreTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/restore.png")));
+		removeArchivedTaskButton = new JButton(new ImageIcon(getClass().getResource("/icons/archiveRemove.png")));
+
+		//Set rollovericons
+		newTaskButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/addHover.png")));
+		removeButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/removeHover.png")));
+		doneButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/doneHover.png")));
+		archiveButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/archiveHover.png")));
+		restoreTaskButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/restoreHover.png")));
+		removeArchivedTaskButton.setRolloverIcon(new ImageIcon(getClass().getResource("/icons/archiveRemoveHover.png")));
 
 		//Files
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
@@ -225,9 +235,9 @@ public class MainWindow extends JFrame{
 			menuMenus.add(menuItemNewTask);
 			menuMenus.add(menuItemRemoveTask);
 			menuMenus.add(menuItemChangeStatus);
-			menuMenus.add(menuItemArchive);
 
 			menuMenus.addSeparator();
+			menuMenus.add(menuItemArchive);
 			menuMenus.add(menuItemRestore);
 			menuMenus.add(menuItemRemoveArchiveTask);
 			menuMenus.addSeparator();
@@ -250,9 +260,12 @@ public class MainWindow extends JFrame{
 		menuItemRemoveTask.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if(p==0){
-					taskTable.removeRow();
+				int[] rows = taskTable.getSelectedRows();
+				if(rows.length < 1){
+					JOptionPane.showMessageDialog(null, Messages.NO_SELECTED_ROW.getMsg());
+					return;
+				}else{
+					taskTable.removeRows();
 				}
 			}
 		});
@@ -300,7 +313,7 @@ public class MainWindow extends JFrame{
 					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
 					infoPanel.setStateSaved();
 				} catch (IOException e1) {
-					System.err.println("Failed to write to file.");
+					System.err.println(Messages.FAILED_TO_SAVE.getMsg());
 				}
 			}
 		});
@@ -322,22 +335,28 @@ public class MainWindow extends JFrame{
 		menuItemRemoveArchiveTask.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				archiveTable.removeRows();
+				int[] rows = archiveTable.getSelectedRows();
+				if(rows.length < 1){
+					JOptionPane.showMessageDialog(null, Messages.NO_SELECTED_ROW.getMsg());
+					return;
+				}else{
+					archiveTable.removeRows();
+				}
 			}
 		});
 
-		//Set icon for the menu items
+		//Set icon for the menu items TODO
 		menuItemSave.setIcon(new ImageIcon(getClass().getResource("/icons/Save.png")));
 		menuClose.setIcon(new ImageIcon(getClass().getResource("/icons/Exit.png")));
 		menuItemNewTask.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
 		menuItemRemoveTask.setIcon(new ImageIcon(getClass().getResource("/icons/remove.png")));
 		menuItemChangeStatus.setIcon(new ImageIcon(getClass().getResource("/icons/done.png")));
 		menuItemArchive.setIcon(new ImageIcon(getClass().getResource("/icons/archive.png")));
-		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/info.png")));
+		menuItemAbout.setIcon(new ImageIcon(getClass().getResource("/icons/about.png")));
 		menuItemSettings.setIcon(new ImageIcon(getClass().getResource("/icons/Settings.png")));
 		menuItemColours.setIcon(new ImageIcon(getClass().getResource("/icons/Colour.png")));
 		menuItemRestore.setIcon(new ImageIcon(getClass().getResource("/icons/restore.png")));
-		menuItemRemoveArchiveTask.setIcon(new ImageIcon(getClass().getResource("/icons/removeArchive.png")));
+		menuItemRemoveArchiveTask.setIcon(new ImageIcon(getClass().getResource("/icons/archiveRemove.png")));
 
 		//Set short cuts.
 		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -415,7 +434,7 @@ public class MainWindow extends JFrame{
 					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
 					infoPanel.setStateSaved();
 				} catch (IOException e1) {
-					System.err.println("Failed to write to file.");
+					System.err.println(Messages.FAILED_TO_SAVE.getMsg());
 				}
 			}
 		});
@@ -434,20 +453,12 @@ public class MainWindow extends JFrame{
 			}
 		});
 
-		/*
-		//Add all components to the toolbar.
-		newTaskButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
-		removeButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
-		doneButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
-		archiveButton.setMargin(new java.awt.Insets(-2, -2, -2, -2));
-		*/
-
 		newTaskButton.setToolTipText("new task");
 		removeButton.setToolTipText("remove");
 		doneButton.setToolTipText("change status");
 		archiveButton.setToolTipText("archive");
 		restoreTaskButton.setToolTipText("restore");
-		removeArchivedTaskButton.setToolTipText("remove archived task");
+		removeArchivedTaskButton.setToolTipText("remove task");
 
 		
 		newTaskButton.setBorder(null);
@@ -460,11 +471,11 @@ public class MainWindow extends JFrame{
 		toolbar.add(newTaskButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
+		toolbar.addSeparator(new Dimension(5, 10));
 		toolbar.add(archiveButton);
-		this.toolbar.addSeparator(new Dimension(5, 10));
 		toolbar.add(restoreTaskButton);
 		toolbar.add(removeArchivedTaskButton);
-		this.toolbar.addSeparator(new Dimension(3, 10));
+		toolbar.addSeparator(new Dimension(3, 10));
 		toolbar.setFloatable(false);
 		controlPanel.add(toolbar, BorderLayout.CENTER);
 	}

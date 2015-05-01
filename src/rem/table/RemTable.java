@@ -1,4 +1,4 @@
-package rem;
+package rem.table;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;

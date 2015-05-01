@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import rem.RemTable;
+import rem.table.RemTable;
 
 /**
  * FileHandler to load and write to a file.

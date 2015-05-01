@@ -14,7 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import rem.TasksTable;
+import rem.table.TasksTable;
 
 /**
  * 

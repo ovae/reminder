@@ -1,4 +1,4 @@
-package rem;
+package rem.table;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -14,6 +14,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import rem.InfoPanel;
+import rem.constants.Messages;
+
 /**
  * 
  * @author ovae.
@@ -27,7 +30,7 @@ public class TasksTable extends RemTable {
 	private String[] status;
 	private Object[][] tableContent;
 
-	TasksTable(DefaultTableModel defaultTableModel) {
+	public TasksTable(DefaultTableModel defaultTableModel) {
 		super(defaultTableModel);
 		status = new String[5];
 		status[0] = "not_started";
@@ -109,7 +112,7 @@ public class TasksTable extends RemTable {
 	public void removeRow(){
 		int[] rows = this.getSelectedRows();
 		if(rows.length < 1){
-			JOptionPane.showMessageDialog(null, "You have to select at least one row.");
+			JOptionPane.showMessageDialog(null, Messages.NO_SELECTED_ROW.getMsg());
 			return;
 		}
 		int p =JOptionPane.showConfirmDialog(null, "Do you want to remove it.","Select an Option",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -157,7 +160,7 @@ public class TasksTable extends RemTable {
 				this.getModel().setValueAt(status[0], row[0], 4);
 			}
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null, "You have to select a row.");
+			JOptionPane.showMessageDialog(null, Messages.NO_SELECTED_ROW.getMsg());
 		}
 	}
 
@@ -237,7 +240,7 @@ public class TasksTable extends RemTable {
 	public void shiftTableItemsinOtherTable(RemTable table){
 		int[] rows = this.getSelectedRows();
 		if(rows.length < 1){
-			JOptionPane.showMessageDialog(null, "You have to select at least one row.");
+			JOptionPane.showMessageDialog(null, Messages.NO_SELECTED_ROW.getMsg());
 			return;
 		}
 		TableModel tm= this.getModel();
