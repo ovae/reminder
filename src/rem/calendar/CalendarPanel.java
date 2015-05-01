@@ -19,7 +19,7 @@ import rem.table.TasksTable;
 /**
  * 
  * @author ovae.
- * @version 20150408.
+ * @version 20150501.
  */
 public class CalendarPanel extends JPanel{
 
@@ -70,7 +70,7 @@ public class CalendarPanel extends JPanel{
 
 		calendarWidth = 7;
 		calendarHeight = 6;
-
+		this.setOpaque(true);
 		this.setLayout(new BorderLayout());
 		controlPanel = new JPanel(new BorderLayout());
 		navigatePanel = new JPanel();
@@ -231,7 +231,6 @@ public class CalendarPanel extends JPanel{
 		int dayCounter = 1;
 		int weekdaycounter=1;
 		for(JPanel panel: days){
-			panel.setBorder(null);
 			if(index+1 == dayState && currentMonth == monthState && currentYear == yearState){
 				((CalendarDayPanelComponent) panel).setActuelDayColour();
 			}
@@ -264,18 +263,32 @@ public class CalendarPanel extends JPanel{
 	private void prepaireTheDaysList(){
 		int gap = getGap();
 		int weekday = 1;
+		
+
+		//Add calendarDayPanelComponents before the current month.
+		int lose=gap-2;
 		for(int i=1;i<gap;i++){
-			days.add(new CalendarDayPanelComponent(0));
+			if(monthState==0){
+				days.add(new CalendarDayPanelHolderComponent(daysInMonth[11]-lose));
+			}
+			else{
+				days.add(new CalendarDayPanelHolderComponent(daysInMonth[monthState-1]-lose));
+			}
+			lose--;
 		}
-		for(int i=gap; i<(calendarWidth*calendarHeight); i++){
-			if(i<daysInMonth[monthState]+gap){
+
+		//Add calendarDayPanelComponents of the current month
+		for(int i=0; i<(calendarWidth*calendarHeight); i++){
+			if(i<daysInMonth[monthState]){
 				days.add(new CalendarDayPanelComponent(weekday));
 				weekday++;
 			}
 		}
+
+		//Add calendarDayPanelComponents after the current month.
 		int r = (calendarWidth*calendarHeight)-days.size();
 		for(int i=0;i<r;i++){
-			days.add(new CalendarDayPanelComponent(0));
+			days.add(new CalendarDayPanelHolderComponent(i+1));
 		}
 
 		//Add the tasks from the taskTable to the calendar.
@@ -297,33 +310,57 @@ public class CalendarPanel extends JPanel{
 			endList.add((String) archive.getValueAt(i,3));
 		}
 
-		int index = 1-gap;
+		//Add tasks of the month before
+		if(gap > 0){
+			if(monthState==0){
+				addTasksToDays(daysInMonth[11]-gap+2,monthState,endList,topicList,aboutList);
+			}else{
+				addTasksToDays(daysInMonth[monthState-1]-gap+2,monthState,endList,topicList,aboutList);
+			}
+		}
+
+		//Add task of the current month
+		addTasksToDays(2-gap,monthState+1,endList,topicList,aboutList);
+
+		//Add task of after the current month
+		addTasksToDays(-daysInMonth[monthState]-gap+2,monthState+2,endList,topicList,aboutList);
+	}
+
+	/**
+	 * 
+	 * @param index
+	 * @param monthState
+	 * @param endList
+	 * @param topicList
+	 * @param aboutList
+	 */
+	private void addTasksToDays(int index, int monthState,ArrayList<String> endList,
+			ArrayList<String> topicList, ArrayList<String> aboutList){
+		
 		for(CalendarDayPanelComponent day : days){
-			String vergleich = yearState+""+(monthState+1)+""+(index+1);
+
+			String vergleich = yearState+""+(monthState)+""+(index);
 			if(monthState <=9 && index<=9){
-				vergleich = yearState+"0"+(monthState+1)+"0"+(index+1);
+				vergleich = yearState+"0"+(monthState)+"0"+(index);
 			}
 			if(monthState <=9 && index>=9){
-				vergleich = yearState+"0"+(monthState+1)+""+(index+1);
+				vergleich = yearState+"0"+(monthState)+""+(index);
 			}
 			if(monthState >=9 && index<=9){
-				vergleich = yearState+""+(monthState+1)+"0"+(index+1);
+				vergleich = yearState+""+(monthState)+"0"+(index);
 			}
 			if(monthState >=9 && index>=9){
-				vergleich = yearState+""+(monthState+1)+""+(index+1);
+				vergleich = yearState+""+(monthState)+""+(index);
 			}
-				int innerDex = 0;
-				for(String end: endList){
-					if(end.equals(vergleich)){
-						day.addTask(topicList.get(innerDex)+": "+aboutList.get(innerDex));
-					}
-					innerDex++;
+
+			int innerDex = 0;
+			for(String end: endList){
+				if(end.equals(vergleich)){
+					day.addTask(topicList.get(innerDex)+": "+aboutList.get(innerDex));
 				}
-				if(daysInMonth[monthState] == index){
-					break;
-				}else{
-					index++;
-				}
+				innerDex++;
+			}
+			index++;
 		}
 	}
 

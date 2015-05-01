@@ -20,8 +20,8 @@ public class CalendarDayPanelComponent extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 
-	private JPanel mainPanel;
-	private JTable taskTable;
+	protected JPanel mainPanel;
+	protected JTable taskTable;
 	private Object[][] tableContent;
 	public final static int MAX_TASKS = 42;
 	private int dayNumb;
