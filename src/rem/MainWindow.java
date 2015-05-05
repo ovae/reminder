@@ -28,9 +28,11 @@ import rem.constants.Icons;
 import rem.constants.Messages;
 import rem.files.FileHandler;
 import rem.preference.RemPreferences;
+import rem.subWindows.AddEventFrame;
 import rem.subWindows.AddTaskFrame;
 import rem.subWindows.InfoFrame;
 import rem.subWindows.SettingsFrame;
+import rem.table.EventTable;
 import rem.table.RemTable;
 import rem.table.TasksTable;
 
@@ -44,7 +46,7 @@ public class MainWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
 
 	//Program info
-	private String version ="0.3.0";
+	private String version ="0.4.5";
 	
 	//Main menu configuration
 	private int windowHeight;
@@ -70,6 +72,10 @@ public class MainWindow extends JFrame{
 	private JMenuItem menuItemRemoveTask;
 	private JMenuItem menuItemChangeStatus;
 	private JMenuItem menuItemArchive;
+	private JMenuItem menuItemNewEvent;
+	private JMenuItem menuItemRemoveEvent;
+	private JMenuItem menuItemArchiveEvent;
+	private JMenuItem menuItemRestoreEvent;
 
 	private JMenuItem menuItemRestore;
 	private JMenuItem menuItemRemoveArchiveTask;
@@ -78,31 +84,38 @@ public class MainWindow extends JFrame{
 	private JTabbedPane tabbedPane;
 	private JScrollPane tasksScrollPane;
 	private JScrollPane archiveScrollPane;
+	private JScrollPane eventScrollPane;
 	private JPanel tasksTab;
 	private JPanel calendarTab;
+	private JPanel eventTab;
 
 	private JPanel archiveTab;
 	private TasksTable taskTable;
 	private TasksTable archiveTable;
+	private EventTable eventTable;
 
 	//Toolbar buttons
 	private JButton newTaskButton;
 	private JButton removeButton;
 	private JButton doneButton;
-	private JButton saveButton;
 	private JButton archiveButton;
-	
 	private JButton restoreTaskButton;
 	private JButton removeArchivedTaskButton;
+	private JButton newEventButton;
+	private JButton removeEventButton;
+	private JButton archiveEventButton;
+	private JButton restoreEventButton;
 
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
+	private AddEventFrame addEventFrame;
 	private InfoFrame infoFrame;
 	private SettingsFrame settingsFrame;
 
 	//Files
 	private File taskFile;
 	private File archiveFile;
+	private File eventFile;
 
 	//Preferences
 	private RemPreferences preferences;
@@ -124,13 +137,16 @@ public class MainWindow extends JFrame{
 		this.tabbedPane = new JTabbedPane();
 		this.tasksTab = new JPanel(new BorderLayout());
 		this.archiveTab = new JPanel(new BorderLayout());
+		this.eventTab = new JPanel(new BorderLayout());
 		this.tasksScrollPane = new JScrollPane(tasksTab);
 		this.archiveScrollPane = new JScrollPane(archiveTab);
+		this.eventScrollPane = new JScrollPane(eventTab);
 
 		//TabbedPane elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
-		this.calendarTab = new CalendarPanel(taskTable, archiveTable);
+		this.eventTable = new EventTable(new DefaultTableModel());
+		this.calendarTab = new CalendarPanel(taskTable, archiveTable, eventTable);
 
 		//Menu
 		//Initialise all menus and menu items.
@@ -148,15 +164,22 @@ public class MainWindow extends JFrame{
 		menuItemArchive = new JMenuItem("Archive  task");
 		menuItemRestore = new JMenuItem("Restore task");
 		menuItemRemoveArchiveTask = new JMenuItem("Remove task");
+		menuItemNewEvent = new JMenuItem("New event");
+		menuItemRemoveEvent = new JMenuItem("Remove event");
+		menuItemArchiveEvent = new JMenuItem("Archive event");
+		menuItemRestoreEvent = new JMenuItem("Restore Event");
 
 		//Toolbar
 		newTaskButton = new JButton(Icons.ADD_TASK_ICON.getIcon());
 		removeButton = new JButton(Icons.REMOVE_TASK_ICON.getIcon());
 		doneButton = new JButton(Icons.DONE_ICON.getIcon());
-		saveButton = new JButton(Icons.SAVE_ICON.getIcon());
 		archiveButton = new JButton(Icons.ARCHIVE_ICON.getIcon());
 		restoreTaskButton = new JButton(Icons.RESTORE_ICON.getIcon());
 		removeArchivedTaskButton = new JButton(Icons.ARCHIVE_REMOVE_ICON.getIcon());
+		newEventButton = new JButton(Icons.ADD_EVENT_ICON.getIcon());
+		removeEventButton = new JButton(Icons.REMOVE_EVENT_ICON.getIcon());
+		archiveEventButton = new JButton(Icons.ARCHIVE_EVENT_ICON.getIcon());
+		restoreEventButton = new JButton(Icons.RESTORE_EVENT_ICON.getIcon());
 
 		//Set rollovericons
 		newTaskButton.setRolloverIcon(Icons.ADD_TASK_HOVER_ICON.getIcon());
@@ -165,17 +188,24 @@ public class MainWindow extends JFrame{
 		archiveButton.setRolloverIcon(Icons.ARCHIVE_HOVER_ICON.getIcon());
 		restoreTaskButton.setRolloverIcon(Icons.RESTORE_HOVER_ICON.getIcon());
 		removeArchivedTaskButton.setRolloverIcon(Icons.ARCHIVE_REMOVE_HOVER_ICON.getIcon());
+		newEventButton.setRolloverIcon(Icons.ADD_EVENT_HOVER_ICON.getIcon());
+		removeEventButton.setRolloverIcon(Icons.REMOVE_EVENT_HOVER_ICON.getIcon());
+		archiveEventButton.setRolloverIcon(Icons.ARCHIVE_EVENT_HOVER_ICON.getIcon());
+		restoreEventButton.setRolloverIcon(Icons.RESTORE_EVENT_HOVER_ICON.getIcon());
 
 		//Files
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		archiveFile = new File(System.getProperty("user.dir")+"/userfiles/archive.txt");
+		eventFile = new File(System.getProperty("user.dir")+"/userfiles/event.txt");
 
 		//sub menus
 		this.addTaskFrame = new AddTaskFrame(this);
+		this.addEventFrame = new AddEventFrame(this);
 		this.infoFrame = new InfoFrame();
 		this.settingsFrame = new SettingsFrame(this);
 		centerWindow(infoFrame);
 		centerWindow(addTaskFrame);
+		centerWindow(addEventFrame);
 		centerWindow(settingsFrame);
 
 		//Initialise the preferences
@@ -238,6 +268,12 @@ public class MainWindow extends JFrame{
 			menuMenus.add(menuItemArchive);
 			menuMenus.add(menuItemRestore);
 			menuMenus.add(menuItemRemoveArchiveTask);
+			menuMenus.addSeparator();
+
+			menuMenus.add(menuItemNewEvent);
+			menuMenus.add(menuItemRemoveEvent);
+			menuMenus.add(menuItemArchiveEvent);
+			menuMenus.add(menuItemRestoreEvent);
 			menuMenus.addSeparator();
 
 			menuMenus.add(menuItemSave);
@@ -309,6 +345,7 @@ public class MainWindow extends JFrame{
 				try {
 					FileHandler.writeFile(taskTable.getTableContent(),taskFile);
 					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
+					FileHandler.writeFile(eventTable.getTableContent(), eventFile);
 					infoPanel.setStateSaved();
 				} catch (IOException e1) {
 					System.err.println(Messages.FAILED_TO_SAVE.getMsg());
@@ -343,6 +380,34 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		menuItemNewEvent.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addEventFrame.setVisible(true);
+			}
+		});
+
+		menuItemRemoveEvent.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				eventTable.removeRow();
+			}
+		});
+
+		menuItemArchiveEvent.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				eventTable.shiftTableItemsinOtherTable(archiveTable);
+			}
+		});
+
+		menuItemRestoreEvent.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				archiveTable.shiftTableItemsinOtherTable(eventTable);
+			}
+		});
+
 		//Set icon for the menu items TODO
 		menuItemSave.setIcon(Icons.SAVE_ICON.getIcon());
 		menuClose.setIcon(Icons.EXIT_ICON.getIcon());
@@ -355,6 +420,10 @@ public class MainWindow extends JFrame{
 		menuItemColours.setIcon(Icons.COLOUR_ICON.getIcon());
 		menuItemRestore.setIcon(Icons.RESTORE_ICON.getIcon());
 		menuItemRemoveArchiveTask.setIcon(Icons.ARCHIVE_REMOVE_ICON.getIcon());
+		menuItemNewEvent.setIcon(Icons.ADD_EVENT_ICON.getIcon());
+		menuItemRemoveEvent.setIcon(Icons.REMOVE_EVENT_ICON.getIcon());
+		menuItemArchiveEvent.setIcon(Icons.ARCHIVE_EVENT_ICON.getIcon());
+		menuItemRestoreEvent.setIcon(Icons.RESTORE_EVENT_ICON.getIcon());
 
 		//Set short cuts.
 		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -423,21 +492,9 @@ public class MainWindow extends JFrame{
 			}
 		});
 
-		//Saves the task and archive table.
-		saveButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				try {
-					FileHandler.writeFile(taskTable.getTableContent(),taskFile);
-					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
-					infoPanel.setStateSaved();
-				} catch (IOException e1) {
-					System.err.println(Messages.FAILED_TO_SAVE.getMsg());
-				}
-			}
-		});
-
-		//
+		/**
+		 * 
+		 */
 		restoreTaskButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -445,7 +502,9 @@ public class MainWindow extends JFrame{
 			}
 		});
 
-		//
+		/**
+		 * 
+		 */
 		removeArchivedTaskButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -453,19 +512,67 @@ public class MainWindow extends JFrame{
 			}
 		});
 
+		/**
+		 * 
+		 */
+		newEventButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				addEventFrame.setVisible(true);
+			}
+		});
+
+		/**
+		 * 
+		 */
+		removeEventButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				eventTable.removeRow();
+			}
+		});
+
+		/**
+		 * 
+		 */
+		archiveEventButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				eventTable.shiftTableItemsinOtherTable(archiveTable);
+			}
+		});
+
+		/**
+		 * 
+		 */
+		restoreEventButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				archiveTable.shiftTableItemsinOtherTable(eventTable);
+			}
+		});
+
 		newTaskButton.setToolTipText("new task");
 		removeButton.setToolTipText("remove");
 		doneButton.setToolTipText("change status");
 		archiveButton.setToolTipText("archive");
-		restoreTaskButton.setToolTipText("restore");
-		removeArchivedTaskButton.setToolTipText("remove task");
-		
+		restoreTaskButton.setToolTipText("restore task");
+		removeArchivedTaskButton.setToolTipText("remove");
+		newEventButton.setToolTipText("new event");
+		removeEventButton.setToolTipText("remove event");
+		archiveEventButton.setToolTipText("archive event");
+		restoreEventButton.setToolTipText("restore event");
+
 		newTaskButton.setBorder(null);
 		removeButton.setBorder(null);
 		doneButton.setBorder(null);
 		archiveButton.setBorder(null);
 		restoreTaskButton.setBorder(null);
 		removeArchivedTaskButton.setBorder(null);
+		newEventButton.setBorder(null);
+		removeEventButton.setBorder(null);
+		archiveEventButton.setBorder(null);
+		restoreEventButton.setBorder(null);
 
 		toolbar.add(newTaskButton);
 		toolbar.add(removeButton);
@@ -475,6 +582,10 @@ public class MainWindow extends JFrame{
 		toolbar.add(restoreTaskButton);
 		toolbar.add(removeArchivedTaskButton);
 		toolbar.addSeparator(new Dimension(3, 10));
+		toolbar.add(newEventButton);
+		toolbar.add(removeEventButton);
+		toolbar.add(archiveEventButton);
+		toolbar.add(restoreEventButton);
 		toolbar.setFloatable(false);
 		controlPanel.add(toolbar, BorderLayout.CENTER);
 	}
@@ -483,6 +594,7 @@ public class MainWindow extends JFrame{
 	private void settingUpTheContentPanel(){
 		settingUpTaskTable();
 		tabbedPane.addTab("Latest", tasksScrollPane);
+		tabbedPane.addTab("Event", eventScrollPane);
 		tabbedPane.addTab("Archive", archiveScrollPane);
 		tabbedPane.addTab("Calendar", calendarTab);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
@@ -512,6 +624,15 @@ public class MainWindow extends JFrame{
 
 		archiveTab.add(archiveTable, BorderLayout.CENTER);
 		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.PAGE_START);
+
+		//Event tab
+		String[] columnNamesEvent = {"Event", "About", "Begin", "End", "Status"};
+		eventTable.setTableHeader(columnNamesEvent);
+		eventTable.setTableModel();
+		eventTable.setTableRowColor();
+
+		eventTab.add(eventTable, BorderLayout.CENTER);
+		eventTab.add(eventTable.getTableHeader(), BorderLayout.PAGE_START);
 	}
 
 	//Load the table content from files in the table.
@@ -519,6 +640,7 @@ public class MainWindow extends JFrame{
 		try {
 			FileHandler.loadFile(taskTable, taskFile);
 			FileHandler.loadFile(archiveTable, archiveFile);
+			FileHandler.loadFile(eventTable, eventFile);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, Messages.UNABLE_TO_LOAD.getMsg());
 		}finally{
@@ -529,6 +651,11 @@ public class MainWindow extends JFrame{
 	//Get the task table Object.
 	public RemTable getTaskTable(){
 		return taskTable;
+	}
+
+	//Get the event table Object.
+	public RemTable getEventTable(){
+		return eventTable;
 	}
 
 	/**

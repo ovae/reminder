@@ -20,9 +20,9 @@ import rem.MainWindow;
 /**
  * 
  * @author ovae.
- * @version 20150408.
+ * @version 20150505.
  */
-public class AddTaskFrame extends JFrame{
+public class AddEventFrame extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,12 +42,12 @@ public class AddTaskFrame extends JFrame{
 	 * 
 	 * @param parentFrame
 	 */
-	public AddTaskFrame(final MainWindow parentFrame){
+	public AddEventFrame(final MainWindow parentFrame){
 		if(parentFrame.equals(null)){
 			throw new IllegalArgumentException("The parent frame can not be null.");
 		}
 		this.parentFrame = parentFrame;
-		this.setTitle("New Task");
+		this.setTitle("New Event");
 		this.setLocationRelativeTo(null);
 		this.setSize(new Dimension(400,256));
 		this.setResizable(false);
@@ -64,7 +64,7 @@ public class AddTaskFrame extends JFrame{
 		//Declare all needed compounds.
 		JPanel addPanel = new JPanel();
 		JPanel buttonPanel = new JPanel(new BorderLayout());
-		JLabel enterTopic = new JLabel("Topic: ");
+		JLabel enterTopic = new JLabel("Event: ");
 		JLabel enterAbout = new JLabel("About: ");
 		JLabel enterBegin = new JLabel("Begin: ");
 		JLabel enterEnd = new JLabel("End: ");
@@ -124,7 +124,7 @@ public class AddTaskFrame extends JFrame{
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
 					
-					parentFrame.getTaskTable().addRow(inputTopic.getText(), inputAbout.getText(), inputBegin.getText(), inputEnd.getText());
+					parentFrame.getEventTable().addRow(inputTopic.getText(), inputAbout.getText(), inputBegin.getText(), inputEnd.getText());
 				}
 			}
 		});
@@ -152,7 +152,7 @@ public class AddTaskFrame extends JFrame{
 		addPanel.add(inputEnd);
 		addPanel.add(beginInfoLabel);
 		addPanel.add(endInfoLabel);
-		addPanel.setBorder(BorderFactory.createTitledBorder("New Task"));
+		addPanel.setBorder(BorderFactory.createTitledBorder("New Event"));
 		//Add the buttons to the buttonPanel.
 		buttonPanel.add(resetButton,BorderLayout.WEST);
 		buttonPanel.add(addButton, BorderLayout.CENTER);

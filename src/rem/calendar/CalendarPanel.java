@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import rem.table.EventTable;
 import rem.table.TasksTable;
 
 /**
@@ -54,14 +55,19 @@ public class CalendarPanel extends JPanel{
 	//Table object
 	private TasksTable table;
 
-	//Atchive table
+	//Archive table
 	private TasksTable archive;
+
+	//Event table
+	private EventTable event;
+
 	/**
 	 * 
 	 */
-	public CalendarPanel(final TasksTable table, final TasksTable archive){
+	public CalendarPanel(final TasksTable table, final TasksTable archive, final EventTable event){
 		this.table = table;
 		this.archive = archive;
+		this.event = event;
 		dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		monthState = Calendar.getInstance().get(Calendar.MONTH);
 		yearState = Calendar.getInstance().get(Calendar.YEAR);
@@ -310,6 +316,13 @@ public class CalendarPanel extends JPanel{
 			endList.add((String) archive.getValueAt(i,3));
 		}
 
+		//Add the event from the tasks table to the calender lists.
+		for(int i=0; i<event.getRowCount(); i++){
+			topicList.add((String) "[E]"+event.getValueAt(i,0));
+			aboutList.add((String) event.getValueAt(i,1));
+			endList.add((String)event.getValueAt(i,3));
+		}
+
 		//Add tasks of the month before
 		if(gap > 0){
 			if(monthState==0){
@@ -357,6 +370,9 @@ public class CalendarPanel extends JPanel{
 			for(String end: endList){
 				if(end.equals(vergleich)){
 					day.addTask(topicList.get(innerDex)+": "+aboutList.get(innerDex));
+					if(topicList.get(innerDex).startsWith("[E]")){
+						day.setBackground(Color.ORANGE);
+					}
 				}
 				innerDex++;
 			}

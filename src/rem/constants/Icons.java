@@ -25,7 +25,16 @@ public enum Icons {
 	ARCHIVE_REMOVE_ICON		("/icons/archiveRemove.png"),
 	ARCHIVE_REMOVE_HOVER_ICON("/icons/archiveRemoveHover.png"),
 	RESTORE_ICON			("/icons/restore.png"),
-	RESTORE_HOVER_ICON		("/icons/restoreHover.png")
+	RESTORE_HOVER_ICON		("/icons/restoreHover.png"),
+	ADD_EVENT_ICON			("/icons/addEvent.png"),
+	ADD_EVENT_HOVER_ICON	("/icons/addEventHover.png"),
+	REMOVE_EVENT_ICON		("/icons/removeEvent.png"),
+	REMOVE_EVENT_HOVER_ICON	("/icons/removeEventHover.png"),
+	RESTORE_EVENT_ICON		("/icons/restoreEvent.png"),
+	RESTORE_EVENT_HOVER_ICON("/icons/restoreEventHover.png"),
+	ARCHIVE_EVENT_ICON		("/icons/archiveEvent.png"),
+	ARCHIVE_EVENT_HOVER_ICON("/icons/archiveEventHover.png"),
+	PLACEHOLDER				("/icons/placeholder.png")
 	;
 
 	private final String path;

@@ -11,6 +11,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import rem.table.DayTable;
+
 /**
  * This component represents a day in the calendar with a list of tasks.
  * @author ovae.
@@ -48,12 +50,13 @@ public class CalendarDayPanelComponent extends JPanel{
 	 * @param dayNumb
 	 */
 	private void setUpTable(int dayNumb){
-		taskTable = new JTable(new DefaultTableModel());
+		taskTable = new DayTable(new DefaultTableModel());
 		taskTable.setOpaque(false);
 		taskTable.setEnabled(false);
 		taskTable.getTableHeader().setBorder(BorderFactory.createRaisedSoftBevelBorder());
 		taskTable.setBorder(BorderFactory.createRaisedSoftBevelBorder());
 		taskTable.getTableHeader().setReorderingAllowed(false);
+		((DayTable) taskTable).setTableRowColor();
 
 		if(dayNumb == 0){
 			String[] header = {""};
