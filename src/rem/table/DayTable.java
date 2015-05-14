@@ -1,14 +1,18 @@
 package rem.table;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import rem.constants.Colour;
+
+/**
+ * 
+ * @author ovae.
+ * @version 20150514.
+ */
 public class DayTable extends TasksTable{
 
 	/**
@@ -35,7 +39,7 @@ public class DayTable extends TasksTable{
 				String tableTopic = (String)table.getModel().getValueAt(row, 0);
 
 				if(tableTopic.startsWith("[E]")){
-					c.setBackground(Color.ORANGE);
+					c.setBackground(Colour.TABLE_EVENT.getColor());
 				}
 
 				return c;

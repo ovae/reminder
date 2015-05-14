@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import rem.constants.Colour;
 import rem.table.EventTable;
 import rem.table.TasksTable;
 
@@ -125,7 +126,7 @@ public class CalendarPanel extends JPanel{
 
 		for(int i = 0; i < 7; i++) {
 			panelWeekdays[i].setLayout(new BorderLayout());
-			panelWeekdays[i].setBorder(BorderFactory.createLineBorder(Color.GRAY));
+			panelWeekdays[i].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		}
 		panelWeekdays[0].add(new JLabel("    Monday"), BorderLayout.CENTER);
 		panelWeekdays[1].add(new JLabel("    Tuesday"), BorderLayout.CENTER);
@@ -371,7 +372,7 @@ public class CalendarPanel extends JPanel{
 				if(end.equals(vergleich)){
 					day.addTask(topicList.get(innerDex)+": "+aboutList.get(innerDex));
 					if(topicList.get(innerDex).startsWith("[E]")){
-						day.setBackground(Color.ORANGE);
+						day.setBackground(Colour.TABLE_EVENT.getColor());
 					}
 				}
 				innerDex++;

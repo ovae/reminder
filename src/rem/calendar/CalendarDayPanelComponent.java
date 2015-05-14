@@ -1,7 +1,6 @@
 package rem.calendar;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.MouseAdapter;
 
 import javax.swing.BorderFactory;
@@ -11,12 +10,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import rem.constants.Colour;
 import rem.table.DayTable;
 
 /**
  * This component represents a day in the calendar with a list of tasks.
  * @author ovae.
- * @version 20150408.
+ * @version 20150514.
  */
 public class CalendarDayPanelComponent extends JPanel{
 
@@ -42,7 +42,7 @@ public class CalendarDayPanelComponent extends JPanel{
 		scroll.setBorder(null);
 		this.add(scroll, BorderLayout.CENTER);
 		setUpTable(dayNumb);
-		 ClickEvent();
+		ClickEvent();
 	}
 
 	/**
@@ -53,8 +53,13 @@ public class CalendarDayPanelComponent extends JPanel{
 		taskTable = new DayTable(new DefaultTableModel());
 		taskTable.setOpaque(false);
 		taskTable.setEnabled(false);
-		taskTable.getTableHeader().setBorder(BorderFactory.createRaisedSoftBevelBorder());
-		taskTable.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+		taskTable.getTableHeader().setBorder(BorderFactory.createLineBorder(Colour.CALENDAR_DAY_BORDER.getColor()));
+		taskTable.setBorder(BorderFactory.createLineBorder(Colour.CALENDAR_DAY_BORDER.getColor()));
+		taskTable.setGridColor(Colour.CALENDAR_DAY_TASK_BORDER.getColor());
+		taskTable.setBackground(Colour.CALENDAR_DAY.getColor());
+		mainPanel.setBackground(Colour.CALENDAR_DAY.getColor());
+		//taskTable.getTableHeader().setBorder(BorderFactory.createRaisedSoftBevelBorder());
+		//taskTable.setBorder(BorderFactory.createRaisedSoftBevelBorder());
 		taskTable.getTableHeader().setReorderingAllowed(false);
 		((DayTable) taskTable).setTableRowColor();
 
@@ -84,25 +89,24 @@ public class CalendarDayPanelComponent extends JPanel{
 	 * Activates the colour of the JPanel background.
 	 */
 	public void setBackgroundColourWeekend(){
-		taskTable.setBackground(Color.LIGHT_GRAY);
+		taskTable.setBackground(Colour.CALENDAR_WEEKENDDAY.getColor());
 		// Saturday and Sonday. 
-		mainPanel.setBackground(Color.LIGHT_GRAY);
+		mainPanel.setBackground(Colour.CALENDAR_WEEKENDDAY.getColor());
 	}
 
 	/**
 	 * 
 	 */
 	public void setBackgroundColour(){
-		taskTable.setBackground(Color.LIGHT_GRAY);
-		//mainPanel.setBackground(Color.MAGENTA);
-		scroll.setBorder(null);
+		taskTable.setBackground(Colour.CALENDAR_HOLDER_DAY_TASK.getColor());
+		//scroll.setBorder(null);
 	}
 
 	/**
 	 * Activates the colour of the table header.
 	 */
 	public void setActuelDayColour(){
-		taskTable.getTableHeader().setBackground(new Color(25, 179, 131));
+		taskTable.getTableHeader().setBackground(Colour.CALENDAR_TODAY.getColor());
 	}
 
 	/**

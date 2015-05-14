@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -15,12 +16,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import rem.InfoPanel;
+import rem.constants.Colour;
 import rem.constants.Messages;
 
 /**
  * 
  * @author ovae.
- * @version 20150408.
+ * @version 20150514.
  */
 public class TasksTable extends RemTable {
 
@@ -39,6 +41,8 @@ public class TasksTable extends RemTable {
 		status[3] = "finished";
 		status[4] = "delivered";
 		this.getTableHeader().setReorderingAllowed(false);
+		//TODO
+		this.setBackground(Colour.CALENDAR_DAY.getColor());
 	}
 
 	public void setTableHeader(String[] header){
@@ -187,29 +191,29 @@ public class TasksTable extends RemTable {
 				
 				if((valueParse-todayParse)==0){
 					//the delivery day is today
-					c.setBackground(new Color(240, 88, 88));//red
+					c.setBackground(Colour.TABLE_DELIVERY_DAY.getColor());
 				}else if((valueParse-todayParse)<0){
 					//the task ist deliverd or you failed the dilevery day.
-					c.setBackground(Color.LIGHT_GRAY);
+					c.setBackground(Colour.TABLE_DELIVERED.getColor());
 				}else if((valueParse-todayParse)==1){
 					//you have one day time to finish your task
-					c.setBackground(new Color(255,149,88));//orange
+					c.setBackground(Colour.TABLE_ONE_DAY_LEFT.getColor());
 				}else if((valueParse-todayParse)==2){
-					c.setBackground(new Color(255,210,120));//yellow
+					c.setBackground(Colour.TABLE_TWO_DAYS_LEFT.getColor());
 				}else if((valueParse-todayParse)>2){
 					//you have more then 2 day time to finish your task
-					c.setBackground(new Color(126, 207, 88));//green
+					c.setBackground(Colour.TABLE_MORE_THAN_TO_DAYS.getColor());
 				}else{
-					c.setBackground(Color.WHITE);
+					c.setBackground(Colour.TABLE_DEFAULT.getColor());
 				}
 				
 				if(tableStatus.equals(status[4]) && (valueParse-todayParse)==0){
-					c.setBackground(new Color(162, 104, 104));
+					c.setBackground(Colour.TABLE_DELIVERY_DAY_DELIVERED.getColor());
 				}
 
 				//If you select a row and the row gets blue.
 				if(isSelected){
-					c.setBackground(new Color(160,166,207));//blue
+					c.setBackground(Colour.TABLE_SELECTED_ROW.getColor());
 				}
 
 				return c;

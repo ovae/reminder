@@ -408,7 +408,7 @@ public class MainWindow extends JFrame{
 			}
 		});
 
-		//Set icon for the menu items TODO
+		//Set icon for the menu items
 		menuItemSave.setIcon(Icons.SAVE_ICON.getIcon());
 		menuClose.setIcon(Icons.EXIT_ICON.getIcon());
 		menuItemNewTask.setIcon(Icons.ADD_TASK_ICON.getIcon());
@@ -602,6 +602,14 @@ public class MainWindow extends JFrame{
 		mainPanel.add(controlPanel, BorderLayout.NORTH);
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
 		mainPanel.add(infoPanel, BorderLayout.SOUTH);
+		//TODO
+		/*try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+			SwingUtilities.updateComponentTreeUI(mainPanel);
+		} catch (Exception e) {
+			// If Nimbus is not available, you can set the GUI to another look and feel.
+		}*/
 	}
 
 	//Setting up the taskTables.

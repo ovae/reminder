@@ -1,7 +1,6 @@
 package rem.subWindows;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
@@ -9,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import rem.constants.Colour;
 
 /**
  * 
@@ -72,13 +73,13 @@ public class InfoFrame extends JFrame{
 		this.setLayout(new BorderLayout());
 
 		//Set the background color for every text field.
-		green.setBackground(new Color(126, 207, 88));
-		gray.setBackground(Color.LIGHT_GRAY);
-		red.setBackground(new Color(240, 88, 88));
-		orange.setBackground(new Color(255,149,88));
-		yellow.setBackground(new Color(255,210,120));
-		blue.setBackground(new Color(160,166,207));
-		white.setBackground(Color.WHITE);
+		green.setBackground(Colour.TABLE_MORE_THAN_TO_DAYS.getColor());
+		gray.setBackground(Colour.TABLE_DELIVERED.getColor());
+		red.setBackground(Colour.TABLE_DELIVERY_DAY.getColor());
+		orange.setBackground(Colour.TABLE_ONE_DAY_LEFT.getColor());
+		yellow.setBackground(Colour.TABLE_TWO_DAYS_LEFT.getColor());
+		blue.setBackground(Colour.TABLE_SELECTED_ROW.getColor());
+		white.setBackground(Colour.TABLE_DEFAULT.getColor());
 
 		//Disable the ability to edit the text fields.
 		green.setEditable(false);
