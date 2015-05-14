@@ -357,13 +357,13 @@ public class CalendarPanel extends JPanel{
 			if(monthState <=9 && index<=9){
 				vergleich = yearState+"0"+(monthState)+"0"+(index);
 			}
-			if(monthState <=9 && index>=9){
+			if(monthState <=9 && index>9){
 				vergleich = yearState+"0"+(monthState)+""+(index);
 			}
-			if(monthState >=9 && index<=9){
+			if(monthState >9 && index<=9){
 				vergleich = yearState+""+(monthState)+"0"+(index);
 			}
-			if(monthState >=9 && index>=9){
+			if(monthState >9 && index>9){
 				vergleich = yearState+""+(monthState)+""+(index);
 			}
 
