@@ -2,6 +2,7 @@ package rem;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,12 +19,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import rem.calendar.CalendarPanel;
+import rem.constants.Colour;
 import rem.constants.Icons;
 import rem.constants.Messages;
 import rem.files.FileHandler;
@@ -85,14 +88,17 @@ public class MainWindow extends JFrame{
 	private JScrollPane tasksScrollPane;
 	private JScrollPane archiveScrollPane;
 	private JScrollPane eventScrollPane;
+	private JScrollPane noteScrollPane;
 	private JPanel tasksTab;
 	private JPanel calendarTab;
 	private JPanel eventTab;
+	private JPanel noteTab;
 
 	private JPanel archiveTab;
 	private TasksTable taskTable;
 	private TasksTable archiveTable;
 	private EventTable eventTable;
+	private JTextArea noteField;
 
 	//Toolbar buttons
 	private JButton newTaskButton;
@@ -116,6 +122,7 @@ public class MainWindow extends JFrame{
 	private File taskFile;
 	private File archiveFile;
 	private File eventFile;
+	private File noteFile;
 
 	//Preferences
 	private RemPreferences preferences;
@@ -138,15 +145,18 @@ public class MainWindow extends JFrame{
 		this.tasksTab = new JPanel(new BorderLayout());
 		this.archiveTab = new JPanel(new BorderLayout());
 		this.eventTab = new JPanel(new BorderLayout());
+		this.noteTab = new JPanel(new BorderLayout());
 		this.tasksScrollPane = new JScrollPane(tasksTab);
 		this.archiveScrollPane = new JScrollPane(archiveTab);
 		this.eventScrollPane = new JScrollPane(eventTab);
+		this.noteScrollPane = new JScrollPane(noteTab);
 
 		//TabbedPane elements
 		this.taskTable = new TasksTable(new DefaultTableModel());
 		this.archiveTable = new TasksTable(new DefaultTableModel());
 		this.eventTable = new EventTable(new DefaultTableModel());
 		this.calendarTab = new CalendarPanel(taskTable, archiveTable, eventTable);
+		this.noteField = new JTextArea();
 
 		//Menu
 		//Initialise all menus and menu items.
@@ -197,6 +207,7 @@ public class MainWindow extends JFrame{
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		archiveFile = new File(System.getProperty("user.dir")+"/userfiles/archive.txt");
 		eventFile = new File(System.getProperty("user.dir")+"/userfiles/event.txt");
+		noteFile = new File(System.getProperty("user.dir")+"/userfiles/note.txt");
 
 		//sub menus
 		this.addTaskFrame = new AddTaskFrame(this);
@@ -243,6 +254,7 @@ public class MainWindow extends JFrame{
 				settingUpTheMenu();
 				settingUpTheToolbar();
 				settingUpTheContentPanel();
+				settingUpTheNoteTab();
 
 				loadTableContent();
 				//Refresh the calendarTab.
@@ -346,6 +358,7 @@ public class MainWindow extends JFrame{
 					FileHandler.writeFile(taskTable.getTableContent(),taskFile);
 					FileHandler.writeFile(archiveTable.getTableContent(), archiveFile);
 					FileHandler.writeFile(eventTable.getTableContent(), eventFile);
+					FileHandler.writeNoteFile(noteFile, noteField.getText());
 					infoPanel.setStateSaved();
 				} catch (IOException e1) {
 					System.err.println(Messages.FAILED_TO_SAVE.getMsg());
@@ -596,6 +609,7 @@ public class MainWindow extends JFrame{
 		tabbedPane.addTab("Latest", tasksScrollPane);
 		tabbedPane.addTab("Event", eventScrollPane);
 		tabbedPane.addTab("Archive", archiveScrollPane);
+		tabbedPane.addTab("Note", noteScrollPane);
 		tabbedPane.addTab("Calendar", calendarTab);
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
@@ -610,6 +624,15 @@ public class MainWindow extends JFrame{
 		} catch (Exception e) {
 			// If Nimbus is not available, you can set the GUI to another look and feel.
 		}*/
+	}
+
+	/**
+	 * 
+	 */
+	private void settingUpTheNoteTab() {
+		noteField.setBackground(Colour.CALENDAR_DAY.getColor());
+		noteField.setMargin(new Insets(10,10,10,10));
+		noteTab.add(noteField, BorderLayout.CENTER);
 	}
 
 	//Setting up the taskTables.
@@ -649,6 +672,7 @@ public class MainWindow extends JFrame{
 			FileHandler.loadFile(taskTable, taskFile);
 			FileHandler.loadFile(archiveTable, archiveFile);
 			FileHandler.loadFile(eventTable, eventFile);
+			FileHandler.loadNoteFile(noteField,noteFile);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, Messages.UNABLE_TO_LOAD.getMsg());
 		}finally{
