@@ -443,6 +443,17 @@ public class MainWindow extends JFrame{
 		menuItemArchiveEvent.setIcon(Icons.ARCHIVE_EVENT_ICON.getIcon());
 		menuItemRestoreEvent.setIcon(Icons.RESTORE_EVENT_ICON.getIcon());
 
+		menuItemNewTask.setEnabled(true);
+		menuItemRemoveTask.setEnabled(true);
+		menuItemChangeStatus.setEnabled(true);
+		menuItemArchive.setEnabled(true);
+		menuItemRestore.setEnabled(false);
+		menuItemRemoveArchiveTask.setEnabled(false);
+		menuItemNewEvent.setEnabled(true);
+		menuItemRemoveEvent.setEnabled(false);
+		menuItemArchiveEvent.setEnabled(false);
+		menuItemRestoreEvent.setEnabled(false);
+
 		//Set short cuts.
 		final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		//menuOpenFiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -634,6 +645,17 @@ public class MainWindow extends JFrame{
 				switch(tabbedPane.getSelectedIndex()){
 					case 0:
 						//Latest tab
+						menuItemNewTask.setEnabled(true);
+						menuItemRemoveTask.setEnabled(true);
+						menuItemChangeStatus.setEnabled(true);
+						menuItemArchive.setEnabled(true);
+						menuItemRestore.setEnabled(false);
+						menuItemRemoveArchiveTask.setEnabled(false);
+						menuItemNewEvent.setEnabled(true);
+						menuItemRemoveEvent.setEnabled(false);
+						menuItemArchiveEvent.setEnabled(false);
+						menuItemRestoreEvent.setEnabled(false);
+
 						newTaskButton.setEnabled(true);
 						removeButton.setEnabled(true);
 						doneButton.setEnabled(true);
@@ -647,6 +669,17 @@ public class MainWindow extends JFrame{
 						break;
 					case 1:
 						//Event tab
+						menuItemNewTask.setEnabled(true);
+						menuItemRemoveTask.setEnabled(false);
+						menuItemChangeStatus.setEnabled(false);
+						menuItemArchive.setEnabled(false);
+						menuItemRestore.setEnabled(false);
+						menuItemRemoveArchiveTask.setEnabled(false);
+						menuItemNewEvent.setEnabled(true);
+						menuItemRemoveEvent.setEnabled(true);
+						menuItemArchiveEvent.setEnabled(true);
+						menuItemRestoreEvent.setEnabled(false);
+
 						newTaskButton.setEnabled(true);
 						removeButton.setEnabled(false);
 						doneButton.setEnabled(false);
@@ -660,6 +693,17 @@ public class MainWindow extends JFrame{
 						break;
 					case 2:
 						//Archive tab
+						menuItemNewTask.setEnabled(true);
+						menuItemRemoveTask.setEnabled(false);
+						menuItemChangeStatus.setEnabled(false);
+						menuItemArchive.setEnabled(false);
+						menuItemRestore.setEnabled(true);
+						menuItemRemoveArchiveTask.setEnabled(true);
+						menuItemNewEvent.setEnabled(true);
+						menuItemRemoveEvent.setEnabled(false);
+						menuItemArchiveEvent.setEnabled(false);
+						menuItemRestoreEvent.setEnabled(true);
+
 						newTaskButton.setEnabled(true);
 						removeButton.setEnabled(false);
 						doneButton.setEnabled(false);
@@ -673,6 +717,17 @@ public class MainWindow extends JFrame{
 						break;
 					case 3:
 						//Node tab
+						menuItemNewTask.setEnabled(true);
+						menuItemRemoveTask.setEnabled(false);
+						menuItemChangeStatus.setEnabled(false);
+						menuItemArchive.setEnabled(false);
+						menuItemRestore.setEnabled(false);
+						menuItemRemoveArchiveTask.setEnabled(false);
+						menuItemNewEvent.setEnabled(true);
+						menuItemRemoveEvent.setEnabled(false);
+						menuItemArchiveEvent.setEnabled(false);
+						menuItemRestoreEvent.setEnabled(false);
+
 						newTaskButton.setEnabled(true);
 						removeButton.setEnabled(false);
 						doneButton.setEnabled(false);
@@ -686,6 +741,17 @@ public class MainWindow extends JFrame{
 						break;
 					case 4:
 						//Calendar tab
+						menuItemNewTask.setEnabled(true);
+						menuItemRemoveTask.setEnabled(false);
+						menuItemChangeStatus.setEnabled(false);
+						menuItemArchive.setEnabled(false);
+						menuItemRestore.setEnabled(false);
+						menuItemRemoveArchiveTask.setEnabled(false);
+						menuItemNewEvent.setEnabled(true);
+						menuItemRemoveEvent.setEnabled(false);
+						menuItemArchiveEvent.setEnabled(false);
+						menuItemRestoreEvent.setEnabled(false);
+
 						newTaskButton.setEnabled(true);
 						removeButton.setEnabled(false);
 						doneButton.setEnabled(false);
