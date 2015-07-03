@@ -34,7 +34,7 @@ public enum Icons {
 	RESTORE_EVENT_HOVER_ICON("/icons/restoreEventHover.png"),
 	ARCHIVE_EVENT_ICON		("/icons/archiveEvent.png"),
 	ARCHIVE_EVENT_HOVER_ICON("/icons/archiveEventHover.png"),
-	PLACEHOLDER				("/icons/placeholder.png")
+	PLACEHOLDER				("/icons/placeholder.png"),
 	;
 
 	private final String path;

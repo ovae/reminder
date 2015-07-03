@@ -2,12 +2,15 @@ package rem.table;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -17,6 +20,7 @@ import javax.swing.table.TableModel;
 import rem.InfoPanel;
 import rem.constants.Colour;
 import rem.constants.Messages;
+import rem.popupMenus.TaskTablePopupMenu;
 
 /**
  * 
@@ -42,6 +46,7 @@ public class TasksTable extends RemTable {
 		this.getTableHeader().setReorderingAllowed(false);
 		//TODO
 		this.setBackground(Colour.CALENDAR_DAY.getColor());
+		eventListeners();
 	}
 
 	public void setTableHeader(String[] header){
@@ -294,4 +299,41 @@ public class TasksTable extends RemTable {
 		// TODO Auto-generated method stub
 	}
 
+	private void eventListeners(){
+		this.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				if(SwingUtilities.isRightMouseButton(arg0)){
+					TaskTablePopupMenu frame = new TaskTablePopupMenu(arg0.getXOnScreen(), arg0.getYOnScreen());
+					frame.run();
+				}
+				
+			}
+		});
+	}
 }

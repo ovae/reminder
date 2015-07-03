@@ -23,6 +23,10 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import rem.calendar.CalendarPanel;
@@ -42,14 +46,14 @@ import rem.table.TasksTable;
 /**
  * The main window of this program.
  * @author ovae.
- * @version 20150501.
+ * @version 20150704.
  */
 public class MainWindow extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
 	//Program info
-	private String version ="0.4.5";
+	private String version ="0.5.0";
 	
 	//Main menu configuration
 	private int windowHeight;
@@ -259,6 +263,7 @@ public class MainWindow extends JFrame{
 				loadTableContent();
 				//Refresh the calendarTab.
 				((CalendarPanel) calendarTab).refreshCalendar();
+
 			}
 		});
 	}
@@ -587,6 +592,17 @@ public class MainWindow extends JFrame{
 		archiveEventButton.setBorder(null);
 		restoreEventButton.setBorder(null);
 
+		newTaskButton.setEnabled(true);
+		removeButton.setEnabled(true);
+		doneButton.setEnabled(true);
+		archiveButton.setEnabled(true);
+		restoreTaskButton.setEnabled(false);
+		removeArchivedTaskButton.setEnabled(false);
+		newEventButton.setEnabled(true);
+		removeEventButton.setEnabled(false);
+		archiveEventButton.setEnabled(false);
+		restoreEventButton.setEnabled(false);
+
 		toolbar.add(newTaskButton);
 		toolbar.add(removeButton);
 		toolbar.add(doneButton);
@@ -601,6 +617,7 @@ public class MainWindow extends JFrame{
 		toolbar.add(restoreEventButton);
 		toolbar.setFloatable(false);
 		controlPanel.add(toolbar, BorderLayout.CENTER);
+
 	}
 
 	//Setting up the basic window panel structure.
@@ -611,6 +628,81 @@ public class MainWindow extends JFrame{
 		tabbedPane.addTab("Archive", archiveScrollPane);
 		tabbedPane.addTab("Note", noteScrollPane);
 		tabbedPane.addTab("Calendar", calendarTab);
+
+		tabbedPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				switch(tabbedPane.getSelectedIndex()){
+					case 0:
+						//Latest tab
+						newTaskButton.setEnabled(true);
+						removeButton.setEnabled(true);
+						doneButton.setEnabled(true);
+						archiveButton.setEnabled(true);
+						restoreTaskButton.setEnabled(false);
+						removeArchivedTaskButton.setEnabled(false);
+						newEventButton.setEnabled(true);
+						removeEventButton.setEnabled(false);
+						archiveEventButton.setEnabled(false);
+						restoreEventButton.setEnabled(false);
+						break;
+					case 1:
+						//Event tab
+						newTaskButton.setEnabled(true);
+						removeButton.setEnabled(false);
+						doneButton.setEnabled(false);
+						archiveButton.setEnabled(false);
+						restoreTaskButton.setEnabled(false);
+						removeArchivedTaskButton.setEnabled(false);
+						newEventButton.setEnabled(true);
+						removeEventButton.setEnabled(true);
+						archiveEventButton.setEnabled(true);
+						restoreEventButton.setEnabled(false);
+						break;
+					case 2:
+						//Archive tab
+						newTaskButton.setEnabled(true);
+						removeButton.setEnabled(false);
+						doneButton.setEnabled(false);
+						archiveButton.setEnabled(false);
+						restoreTaskButton.setEnabled(true);
+						removeArchivedTaskButton.setEnabled(true);
+						newEventButton.setEnabled(true);
+						removeEventButton.setEnabled(false);
+						archiveEventButton.setEnabled(false);
+						restoreEventButton.setEnabled(true);
+						break;
+					case 3:
+						//Node tab
+						newTaskButton.setEnabled(true);
+						removeButton.setEnabled(false);
+						doneButton.setEnabled(false);
+						archiveButton.setEnabled(false);
+						restoreTaskButton.setEnabled(false);
+						removeArchivedTaskButton.setEnabled(false);
+						newEventButton.setEnabled(true);
+						removeEventButton.setEnabled(false);
+						archiveEventButton.setEnabled(false);
+						restoreEventButton.setEnabled(false);
+						break;
+					case 4:
+						//Calendar tab
+						newTaskButton.setEnabled(true);
+						removeButton.setEnabled(false);
+						doneButton.setEnabled(false);
+						archiveButton.setEnabled(false);
+						restoreTaskButton.setEnabled(false);
+						removeArchivedTaskButton.setEnabled(false);
+						newEventButton.setEnabled(true);
+						removeEventButton.setEnabled(false);
+						archiveEventButton.setEnabled(false);
+						restoreEventButton.setEnabled(false);
+						break;
+					default:
+						//Error
+				}
+			}
+		});
+
 		contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
 		mainPanel.add(controlPanel, BorderLayout.NORTH);
@@ -633,6 +725,24 @@ public class MainWindow extends JFrame{
 		noteField.setBackground(Colour.CALENDAR_DAY.getColor());
 		noteField.setMargin(new Insets(10,10,10,10));
 		noteTab.add(noteField, BorderLayout.CENTER);
+		noteField.getDocument().addDocumentListener(new DocumentListener(){
+
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				infoPanel.setStateChanged();
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				infoPanel.setStateChanged();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				infoPanel.setStateChanged();
+			}
+			
+		});
 	}
 
 	//Setting up the taskTables.
@@ -652,6 +762,7 @@ public class MainWindow extends JFrame{
 		archiveTable.setTableHeader(columnNamesArchive);
 		archiveTable.setTableModel();
 		archiveTable.setTableRowColor();
+		archiveTable.checkIfTableHasChanged(infoPanel);
 
 		archiveTab.add(archiveTable, BorderLayout.CENTER);
 		archiveTab.add(archiveTable.getTableHeader(), BorderLayout.PAGE_START);
@@ -661,6 +772,7 @@ public class MainWindow extends JFrame{
 		eventTable.setTableHeader(columnNamesEvent);
 		eventTable.setTableModel();
 		eventTable.setTableRowColor();
+		eventTable.checkIfTableHasChanged(infoPanel);
 
 		eventTab.add(eventTable, BorderLayout.CENTER);
 		eventTab.add(eventTable.getTableHeader(), BorderLayout.PAGE_START);

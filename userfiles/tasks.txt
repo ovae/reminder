@@ -3,7 +3,7 @@
 [TODAY][today][20150501][20150501][not_started]
 [so][apdoig0526][20150526][20150526][not_started]
 [so][apdoig0510][20150510][20150510][not_started]
-[so][apdoig0531][20150510][20150531][not_started]
+[sozjg][apdoig0531][20150510][20150531][not_started]
 [so][apdoig0601][20150601][20150601][not_started]
 [esd][edf0329][20150329][20150329][not_started]
 [Test][Test][20150507][20150507][not_started]
