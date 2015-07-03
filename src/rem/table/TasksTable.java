@@ -330,7 +330,7 @@ public class TasksTable extends RemTable {
 				// TODO Auto-generated method stub
 				if(SwingUtilities.isRightMouseButton(arg0)){
 					TaskTablePopupMenu frame = new TaskTablePopupMenu(arg0.getXOnScreen(), arg0.getYOnScreen());
-					frame.run();
+					//frame.run();
 				}
 				
 			}
