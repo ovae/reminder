@@ -99,7 +99,6 @@ public class CalendarDayPanelComponent extends JPanel{
 	 */
 	public void setBackgroundColour(){
 		taskTable.setBackground(Colour.CALENDAR_HOLDER_DAY_TASK.getColor());
-		//scroll.setBorder(null);
 	}
 
 	/**

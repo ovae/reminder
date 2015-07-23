@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -119,10 +117,10 @@ public class CalendarPanel extends JPanel{
 	 */
 	private void setUpControlPanel(){
 		JPanel weekdaysPanel = new JPanel();
-		JPanel[] panelWeekdays = new JPanel[7];
+		JPanel[] panelWeekdays = new GradientPanel[7];
 		weekdaysPanel.setLayout(new GridLayout(0,7));
 		for(int n = 0; n < 7; n++) {
-			panelWeekdays[n] = new JPanel();
+			panelWeekdays[n] = new GradientPanel();
 			weekdaysPanel.add(panelWeekdays[n]);
 		}
 

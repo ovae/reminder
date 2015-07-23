@@ -20,7 +20,10 @@ import javax.swing.table.TableModel;
 import rem.InfoPanel;
 import rem.constants.Colour;
 import rem.constants.Messages;
+import rem.constants.States;
 import rem.popupMenus.TaskTablePopupMenu;
+import rem.subWindows.EditTaskFrame;
+import rem.util.Util;
 
 /**
  * 
@@ -38,15 +41,16 @@ public class TasksTable extends RemTable {
 	public TasksTable(DefaultTableModel defaultTableModel) {
 		super(defaultTableModel);
 		status = new String[5];
-		status[0] = "not_started";
-		status[1] = "started";
-		status[2] = "half-finished";
-		status[3] = "finished";
-		status[4] = "delivered";
+		status[0] = States.states[0];
+		status[1] = States.states[1];
+		status[2] = States.states[2];
+		status[3] = States.states[3];
+		status[4] = States.states[4];
 		this.getTableHeader().setReorderingAllowed(false);
-		//TODO
 		this.setBackground(Colour.CALENDAR_DAY.getColor());
 		eventListeners();
+		setTableModel();
+		this.setRowSelectionAllowed(true);
 	}
 
 	public void setTableHeader(String[] header){
@@ -58,7 +62,19 @@ public class TasksTable extends RemTable {
 	}
 
 	public void setTableModel(){
-		this.setModel(new DefaultTableModel(tableContent, columnNames));
+		DefaultTableModel model = new DefaultTableModel(tableContent, columnNames){
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex){
+						return false;
+				
+			}
+
+		};
+
+		this.setModel(model);
 	}
 
 	/**
@@ -112,6 +128,7 @@ public class TasksTable extends RemTable {
 	public void addRow(String topic, String about, int begin, int end, String status){
 		DefaultTableModel model = (DefaultTableModel) this.getModel();
 		model.addRow(new Object[]{topic, about, begin, end, status});
+		repaint();
 	}
 
 	/**
@@ -303,27 +320,28 @@ public class TasksTable extends RemTable {
 		this.addMouseListener(new MouseListener() {
 			
 			@Override
-			public void mouseReleased(MouseEvent arg0) {
+			public void mouseReleased(MouseEvent arg0) {}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+				JTable table =(JTable) e.getSource();
+				int rowNumber = table.getSelectedRow();
+				TableModel model = table.getModel();
+				if (e.getClickCount() == 2) {
+					openEditWindow((String) model.getValueAt( rowNumber,0),
+							(String) model.getValueAt( rowNumber,1),
+							(String) model.getValueAt( rowNumber,2),
+							(String) model.getValueAt( rowNumber,3),
+							(String) model.getValueAt( rowNumber,4));
+				}
 			}
 			
 			@Override
-			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void mouseExited(MouseEvent arg0) {}
 			
 			@Override
-			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-			}
+			public void mouseEntered(MouseEvent arg0) {}
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -336,4 +354,19 @@ public class TasksTable extends RemTable {
 			}
 		});
 	}
+
+	/**
+	 * 
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
+	private void openEditWindow(final String topic, final String about, final String begin, final String end,final String status){
+		EditTaskFrame frame = new EditTaskFrame(this,topic,about,begin,end,status);
+		Util.centerWindow(frame);
+		frame.setVisible(true);
+	}
+
 }

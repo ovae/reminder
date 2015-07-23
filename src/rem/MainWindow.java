@@ -42,6 +42,7 @@ import rem.subWindows.SettingsFrame;
 import rem.table.EventTable;
 import rem.table.RemTable;
 import rem.table.TasksTable;
+import rem.util.Util;
 
 /**
  * The main window of this program.
@@ -214,14 +215,14 @@ public class MainWindow extends JFrame{
 		noteFile = new File(System.getProperty("user.dir")+"/userfiles/note.txt");
 
 		//sub menus
-		this.addTaskFrame = new AddTaskFrame(this);
-		this.addEventFrame = new AddEventFrame(this);
+		this.addTaskFrame = new AddTaskFrame(taskTable);
+		this.addEventFrame = new AddEventFrame(eventTable);
 		this.infoFrame = new InfoFrame();
 		this.settingsFrame = new SettingsFrame(this);
-		centerWindow(infoFrame);
-		centerWindow(addTaskFrame);
-		centerWindow(addEventFrame);
-		centerWindow(settingsFrame);
+		Util.centerWindow(infoFrame);
+		Util.centerWindow(addTaskFrame);
+		Util.centerWindow(addEventFrame);
+		Util.centerWindow(settingsFrame);
 
 		//Initialise the preferences
 		preferences = new RemPreferences();
@@ -245,7 +246,7 @@ public class MainWindow extends JFrame{
 		this.setContentPane(mainPanel);
 		this.setTitle("Reminder");
 		this.setIconImage(Icons.MAIN_ICON.getIcon().getImage());
-		centerWindow(this);
+		Util.centerWindow(this);
 	}
 
 	/**
@@ -640,6 +641,8 @@ public class MainWindow extends JFrame{
 		tabbedPane.addTab("Note", noteScrollPane);
 		tabbedPane.addTab("Calendar", calendarTab);
 
+
+
 		tabbedPane.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				switch(tabbedPane.getSelectedIndex()){
@@ -776,7 +779,7 @@ public class MainWindow extends JFrame{
 		mainPanel.add(infoPanel, BorderLayout.SOUTH);
 		//TODO
 		/*try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 			SwingUtilities.updateComponentTreeUI(mainPanel);
 		} catch (Exception e) {
@@ -868,16 +871,7 @@ public class MainWindow extends JFrame{
 		return eventTable;
 	}
 
-	/**
-	 * Sets the frame parameter centred in the screen
-	 * @param frame
-	 */
-	private static void centerWindow(JFrame frame) {
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-		frame.setLocation(x, y);
-	}
+
 
 	public void setTaskFilePath(final File file){
 		this.taskFile = file;

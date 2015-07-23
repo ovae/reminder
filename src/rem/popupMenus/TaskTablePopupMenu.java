@@ -1,7 +1,6 @@
 package rem.popupMenus;
 
 import java.awt.GridLayout;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,9 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JPopupMenu;
 
 import rem.constants.Icons;
-import rem.subWindows.AddEventFrame;
-import rem.table.RemTable;
-import rem.table.TasksTable;
 
 public class TaskTablePopupMenu extends JPopupMenu{
 

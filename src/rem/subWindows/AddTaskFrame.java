@@ -1,6 +1,7 @@
 package rem.subWindows;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,106 +9,177 @@ import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import rem.MainWindow;
+import rem.table.TasksTable;
 
 /**
  * 
  * @author ovae.
- * @version 20150408.
+ * @version 20150719.
  */
 public class AddTaskFrame extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextField inputTopic = new JTextField("");
-	private JTextField inputAbout = new JTextField("");
+	private JTextField inputFieldTopic;
+	private JTextArea inputFieldAbout;
+	private JComboBox<String> status;
+	private JTextField inputFieldBegin;
+	private JTextField inputFieldEnd;
 
-	private JTextField inputBegin = new JTextField("");
-	private JTextField inputEnd = new JTextField("");
-	private JLabel beginInfoLabel = new JLabel("");
-	private JLabel endInfoLabel = new JLabel("");
-	private JButton addButton = new JButton("add");
-	private JButton resetButton = new JButton("reset");
+	private JLabel beginInfoLabel;
+	private JLabel endInfoLabel;
+	private JButton addButton;
+	private JButton resetButton;
 
-	private MainWindow parentFrame;
+	private TasksTable table;
+	private JPanel mainPanel;
 
 	/**
 	 * 
 	 * @param parentFrame
 	 */
-	public AddTaskFrame(final MainWindow parentFrame){
-		if(parentFrame.equals(null)){
-			throw new IllegalArgumentException("The parent frame can not be null.");
+	public AddTaskFrame(final TasksTable table){
+		if(table.equals(null)){
+			throw new IllegalArgumentException("The table can not be null.");
 		}
-		this.parentFrame = parentFrame;
+
+		inputFieldTopic = new JTextField("");
+		inputFieldAbout = new JTextArea("");
+		status = new JComboBox<String>();
+		inputFieldBegin = new JTextField("");
+		inputFieldEnd = new JTextField("");
+
+		beginInfoLabel = new JLabel("");
+		endInfoLabel = new JLabel("");
+		addButton = new JButton("add");
+		resetButton = new JButton("reset");
+
+		mainPanel = new JPanel();
+		mainPanel.setLayout(null);
+
+		this.table = table;
 		this.setTitle("New Task");
 		this.setLocationRelativeTo(null);
-		this.setSize(new Dimension(400,256));
+		this.setSize(new Dimension(500,330));
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
-		init();
+
+		createTheContent();
 	}
 
 	/**
 	 * 
 	 */
-	public void init(){
-		//set the basic setting for the frame.
-		//Declare all needed compounds.
-		JPanel addPanel = new JPanel();
-		JPanel buttonPanel = new JPanel(new BorderLayout());
+	public void createTheContent(){
+		mainPanel.setBorder(BorderFactory.createTitledBorder("Task"));
+		setUpBeginnAndEnd();
+		setUpTheInputFields();
+		setUpTheStatusComboBox();
+		setUpButtonPanel();
+
+		//If the window is closed, the resetInputAddFrame method is used-
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				resetInputsAddFrame();
+			}
+		});
+
+		//Disable the default visibility.
+		this.setVisible(false);
+	}
+
+	private void setUpTheInputFields(){
 		JLabel enterTopic = new JLabel("Topic: ");
 		JLabel enterAbout = new JLabel("About: ");
-		JLabel enterBegin = new JLabel("Begin: ");
-		JLabel enterEnd = new JLabel("End: ");
+
+		inputFieldAbout.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		//Set the bounds of the Labels
+		enterTopic.setBounds(10, 100, 100, 28);
+		enterAbout.setBounds(10, 100, 100, 28);
+
+		//Set the bounds of the text fields.
+		inputFieldTopic.setBounds(10, 100, 360,28);
+		inputFieldAbout.setBounds(10, 100, 360, 128);
+
+		//Set the bounds of the info labels.
+		beginInfoLabel.setBounds(10, 100, 180,28);
+		endInfoLabel.setBounds(10, 100, 180,28);
+
+		//Set the location of the labels.
+		enterTopic.setLocation(40, 30);
+		enterAbout.setLocation(40, 60);
+
+		//Set the input locations.
+		inputFieldTopic.setLocation(120, 30);
+		inputFieldAbout.setLocation(120, 60);
+
+		//Add all labels and text fields to the addPanel.
+		mainPanel.add(enterTopic);
+		mainPanel.add(enterAbout);
+		mainPanel.add(inputFieldTopic);
+		mainPanel.add(inputFieldAbout);
+	}
+
+	/**
+	 * 
+	 */
+	private void setUpBeginnAndEnd(){
+		JLabel beginLable = new JLabel("Begin: ");
+		JLabel endLable = new JLabel("End: ");
 
 		//Set a input format for begin and end input fields.
 		NumberFormat inputFormate = NumberFormat.getNumberInstance(); 
 		inputFormate.setMaximumIntegerDigits(8);
 		inputFormate.setGroupingUsed(false); 
-		inputBegin = new JFormattedTextField(inputFormate);
+		inputFieldBegin = new JFormattedTextField(inputFormate);
 
 		inputFormate.setMaximumIntegerDigits(8);
 		inputFormate.setGroupingUsed(false); 
-		inputEnd = new JFormattedTextField(inputFormate);
-
-		//Set the bounds of the Labels
-		enterTopic.setBounds(10, 100, 100, 28);
-		enterAbout.setBounds(10, 100, 100, 28);
-		enterBegin.setBounds(10, 100, 100, 28);
-		enterEnd.setBounds(10, 100, 100, 28);
+		inputFieldEnd = new JFormattedTextField(inputFormate);
 
 		//Set the bounds of the text fields.
-		inputTopic.setBounds(10, 100, 180,28);
-		inputAbout.setBounds(10, 100, 180,28);
-		inputBegin.setBounds(10, 100, 180,28);
-		inputEnd.setBounds(10, 100, 180,28);
+		inputFieldBegin.setBounds(10, 100, 150,28);
+		inputFieldEnd.setBounds(10, 100, 150,28);
 
-		//Set the bounds of the info lables.
-		beginInfoLabel.setBounds(10, 100, 180,28);
-		endInfoLabel.setBounds(10, 100, 180,28);
+		//Set the bounds of the Labels
+		beginLable.setBounds(10, 100, 100, 28);
+		endLable.setBounds(10, 100, 100, 28);
 
-		//Set the location of the text fields.
-		enterTopic.setLocation(40, 40);
-		enterAbout.setLocation(40, 70);
-		enterBegin.setLocation(40, 100);
-		enterEnd.setLocation(40, 130);
+		//Set the location of the labels.
+		beginLable.setLocation(40, 230);
+		endLable.setLocation(290, 230);
 
-		//Set the label locations.
-		inputTopic.setLocation(120, 40);
-		inputAbout.setLocation(120, 70);
-		inputBegin.setLocation(120, 100);
-		inputEnd.setLocation(120, 130);
-		beginInfoLabel.setLocation(300, 100);
-		endInfoLabel.setLocation(300, 130);
+		//Set the input locations.
+		inputFieldBegin.setLocation(120, 230);
+		inputFieldEnd.setLocation(330, 230);
+
+		//Add all labels and text fields to the addPanel.
+		mainPanel.add(beginLable);
+		mainPanel.add(endLable);
+
+		mainPanel.add(beginInfoLabel);
+		mainPanel.add(endInfoLabel);
+		mainPanel.add(inputFieldBegin);
+		mainPanel.add(inputFieldEnd);
+	}
+
+	/**
+	 * 
+	 */
+	private void setUpButtonPanel(){
+		JPanel buttonPanel = new JPanel(new BorderLayout());
 
 		/* The action listener of the addButton.
 		 * If the button is pressed, all text field
@@ -117,14 +189,13 @@ public class AddTaskFrame extends JFrame{
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				//Check if one of the text fields is empty.
-				if(inputTopic.getText().trim().isEmpty() || 
-						inputAbout.getText().trim().isEmpty() ||
-						inputBegin.getText().trim().isEmpty() ||
-						inputEnd.getText().trim().isEmpty() ){
+				if(inputFieldTopic.getText().trim().isEmpty() || 
+						inputFieldAbout.getText().trim().isEmpty() ||
+						inputFieldBegin.getText().trim().isEmpty() ||
+						inputFieldEnd.getText().trim().isEmpty() ){
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
-					
-					parentFrame.getTaskTable().addRow(inputTopic.getText(), inputAbout.getText(), inputBegin.getText(), inputEnd.getText());
+					table.addRow(inputFieldTopic.getText(), inputFieldAbout.getText(), inputFieldBegin.getText(), inputFieldEnd.getText(), String.valueOf(status.getSelectedItem()));
 				}
 			}
 		});
@@ -139,35 +210,57 @@ public class AddTaskFrame extends JFrame{
 			}
 		});
 
-		//Disable the layout of the addPanel.
-		addPanel.setLayout(null);
-		//Add all labels and text fields to the addPanel.
-		addPanel.add(enterTopic);
-		addPanel.add(enterAbout);
-		addPanel.add(enterBegin);
-		addPanel.add(enterEnd);
-		addPanel.add(inputTopic);
-		addPanel.add(inputAbout);
-		addPanel.add(inputBegin);
-		addPanel.add(inputEnd);
-		addPanel.add(beginInfoLabel);
-		addPanel.add(endInfoLabel);
-		addPanel.setBorder(BorderFactory.createTitledBorder("New Task"));
 		//Add the buttons to the buttonPanel.
 		buttonPanel.add(resetButton,BorderLayout.WEST);
 		buttonPanel.add(addButton, BorderLayout.CENTER);
 		//Add the panels to the addFrame.
-		this.add(addPanel,BorderLayout.CENTER);
+		this.add(mainPanel,BorderLayout.CENTER);
 		this.add(buttonPanel, BorderLayout.SOUTH);
-		//Disable the default visibility.
-		this.setVisible(false);
 	}
 
-	//Resets the all input fields of the addFrame.
-	public void resetInputsAddFrame(){
-		inputTopic.setText("");
-		inputAbout.setText("");
-		inputBegin.setText("");
-		inputEnd.setText("");
+	/**
+	 * 
+	 */
+	private void setUpTheStatusComboBox(){
+		JLabel statusLable = new JLabel("Status ");
+		statusLable.setBounds(10, 100, 100, 28);
+		statusLable.setLocation(40, 195);
+
+		status = new JComboBox<String>(new String[]{"not_started","started","half-finished", "finished", "delivered"});
+		status.setSelectedIndex(0);
+		status.setBounds(10, 100, 150, 28);
+		status.setLocation(120, 195);
+
+		mainPanel.add(statusLable);
+		mainPanel.add(status);
 	}
+
+	/**
+	 * Resets the all input fields of the addFrame.
+	 */
+	public void resetInputsAddFrame(){
+		inputFieldTopic.setText("");
+		inputFieldAbout.setText("");
+		inputFieldBegin.setText("");
+		inputFieldEnd.setText("");
+		status.setSelectedIndex(0);
+	}
+
+
+	public void setInputFieldTopic(final String text){
+		this.inputFieldTopic.setText(text);
+	}
+	public void setInputFieldAbout(final String text){
+		this.inputFieldAbout.setText(text);
+	}
+	public void setInputFieldBegin(final String text){
+		this.inputFieldBegin.setText(text);
+	}
+	public void setInputFieldEnd(final String text){
+		this.inputFieldEnd.setText(text);
+	}
+	public void setStatus(final int anIndex){
+		this.status.setSelectedIndex(anIndex);
+	}
+
 }

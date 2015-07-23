@@ -1,6 +1,7 @@
 package rem.subWindows;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,101 +14,203 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import rem.MainWindow;
+import rem.table.TasksTable;
 
 /**
  * 
  * @author ovae.
- * @version 20150505.
+ * @version 20150718.
  */
 public class AddEventFrame extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextField inputTopic = new JTextField("");
-	private JTextField inputAbout = new JTextField("");
+	//InputFields
+	private JTextField inputFieldTopic;
+	private JTextArea inputFieldAbout;
+	private JTextField inputFieldBegin;
+	//Duration
+	private JSlider duration;
+	private int durationValue;
+	private JTextField durationView;
 
-	private JTextField inputBegin = new JTextField("");
-	private JTextField inputEnd = new JTextField("");
-	private JLabel beginInfoLabel = new JLabel("");
-	private JLabel endInfoLabel = new JLabel("");
-	private JButton addButton = new JButton("add");
-	private JButton resetButton = new JButton("reset");
+	//Label and buttons
+	private JLabel beginInfoLabel;
+	private JLabel endInfoLabel;
+	private JButton addButton;
+	private JButton resetButton;
 
-	private MainWindow parentFrame;
+	private TasksTable table;
+	private JPanel mainPanel;
 
 	/**
 	 * 
 	 * @param parentFrame
 	 */
-	public AddEventFrame(final MainWindow parentFrame){
-		if(parentFrame.equals(null)){
-			throw new IllegalArgumentException("The parent frame can not be null.");
+	public AddEventFrame(final TasksTable table){
+		if(table.equals(null)){
+			throw new IllegalArgumentException("The table can not be null.");
 		}
-		this.parentFrame = parentFrame;
+
+		inputFieldTopic = new JTextField("");
+		inputFieldAbout = new JTextArea("");
+		inputFieldBegin = new JTextField("");
+
+		duration = new JSlider(JSlider.HORIZONTAL,1, 365, 1);
+		durationValue = 1;
+		durationView = new JTextField("");
+
+		beginInfoLabel = new JLabel("");
+		endInfoLabel = new JLabel("");
+		addButton = new JButton("add");
+		resetButton = new JButton("reset");
+		mainPanel = new JPanel();
+		mainPanel.setLayout(null);
+
+		this.table = table;
 		this.setTitle("New Event");
 		this.setLocationRelativeTo(null);
-		this.setSize(new Dimension(400,256));
+		this.setSize(new Dimension(500,340));
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
-		init();
+		createTheContent();
 	}
 
 	/**
 	 * 
 	 */
-	public void init(){
-		//set the basic setting for the frame.
-		//Declare all needed compounds.
-		JPanel addPanel = new JPanel();
-		JPanel buttonPanel = new JPanel(new BorderLayout());
-		JLabel enterTopic = new JLabel("Event: ");
-		JLabel enterAbout = new JLabel("About: ");
-		JLabel enterBegin = new JLabel("Begin: ");
-		JLabel enterEnd = new JLabel("End: ");
+	private void createTheContent(){
+		mainPanel.setBorder(BorderFactory.createTitledBorder("Event"));
+		setUpBeginnAndEnd();
+		setUpTheInputFields();
+		setUpButtonPanel();
+
+		//If the window is closed, the resetInputAddFrame method is used-
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				resetInputsAddFrame();
+			}
+		});
+
+		//Disable the default visibility.
+		this.setVisible(false);
+	}
+
+	/**
+	 * 
+	 */
+	private void setUpTheInputFields(){
+		JLabel enterTopic = new JLabel("Event ");
+		JLabel enterAbout = new JLabel("About ");
+
+		inputFieldAbout.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		//Set the bounds of the Labels
+		enterTopic.setBounds(10, 100, 100, 28);
+		enterAbout.setBounds(10, 100, 100, 28);
+
+		//Set the bounds of the text fields.
+		inputFieldTopic.setBounds(10, 100, 360,28);
+		inputFieldAbout.setBounds(10, 100, 360, 128);
+
+		//Set the bounds of the info labels.
+		beginInfoLabel.setBounds(10, 100, 180,28);
+		endInfoLabel.setBounds(10, 100, 180,28);
+
+		//Set the location of the labels.
+		enterTopic.setLocation(40, 30);
+		enterAbout.setLocation(40, 60);
+
+		//Set the input locations.
+		inputFieldTopic.setLocation(120, 30);
+		inputFieldAbout.setLocation(120, 60);
+
+		//Add all labels and text fields to the addPanel.
+		mainPanel.add(enterTopic);
+		mainPanel.add(enterAbout);
+		mainPanel.add(inputFieldTopic);
+		mainPanel.add(inputFieldAbout);
+	}
+
+	/**
+	 * 
+	 */
+	private void setUpBeginnAndEnd(){
+		JLabel beginLable = new JLabel("Begin: ");
+		JLabel durationLable = new JLabel("Duration ");
 
 		//Set a input format for begin and end input fields.
 		NumberFormat inputFormate = NumberFormat.getNumberInstance(); 
 		inputFormate.setMaximumIntegerDigits(8);
 		inputFormate.setGroupingUsed(false); 
-		inputBegin = new JFormattedTextField(inputFormate);
-
-		inputFormate.setMaximumIntegerDigits(8);
-		inputFormate.setGroupingUsed(false); 
-		inputEnd = new JFormattedTextField(inputFormate);
-
-		//Set the bounds of the Labels
-		enterTopic.setBounds(10, 100, 100, 28);
-		enterAbout.setBounds(10, 100, 100, 28);
-		enterBegin.setBounds(10, 100, 100, 28);
-		enterEnd.setBounds(10, 100, 100, 28);
+		inputFieldBegin = new JFormattedTextField(inputFormate);
 
 		//Set the bounds of the text fields.
-		inputTopic.setBounds(10, 100, 180,28);
-		inputAbout.setBounds(10, 100, 180,28);
-		inputBegin.setBounds(10, 100, 180,28);
-		inputEnd.setBounds(10, 100, 180,28);
+		inputFieldBegin.setBounds(10, 100, 150,28);
 
-		//Set the bounds of the info lables.
+		//Turn on labels at major tick marks.
+		duration.setMajorTickSpacing(364);
+		duration.setMinorTickSpacing(1);
+		duration.setPaintTicks(true);
+		duration.setPaintLabels(true);
+
+		//Set the bounds of the Labels
+		beginLable.setBounds(10, 100, 100, 28);
+		durationLable.setBounds(10, 100, 100, 28);
+
+		//Set the bounds of the text fields.
+		beginLable.setLocation(40, 195);
+		duration.setBounds(10, 100, 340, 50);
+		durationView.setBounds(10, 28, 28, 28);
+
+		//Set the bounds of the info labels.
 		beginInfoLabel.setBounds(10, 100, 180,28);
 		endInfoLabel.setBounds(10, 100, 180,28);
 
 		//Set the location of the text fields.
-		enterTopic.setLocation(40, 40);
-		enterAbout.setLocation(40, 70);
-		enterBegin.setLocation(40, 100);
-		enterEnd.setLocation(40, 130);
+		inputFieldBegin.setLocation(120, 195);
+		durationLable.setLocation(40, 230);
+		duration.setLocation(110, 230);
+		durationView.setLocation(450, 230);
 
 		//Set the label locations.
-		inputTopic.setLocation(120, 40);
-		inputAbout.setLocation(120, 70);
-		inputBegin.setLocation(120, 100);
-		inputEnd.setLocation(120, 130);
-		beginInfoLabel.setLocation(300, 100);
-		endInfoLabel.setLocation(300, 130);
+		beginInfoLabel.setLocation(300, 200);
+		endInfoLabel.setLocation(300, 230);
+
+		/*
+		 * 
+		 */
+		duration.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider s = (JSlider) e.getSource();
+				durationValue = s.getValue();
+				durationView.setText(""+s.getValue());
+		}});
+
+		//Add all labels and text fields to the addPanel.
+		mainPanel.add(beginLable);
+		mainPanel.add(durationLable);
+		mainPanel.add(duration);
+		mainPanel.add(durationView);
+		mainPanel.add(beginInfoLabel);
+		mainPanel.add(endInfoLabel);
+		mainPanel.add(inputFieldBegin);
+	}
+
+	/**
+	 * 
+	 */
+	private void setUpButtonPanel(){
+		JPanel buttonPanel = new JPanel(new BorderLayout());
 
 		/* The action listener of the addButton.
 		 * If the button is pressed, all text field
@@ -117,14 +220,13 @@ public class AddEventFrame extends JFrame{
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				//Check if one of the text fields is empty.
-				if(inputTopic.getText().trim().isEmpty() || 
-						inputAbout.getText().trim().isEmpty() ||
-						inputBegin.getText().trim().isEmpty() ||
-						inputEnd.getText().trim().isEmpty() ){
+				if(inputFieldTopic.getText().trim().isEmpty() || 
+						inputFieldAbout.getText().trim().isEmpty() ||
+						inputFieldBegin.getText().trim().isEmpty() ){
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
 					
-					parentFrame.getEventTable().addRow(inputTopic.getText(), inputAbout.getText(), inputBegin.getText(), inputEnd.getText());
+					table.addRow(inputFieldTopic.getText(), inputFieldAbout.getText(), inputFieldBegin.getText(), ""+durationValue);
 				}
 			}
 		});
@@ -139,35 +241,21 @@ public class AddEventFrame extends JFrame{
 			}
 		});
 
-		//Disable the layout of the addPanel.
-		addPanel.setLayout(null);
-		//Add all labels and text fields to the addPanel.
-		addPanel.add(enterTopic);
-		addPanel.add(enterAbout);
-		addPanel.add(enterBegin);
-		addPanel.add(enterEnd);
-		addPanel.add(inputTopic);
-		addPanel.add(inputAbout);
-		addPanel.add(inputBegin);
-		addPanel.add(inputEnd);
-		addPanel.add(beginInfoLabel);
-		addPanel.add(endInfoLabel);
-		addPanel.setBorder(BorderFactory.createTitledBorder("New Event"));
 		//Add the buttons to the buttonPanel.
 		buttonPanel.add(resetButton,BorderLayout.WEST);
 		buttonPanel.add(addButton, BorderLayout.CENTER);
 		//Add the panels to the addFrame.
-		this.add(addPanel,BorderLayout.CENTER);
+		this.add(mainPanel,BorderLayout.CENTER);
 		this.add(buttonPanel, BorderLayout.SOUTH);
-		//Disable the default visibility.
-		this.setVisible(false);
 	}
 
-	//Resets the all input fields of the addFrame.
+	/**
+	 * Resets the all input fields of the addFrame.
+	 */
 	public void resetInputsAddFrame(){
-		inputTopic.setText("");
-		inputAbout.setText("");
-		inputBegin.setText("");
-		inputEnd.setText("");
+		inputFieldTopic.setText("");
+		inputFieldAbout.setText("");
+		inputFieldBegin.setText("");
+		duration.resetKeyboardActions();
 	}
 }
