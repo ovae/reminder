@@ -1,7 +1,10 @@
 package rem.table;
 
+import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import rem.constants.Colour;
 
 /**
  * The RemTable is a specialised JTable, with 5 columns.
@@ -23,6 +26,8 @@ public abstract class RemTable extends JTable{
 		this.columnNames[3] = "colomn3" ;
 		this.columnNames[4] = "colomn4" ;
 		this.setModel(new DefaultTableModel(tableContent, columnNames));
+		this.setBorder(BorderFactory.createLineBorder(Colour.TABLE_BORDER.getColor()));
+		this.setBackground(Colour.TABLE_BACKGROUND.getColor());
 	}
 
 	/**

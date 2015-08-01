@@ -1,4 +1,4 @@
-package rem.subWindows;
+package rem.subwindows;
 
 import rem.constants.States;
 import rem.table.TasksTable;

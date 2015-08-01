@@ -21,8 +21,8 @@ import rem.InfoPanel;
 import rem.constants.Colour;
 import rem.constants.Messages;
 import rem.constants.States;
-import rem.popupMenus.TaskTablePopupMenu;
-import rem.subWindows.EditTaskFrame;
+import rem.popupmenus.TaskTablePopupMenu;
+import rem.subwindows.EditTaskFrame;
 import rem.util.Util;
 
 /**
@@ -74,7 +74,8 @@ public class TasksTable extends RemTable {
 
 		};
 
-		this.setModel(model);
+		//this.setModel(model);
+		this.setModel(new DefaultTableModel(tableContent, columnNames));
 	}
 
 	/**
@@ -199,17 +200,17 @@ public class TasksTable extends RemTable {
 
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, 4);
 				String tableValue = (String)table.getModel().getValueAt(row, 3);
 				String tableStatus = (String) table.getModel().getValueAt(row, 4);
 				//get the date of today
 				Date date = new Date();
 				SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
 				String today =ft.format(date);
-				
+		
 				int todayParse = Integer.parseInt(""+today+"");
 				int valueParse = Integer.parseInt(tableValue);
-				
+
 				if((valueParse-todayParse)==0){
 					//the delivery day is today
 					c.setBackground(Colour.TABLE_DELIVERY_DAY.getColor());
@@ -227,11 +228,11 @@ public class TasksTable extends RemTable {
 				}else{
 					c.setBackground(Colour.TABLE_DEFAULT.getColor());
 				}
-				
+		
 				if(tableStatus.equals(status[4]) && (valueParse-todayParse)==0){
 					c.setBackground(Colour.TABLE_DELIVERY_DAY_DELIVERED.getColor());
 				}
-
+		
 				//If you select a row and the row gets blue.
 				if(isSelected){
 					c.setBackground(Colour.TABLE_SELECTED_ROW.getColor());
@@ -364,9 +365,9 @@ public class TasksTable extends RemTable {
 	 * @param status
 	 */
 	private void openEditWindow(final String topic, final String about, final String begin, final String end,final String status){
-		EditTaskFrame frame = new EditTaskFrame(this,topic,about,begin,end,status);
+		/*EditTaskFrame frame = new EditTaskFrame(this,topic,about,begin,end,status);
 		Util.centerWindow(frame);
-		frame.setVisible(true);
+		frame.setVisible(true);*/
 	}
 
 }

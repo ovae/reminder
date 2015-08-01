@@ -1,4 +1,4 @@
-package rem.subWindows;
+package rem.subwindows;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

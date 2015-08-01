@@ -1,4 +1,4 @@
-package rem.popupMenus;
+package rem.popupmenus;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
