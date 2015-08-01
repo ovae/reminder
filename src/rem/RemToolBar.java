@@ -53,11 +53,11 @@ public class RemToolBar extends JToolBar{
 	/**
 	 * 
 	 */
-	public RemToolBar(JTabbedPane tabbedPane,TasksTable taskTable,TasksTable archiveTable,EventTable eventTable,AddTaskFrame addTaskFrame,AddEventFrame addEventFrame){
-		this.tabbedPane = tabbedPane;
-		this.taskTable = taskTable;
-		this.archiveTable = archiveTable;
-		this.eventTable = eventTable;
+	public RemToolBar(MainWindow mainwindow,AddTaskFrame addTaskFrame,AddEventFrame addEventFrame){
+		this.tabbedPane = mainwindow.getTabbedPane();
+		this.taskTable = (TasksTable) mainwindow.getTaskTable();
+		this.archiveTable = mainwindow.getArchiveTable();
+		this.eventTable = (EventTable) mainwindow.getEventTable();
 		this.addTaskFrame = addTaskFrame;
 		this.addEventFrame = addEventFrame;
 

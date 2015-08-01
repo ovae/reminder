@@ -22,8 +22,6 @@ import rem.constants.Colour;
 import rem.constants.Messages;
 import rem.constants.States;
 import rem.popupmenus.TaskTablePopupMenu;
-import rem.subwindows.EditTaskFrame;
-import rem.util.Util;
 
 /**
  * 
@@ -62,7 +60,7 @@ public class TasksTable extends RemTable {
 	}
 
 	public void setTableModel(){
-		DefaultTableModel model = new DefaultTableModel(tableContent, columnNames){
+		/*DefaultTableModel model = new DefaultTableModel(tableContent, columnNames){
 
 			private static final long serialVersionUID = 1L;
 
@@ -72,7 +70,7 @@ public class TasksTable extends RemTable {
 				
 			}
 
-		};
+		};*/
 
 		//this.setModel(model);
 		this.setModel(new DefaultTableModel(tableContent, columnNames));
