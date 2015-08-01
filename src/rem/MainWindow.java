@@ -63,7 +63,7 @@ public class MainWindow extends JFrame{
 
 	//JPanels for the basic structure
 	private JPanel mainPanel;
-	private JToolBar toolbar;
+	private RemToolBar toolbar;
 	private JPanel controlPanel;
 	private JPanel contentPanel;
 	private InfoPanel infoPanel;
@@ -107,19 +107,6 @@ public class MainWindow extends JFrame{
 	private EventTable eventTable;
 	private JTextArea noteField;
 
-	//Toolbar buttons
-	private JButton newTaskButton;
-	private JButton removeButton;
-	private JButton doneButton;
-	private JButton doneEventButton;
-	private JButton archiveButton;
-	private JButton restoreTaskButton;
-	private JButton removeArchivedTaskButton;
-	private JButton newEventButton;
-	private JButton removeEventButton;
-	private JButton archiveEventButton;
-	private JButton restoreEventButton;
-
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
 	private AddEventFrame addEventFrame;
@@ -143,7 +130,6 @@ public class MainWindow extends JFrame{
 		this.windowHeight = 512;
 		this.windowWidth = 800;
 		this.mainPanel = new JPanel(new BorderLayout());
-		this.toolbar = new JToolBar();
 		this.controlPanel = new JPanel(new BorderLayout());
 		this.contentPanel = new JPanel(new BorderLayout());
 		this.infoPanel = new InfoPanel();
@@ -191,32 +177,6 @@ public class MainWindow extends JFrame{
 		menuClose = new JMenuItem("Close");
 		menuItemSave = new JMenuItem("Save");
 
-		//Toolbar
-		newTaskButton = new JButton(Icons.ADD_TASK_ICON.getIcon());
-		removeButton = new JButton(Icons.REMOVE_TASK_ICON.getIcon());
-		doneButton = new JButton(Icons.CHANGE_TASK_STATE_ICON.getIcon());
-		archiveButton = new JButton(Icons.ARCHIVE_ICON.getIcon());
-		restoreTaskButton = new JButton(Icons.RESTORE_ICON.getIcon());
-		removeArchivedTaskButton = new JButton(Icons.ARCHIVE_REMOVE_ICON.getIcon());
-		newEventButton = new JButton(Icons.ADD_EVENT_ICON.getIcon());
-		removeEventButton = new JButton(Icons.REMOVE_EVENT_ICON.getIcon());
-		archiveEventButton = new JButton(Icons.ARCHIVE_EVENT_ICON.getIcon());
-		restoreEventButton = new JButton(Icons.RESTORE_EVENT_ICON.getIcon());
-		doneEventButton = new JButton(Icons.CHANGE_EVENT_STATE_ICON.getIcon()); 
-
-		//Set rollovericons
-		newTaskButton.setRolloverIcon(Icons.ADD_TASK_HOVER_ICON.getIcon());
-		removeButton.setRolloverIcon(Icons.REMOVE_TASK_HOVER_ICON.getIcon());
-		doneButton.setRolloverIcon(Icons.CHANGE_TASK_STATE_HOVER_ICON.getIcon());
-		archiveButton.setRolloverIcon(Icons.ARCHIVE_HOVER_ICON.getIcon());
-		restoreTaskButton.setRolloverIcon(Icons.RESTORE_HOVER_ICON.getIcon());
-		removeArchivedTaskButton.setRolloverIcon(Icons.ARCHIVE_REMOVE_HOVER_ICON.getIcon());
-		newEventButton.setRolloverIcon(Icons.ADD_EVENT_HOVER_ICON.getIcon());
-		removeEventButton.setRolloverIcon(Icons.REMOVE_EVENT_HOVER_ICON.getIcon());
-		archiveEventButton.setRolloverIcon(Icons.ARCHIVE_EVENT_HOVER_ICON.getIcon());
-		restoreEventButton.setRolloverIcon(Icons.RESTORE_EVENT_HOVER_ICON.getIcon());
-		doneEventButton.setRolloverIcon(Icons.CHANGE_EVENT_STATE_HOVER_ICON.getIcon());
-
 		//Files
 		taskFile = new File(System.getProperty("user.dir")+"/userfiles/tasks.txt");
 		archiveFile = new File(System.getProperty("user.dir")+"/userfiles/archive.txt");
@@ -232,6 +192,9 @@ public class MainWindow extends JFrame{
 		Util.centerWindow(addTaskFrame);
 		Util.centerWindow(addEventFrame);
 		Util.centerWindow(settingsFrame);
+
+		//ToolBar
+		toolbar = new RemToolBar(tabbedPane, archiveTable, archiveTable, eventTable, addTaskFrame, addEventFrame);
 
 		//Initialise the preferences
 		preferences = new RemPreferences();
@@ -498,173 +461,8 @@ public class MainWindow extends JFrame{
 	 * Sets up all toolbar components.
 	 */
 	private void settingUpTheToolbar(){
-		/* The action listener of the newTaskButton.
-		 * If the newButton is pressed:
-		 * the required preferences for the AddTaskFrame are loaded,
-		 * by default all the inputs are reseted.
-		 */
-		newTaskButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				addTaskFrame.setVisible(true);
-			}
-		});
 
-		/* The action listener of the removeButton.
-		 * If the removeButton is pressed and the user has select at least one table row,
-		 * the selected rows will be removed.
-		 */
-		removeButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				taskTable.removeRow();
-			}
-		});
-
-		/* The action listener of the doneButton.
-		 * If the doneButton is pressed the status cell of the selected
-		 * row will be changed in its state.
-		 */
-		doneButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				taskTable.updateTableRow();
-			}
-		});
-
-		/* The action listener of the shiftToArchive button.
-		 * Copies the selected rows of the task table in the archive table
-		 * and removes the selected rows from the task table.
-		 */
-		archiveButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				taskTable.shiftTableItemsinOtherTable(archiveTable);
-			}
-		});
-
-		/*
-		 * 
-		 */
-		restoreTaskButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				archiveTable.shiftTableItemsinOtherTable(taskTable);
-			}
-		});
-
-		/*
-		 * 
-		 */
-		removeArchivedTaskButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				archiveTable.removeRow();
-			}
-		});
-
-		/*
-		 * 
-		 */
-		newEventButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				addEventFrame.setVisible(true);
-			}
-		});
-
-		/*
-		 * 
-		 */
-		removeEventButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				eventTable.removeRow();
-			}
-		});
-
-		/*
-		 * 
-		 */
-		doneEventButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				eventTable.updateTableRow();
-			}
-		});
-
-		/*
-		 * 
-		 */
-		archiveEventButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				eventTable.shiftTableItemsinOtherTable(archiveTable);
-			}
-		});
-
-		/*
-		 * 
-		 */
-		restoreEventButton.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				archiveTable.shiftTableItemsinOtherTable(eventTable);
-			}
-		});
-
-		newTaskButton.setToolTipText("new task");
-		removeButton.setToolTipText("remove");
-		doneButton.setToolTipText("change task status");
-		archiveButton.setToolTipText("archive");
-		restoreTaskButton.setToolTipText("restore task");
-		removeArchivedTaskButton.setToolTipText("remove");
-		newEventButton.setToolTipText("new event");
-		removeEventButton.setToolTipText("remove event");
-		archiveEventButton.setToolTipText("archive event");
-		restoreEventButton.setToolTipText("restore event");
-		doneEventButton.setToolTipText("change event status");
-
-		newTaskButton.setBorder(null);
-		removeButton.setBorder(null);
-		doneButton.setBorder(null);
-		archiveButton.setBorder(null);
-		restoreTaskButton.setBorder(null);
-		removeArchivedTaskButton.setBorder(null);
-		newEventButton.setBorder(null);
-		removeEventButton.setBorder(null);
-		doneEventButton.setBorder(null);
-		archiveEventButton.setBorder(null);
-		restoreEventButton.setBorder(null);
-
-		newTaskButton.setEnabled(true);
-		removeButton.setEnabled(true);
-		doneButton.setEnabled(true);
-		archiveButton.setEnabled(true);
-		restoreTaskButton.setEnabled(false);
-		removeArchivedTaskButton.setEnabled(false);
-		newEventButton.setEnabled(true);
-		removeEventButton.setEnabled(false);
-		archiveEventButton.setEnabled(false);
-		restoreEventButton.setEnabled(false);
-		doneEventButton.setEnabled(false);
-
-		toolbar.add(newTaskButton);
-		toolbar.add(removeButton);
-		toolbar.add(doneButton);
-		toolbar.add(archiveButton);
-		toolbar.addSeparator(new Dimension(3, 10));
-		toolbar.add(newEventButton);
-		toolbar.add(removeEventButton);
-		toolbar.add(doneEventButton);
-		toolbar.add(archiveEventButton);
-		toolbar.addSeparator(new Dimension(5, 10));
-		toolbar.add(restoreTaskButton);
-		toolbar.add(removeArchivedTaskButton);
-		toolbar.add(restoreEventButton);
-		toolbar.setFloatable(false);
 		controlPanel.add(toolbar, BorderLayout.CENTER);
-
 	}
 
 	//Setting up the basic window panel structure.
@@ -692,18 +490,6 @@ public class MainWindow extends JFrame{
 						menuItemArchiveEvent.setEnabled(false);
 						menuItemRestoreEvent.setEnabled(false);
 						menuItemChangeEventStatus.setEnabled(false);
-
-						newTaskButton.setEnabled(true);
-						removeButton.setEnabled(true);
-						doneButton.setEnabled(true);
-						archiveButton.setEnabled(true);
-						restoreTaskButton.setEnabled(false);
-						removeArchivedTaskButton.setEnabled(false);
-						newEventButton.setEnabled(true);
-						removeEventButton.setEnabled(false);
-						doneEventButton.setEnabled(false);
-						archiveEventButton.setEnabled(false);
-						restoreEventButton.setEnabled(false);
 						break;
 					case 1:
 						//Event tab
@@ -718,18 +504,6 @@ public class MainWindow extends JFrame{
 						menuItemArchiveEvent.setEnabled(true);
 						menuItemRestoreEvent.setEnabled(false);
 						menuItemChangeEventStatus.setEnabled(true);
-
-						newTaskButton.setEnabled(true);
-						removeButton.setEnabled(false);
-						doneButton.setEnabled(false);
-						archiveButton.setEnabled(false);
-						restoreTaskButton.setEnabled(false);
-						removeArchivedTaskButton.setEnabled(false);
-						newEventButton.setEnabled(true);
-						removeEventButton.setEnabled(true);
-						doneEventButton.setEnabled(true);
-						archiveEventButton.setEnabled(true);
-						restoreEventButton.setEnabled(false);
 						break;
 					case 2:
 						//Archive tab
@@ -744,18 +518,6 @@ public class MainWindow extends JFrame{
 						menuItemArchiveEvent.setEnabled(false);
 						menuItemRestoreEvent.setEnabled(true);
 						menuItemChangeEventStatus.setEnabled(false);
-
-						newTaskButton.setEnabled(true);
-						removeButton.setEnabled(false);
-						doneButton.setEnabled(false);
-						archiveButton.setEnabled(false);
-						restoreTaskButton.setEnabled(true);
-						removeArchivedTaskButton.setEnabled(true);
-						newEventButton.setEnabled(true);
-						removeEventButton.setEnabled(false);
-						doneEventButton.setEnabled(false);
-						archiveEventButton.setEnabled(false);
-						restoreEventButton.setEnabled(true);
 						break;
 					case 3:
 						//Node tab
@@ -770,18 +532,6 @@ public class MainWindow extends JFrame{
 						menuItemArchiveEvent.setEnabled(false);
 						menuItemRestoreEvent.setEnabled(false);
 						menuItemChangeEventStatus.setEnabled(false);
-
-						newTaskButton.setEnabled(true);
-						removeButton.setEnabled(false);
-						doneButton.setEnabled(false);
-						archiveButton.setEnabled(false);
-						restoreTaskButton.setEnabled(false);
-						removeArchivedTaskButton.setEnabled(false);
-						newEventButton.setEnabled(true);
-						removeEventButton.setEnabled(false);
-						doneEventButton.setEnabled(false);
-						archiveEventButton.setEnabled(false);
-						restoreEventButton.setEnabled(false);
 						break;
 					case 4:
 						//Calendar tab
@@ -793,22 +543,9 @@ public class MainWindow extends JFrame{
 						menuItemRemoveArchiveTask.setEnabled(false);
 						menuItemNewEvent.setEnabled(true);
 						menuItemRemoveEvent.setEnabled(false);
-						doneEventButton.setEnabled(false);
 						menuItemArchiveEvent.setEnabled(false);
 						menuItemRestoreEvent.setEnabled(false);
 						menuItemChangeEventStatus.setEnabled(false);
-
-						newTaskButton.setEnabled(true);
-						removeButton.setEnabled(false);
-						doneButton.setEnabled(false);
-						archiveButton.setEnabled(false);
-						restoreTaskButton.setEnabled(false);
-						removeArchivedTaskButton.setEnabled(false);
-						newEventButton.setEnabled(true);
-						removeEventButton.setEnabled(false);
-						doneEventButton.setEnabled(false);
-						archiveEventButton.setEnabled(false);
-						restoreEventButton.setEnabled(false);
 						break;
 					default:
 						//Error
