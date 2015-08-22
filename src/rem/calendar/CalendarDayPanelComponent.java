@@ -16,25 +16,49 @@ import rem.table.DayTable;
 /**
  * This component represents a day in the calendar with a list of tasks.
  * @author ovae.
- * @version 20150514.
+ * @version 20150822.
  */
 public class CalendarDayPanelComponent extends JPanel{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	protected JPanel mainPanel;
-	protected JTable taskTable;
-	private Object[][] tableContent;
-	public final static int MAX_TASKS = 42;
-	private int dayNumb;
 	private JScrollPane scroll;
 
 	/**
-	 * 
-	 * @param dayNumb
+	 * This table hold all task and events of the day.
+	 */
+	protected JTable taskTable;
+
+	/**
+	 * The actual content of the taskTable.
+	 */
+	private Object[][] tableContent;
+
+	/**
+	 * Every day component is inly allowed to hold this amount of elements.
+	 */
+	public final static int MAX_TASKS = 42;
+
+	/**
+	 * The day number of this component.
+	 */
+	private int dayNumb;
+
+	/**
+	 * Creates a new CalendarDayPanelComponent. The given dayNumb is the number of
+	 * the day witch this new components is going to represent.
+	 * @param dayNumb the number of the day.
+	 * @throws IllegalArgumentException if dayNumb < 1.
 	 */
 	public CalendarDayPanelComponent(final int dayNumb){
 		super();
+		if(dayNumb < 1){
+			throw new IllegalArgumentException("The day number has to be bigger than zero!");
+		}
 		this.dayNumb = dayNumb;
 		this.setLayout(new BorderLayout());
 		mainPanel = new JPanel(new BorderLayout());
@@ -46,10 +70,14 @@ public class CalendarDayPanelComponent extends JPanel{
 	}
 
 	/**
-	 * 
-	 * @param dayNumb
+	 * Creates the table witch holds the elements of the day component.
+	 * @param dayNumb the number of the day.
+	 * @throws IllegalArgumentException if dayNumb < 1.
 	 */
 	private void setUpTable(int dayNumb){
+		if(dayNumb < 1){
+			throw new IllegalArgumentException("The day number has to be bigger than zero!");
+		}
 		taskTable = new DayTable(new DefaultTableModel());
 		taskTable.setOpaque(false);
 		taskTable.setEnabled(false);
@@ -63,63 +91,61 @@ public class CalendarDayPanelComponent extends JPanel{
 		taskTable.getTableHeader().setReorderingAllowed(false);
 		((DayTable) taskTable).setTableRowColor();
 
-		if(dayNumb == 0){
-			String[] header = {""};
-			taskTable.setModel(new DefaultTableModel(tableContent, header));
-		}else{
-			String[] header = {""+dayNumb};
-			taskTable.setModel(new DefaultTableModel(tableContent, header));
-		}
-		if(dayNumb != 0){
-			mainPanel.add(taskTable, BorderLayout.CENTER);
-			mainPanel.add(taskTable.getTableHeader(), BorderLayout.PAGE_START);
-		}
+		mainPanel.add(taskTable, BorderLayout.CENTER);
+		mainPanel.add(taskTable.getTableHeader(), BorderLayout.PAGE_START);
+		String[] header = {""+dayNumb};
+		taskTable.setModel(new DefaultTableModel(tableContent, header));
 	}
 
 	/**
-	 * 
-	 * @param task
+	 * Adds a new element to this component.
+	 * @param element the element that is added to the component.
 	 */
-	public void addTask(final String task){
+	public void addElement(final String element){
 		DefaultTableModel model = (DefaultTableModel) taskTable.getModel();
-		model.addRow(new Object[]{task});
+		model.addRow(new Object[]{element});
 	}
 
 	/**
-	 * Activates the colour of the JPanel background.
+	 * Sets the background colour of the component.
 	 */
 	public void setBackgroundColourWeekend(){
+		// Monday to Friday.
 		taskTable.setBackground(Colour.CALENDAR_WEEKENDDAY.getColor());
-		// Saturday and Sonday. 
+		// Saturday and Sunday. 
 		mainPanel.setBackground(Colour.CALENDAR_WEEKENDDAY.getColor());
 	}
 
 	/**
-	 * 
+	 * Sets the background colour to the colour to {@see Colour#CALENDAR_HOLDER_DAY_TASK}.
 	 */
 	public void setBackgroundColour(){
 		taskTable.setBackground(Colour.CALENDAR_HOLDER_DAY_TASK.getColor());
 	}
 
 	/**
-	 * Activates the colour of the table header.
+	 * Sets the background colour of the table header to {@see Colour#CALENDAR_TODAY}.
 	 */
 	public void setActuelDayColour(){
 		taskTable.getTableHeader().setBackground(Colour.CALENDAR_TODAY.getColor());
 	}
 
 	/**
-	 * Returns the content of the table header.
-	 * @return
+	 * Returns the number of the day.
+	 * @return dayNumb the number of the day.
 	 */
 	public int getTableHeader(){
 		return dayNumb;
 	}
 
 	/**
-	 * 
+	 * This method holds all click events that are used on the taskTable.
 	 */
 	private void ClickEvent(){
+		/**
+		 * If the user clicks on an element of the day, a small pop-up window is going
+		 * to appear witch hold the information of the clicked element.
+		 */
 		taskTable.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent e){
 				try{

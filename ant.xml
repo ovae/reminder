@@ -9,6 +9,7 @@
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="/home/ove/code/GitHub/reminder/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="/opt/eclipse_java_luna_4.4.2/plugins/org.junit_4.11.0.v201303080030/junit.jar"/>
         </jar>
     </target>
 </project>

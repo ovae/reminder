@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,6 +44,9 @@ public class AddTaskFrame extends JFrame{
 
 	private TasksTable table;
 	private JPanel mainPanel;
+
+	private static Date date = new Date();
+	private static SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
 
 	/**
 	 * 
@@ -106,12 +111,12 @@ public class AddTaskFrame extends JFrame{
 		inputFieldAbout.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		//Set the bounds of the Labels
-		enterTopic.setBounds(10, 100, 100, 28);
-		enterAbout.setBounds(10, 100, 100, 28);
+		enterTopic.setBounds(10, 28, 100, 28);
+		enterAbout.setBounds(10, 28, 100, 28);
 
 		//Set the bounds of the text fields.
-		inputFieldTopic.setBounds(10, 100, 360,28);
-		inputFieldAbout.setBounds(10, 100, 360, 128);
+		inputFieldTopic.setBounds(10, 28, 361,28);
+		inputFieldAbout.setBounds(10, 28, 360, 128);
 
 		//Set the bounds of the info labels.
 		beginInfoLabel.setBounds(10, 100, 180,28);
@@ -144,10 +149,9 @@ public class AddTaskFrame extends JFrame{
 		inputFormate.setMaximumIntegerDigits(8);
 		inputFormate.setGroupingUsed(false); 
 		inputFieldBegin = new JFormattedTextField(inputFormate);
-
-		inputFormate.setMaximumIntegerDigits(8);
-		inputFormate.setGroupingUsed(false); 
 		inputFieldEnd = new JFormattedTextField(inputFormate);
+		inputFieldBegin.setText(ft.format(date));
+		inputFieldEnd.setText(ft.format(date));
 
 		//Set the bounds of the text fields.
 		inputFieldBegin.setBounds(10, 100, 150,28);
@@ -241,8 +245,8 @@ public class AddTaskFrame extends JFrame{
 	public void resetInputsAddFrame(){
 		inputFieldTopic.setText("");
 		inputFieldAbout.setText("");
-		inputFieldBegin.setText("");
-		inputFieldEnd.setText("");
+		inputFieldBegin.setText(ft.format(date));
+		inputFieldEnd.setText(ft.format(date));
 		status.setSelectedIndex(0);
 	}
 

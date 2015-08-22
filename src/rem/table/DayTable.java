@@ -41,6 +41,12 @@ public class DayTable extends TasksTable{
 				if(tableTopic.startsWith("[E]")){
 					c.setBackground(Colour.TABLE_EVENT.getColor());
 				}
+				/*else if(tableTopic.startsWith("[A]")){
+					c.setBackground(Colour.TABLE_ARCHIVE.getColor());
+				}*/
+				else{
+					c.setBackground(Colour.TABLE_DEFAULT.getColor());
+				}
 
 				return c;
 			}

@@ -19,12 +19,16 @@ import rem.table.EventTable;
 import rem.table.TasksTable;
 
 /**
- * 
+ * A calendar component witch can show task and events of the day.
+ * The calendar is presented in the gregorian calendar.
  * @author ovae.
- * @version 20150501.
+ * @version 20150822.
  */
 public class CalendarPanel extends JPanel{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	private JPanel controlPanel;
@@ -39,10 +43,10 @@ public class CalendarPanel extends JPanel{
 	private final int calendarWidth;
 
 	//control buttons
-	private JButton statePast = new JButton("\u25C4");
-	private JButton stateFuture = new JButton("\u25BA");
-	private JButton refreshButton = new JButton("\u21BA");
-	private JButton homeButton = new JButton("\u2302");
+	private JButton statePastButton;
+	private JButton stateFutureButton;
+	private JButton refreshButton;
+	private JButton homeButton;
 	private JLabel monthLabel;
 	private JLabel yearLabel;
 
@@ -63,7 +67,10 @@ public class CalendarPanel extends JPanel{
 	private EventTable event;
 
 	/**
-	 * 
+	 * Creates a new Calendar Panel.
+	 * @param table the task table.
+	 * @param archive the archive table
+	 * @param event the event table.
 	 */
 	public CalendarPanel(final TasksTable table, final TasksTable archive, final EventTable event){
 		this.table = table;
@@ -75,9 +82,18 @@ public class CalendarPanel extends JPanel{
 		currentMonth = monthState;
 		currentYear = yearState;
 
+		statePastButton = new JButton("\u25C4");
+		stateFutureButton = new JButton("\u25BA");
+		refreshButton = new JButton("\u21BA");
+		homeButton = new JButton("\u2302");
+
+		statePastButton.setBackground(Colour.CALENDAR_DAY.getColor());
+		stateFutureButton.setBackground(Colour.CALENDAR_DAY.getColor());
+		refreshButton.setBackground(Colour.CALENDAR_DAY.getColor());
+		homeButton.setBackground(Colour.CALENDAR_DAY.getColor());
+
 		calendarWidth = 7;
 		calendarHeight = 6;
-		this.setOpaque(true);
 		this.setLayout(new BorderLayout());
 		controlPanel = new JPanel(new BorderLayout());
 		navigatePanel = new JPanel();
@@ -96,8 +112,8 @@ public class CalendarPanel extends JPanel{
 			daysInMonth = monthCOnfigurationTwo;
 		}
 
-		setUpomponents();
-		setUpControlPanel();
+		setUpComponents();
+		setUpHeaderPanel();
 		setUpCalendarPanel();
 		setUpNavigationPanel();
 	}
@@ -105,7 +121,7 @@ public class CalendarPanel extends JPanel{
 	/**
 	 * 
 	 */
-	private void setUpomponents(){
+	private void setUpComponents(){
 		controlPanel.add(navigatePanel, BorderLayout.NORTH);
 		controlPanel.add(headerPanel, BorderLayout.SOUTH);
 		this.add(controlPanel, BorderLayout.NORTH);
@@ -113,9 +129,9 @@ public class CalendarPanel extends JPanel{
 	}
 
 	/**
-	 * 
+	 * Sets up the Header panel, it holds the weekdays labels for the calendar.
 	 */
-	private void setUpControlPanel(){
+	private void setUpHeaderPanel(){
 		JPanel weekdaysPanel = new JPanel();
 		JPanel[] panelWeekdays = new GradientPanel[7];
 		weekdaysPanel.setLayout(new GridLayout(0,7));
@@ -140,6 +156,7 @@ public class CalendarPanel extends JPanel{
 
 	/**
 	 * Creates all elements of the navigation panel.
+	 * It holds all elements to navigate the calendar.
 	 */
 	private void setUpNavigationPanel(){
 		JPanel refreshPanel = new JPanel(new BorderLayout());
@@ -158,12 +175,12 @@ public class CalendarPanel extends JPanel{
 		bar.add(new JLabel("Day: "+ (dayState)));
 
 		//SetToolTipTexts
-		statePast.setToolTipText("Previous month");
-		stateFuture.setToolTipText("Next month");
+		statePastButton.setToolTipText("Previous month");
+		stateFutureButton.setToolTipText("Next month");
 		refreshButton.setToolTipText("refresh");
 		homeButton.setToolTipText("This month");
 
-		statePast.addActionListener(new ActionListener(){
+		statePastButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				monthState--;
@@ -177,7 +194,7 @@ public class CalendarPanel extends JPanel{
 			}
 		});
 
-		stateFuture.addActionListener(new ActionListener(){
+		stateFutureButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				monthState++;
@@ -209,9 +226,9 @@ public class CalendarPanel extends JPanel{
 			}
 		});
 
-		controlbar.add(statePast, BorderLayout.WEST);
+		controlbar.add(statePastButton, BorderLayout.WEST);
 		controlbar.add(bar, BorderLayout.CENTER);
-		controlbar.add(stateFuture, BorderLayout.EAST);
+		controlbar.add(stateFutureButton, BorderLayout.EAST);
 
 		navigatePanel.add(refreshPanel, BorderLayout.WEST);
 		navigatePanel.add(controlbar, BorderLayout.CENTER);
@@ -229,7 +246,7 @@ public class CalendarPanel extends JPanel{
 	}
 
 	/**
-	 * 
+	 * Creates the Calendar Panel, it holds all components that represent the days of the month.
 	 */
 	private void setUpCalendarPanel(){
 		prepaireTheDaysList();
@@ -270,7 +287,6 @@ public class CalendarPanel extends JPanel{
 	private void prepaireTheDaysList(){
 		int gap = getGap();
 		int weekday = 1;
-		
 
 		//Add calendarDayPanelComponents before the current month.
 		int lose=gap-2;
@@ -303,6 +319,75 @@ public class CalendarPanel extends JPanel{
 		ArrayList<String> aboutList = new ArrayList<>();
 		ArrayList<String> topicList = new ArrayList<>();
 
+		//Add the event from the event table to the calendar lists.
+		/*for(int i=0; i<event.getRowCount(); i++){
+			topicList.add((String) "[E]"+event.getValueAt(i,0));
+			aboutList.add((String) event.getValueAt(i,1));
+			endList.add((String)event.getValueAt(i,3));
+		}*/
+		for(int i=0; i<event.getRowCount(); i++){
+			int begin = Integer.parseInt((String) event.getValueAt(i, 2));
+			int end = Integer.parseInt((String) event.getValueAt(i, 3));
+			if(begin != end){
+				//Events that take more than one day.
+				int beginMonth = CalendarUtil.getMonth(begin);
+				int beginDay = CalendarUtil.getDay(begin);
+				int endMonth = CalendarUtil.getMonth(end);
+				int endDay = CalendarUtil.getDay(end);
+
+				if(beginMonth != endMonth){
+					//Events that take place more than one month.
+					for(int month=beginMonth;month<endMonth;month++){
+						if(month==beginMonth){
+							for(int j=beginDay-1;j<daysInMonth[beginMonth-1];j++){
+								topicList.add((String) "[E]"+event.getValueAt(i,0));
+								aboutList.add((String) event.getValueAt(i,1));
+								if(beginMonth < 10){
+									endList.add(""+CalendarUtil.getYear(begin)+"0"+beginMonth+""+(j+1));
+								}else{
+									endList.add(""+CalendarUtil.getYear(begin)+""+beginMonth+""+(j+1));
+								}
+							}
+						}
+						if(month>beginMonth && month != endMonth){
+							System.out.println("Test C");
+						}
+					}
+					for(int j=0;j<endDay;j++){
+						topicList.add((String) "[E]"+event.getValueAt(i,0));
+						aboutList.add((String) event.getValueAt(i,1));
+						if(j < 10){
+							if(endMonth < 10){
+								endList.add(""+CalendarUtil.getYear(begin)+"0"+endMonth+"0"+(j+1));
+							}else{
+								endList.add(""+CalendarUtil.getYear(begin)+""+endMonth+"0"+(j+1));
+							}
+						}else{
+							if(endMonth < 10){
+								endList.add(""+CalendarUtil.getYear(begin)+"0"+endMonth+""+(j+1));
+							}else{
+								endList.add(""+CalendarUtil.getYear(begin)+""+endMonth+""+(j+1));
+							}
+						}
+					}
+
+				}else{
+					//Events that take place in only one month.
+					for(int j=begin-1;j<end;j++){
+						topicList.add((String) "[E]"+event.getValueAt(i,0));
+						aboutList.add((String) event.getValueAt(i,1));
+						endList.add(""+(j+1));
+					}
+				}
+
+			}else{
+				//Events that take place on only one day.
+				topicList.add((String) "[E]"+event.getValueAt(i,0));
+				aboutList.add((String) event.getValueAt(i,1));
+				endList.add((String)event.getValueAt(i,3));
+			}
+		}
+
 		//Add the tasks from the tasks table to the calender lists.
 		for(int i=0; i<table.getRowCount(); i++){
 			topicList.add((String) table.getValueAt(i,0));
@@ -317,42 +402,34 @@ public class CalendarPanel extends JPanel{
 			endList.add((String) archive.getValueAt(i,3));
 		}
 
-		//Add the event from the tasks table to the calender lists.
-		for(int i=0; i<event.getRowCount(); i++){
-			topicList.add((String) "[E]"+event.getValueAt(i,0));
-			aboutList.add((String) event.getValueAt(i,1));
-			endList.add((String)event.getValueAt(i,3));
-		}
-
 		//Add tasks of the month before
 		if(gap > 0){
 			if(monthState==0){
-				addTasksToDays(daysInMonth[11]-gap+2,monthState,endList,topicList,aboutList);
+				addElement(daysInMonth[11]-gap+2,monthState,endList,topicList,aboutList);
 			}else{
-				addTasksToDays(daysInMonth[monthState-1]-gap+2,monthState,endList,topicList,aboutList);
+				addElement(daysInMonth[monthState-1]-gap+2,monthState,endList,topicList,aboutList);
 			}
 		}
 
 		//Add task of the current month
-		addTasksToDays(2-gap,monthState+1,endList,topicList,aboutList);
+		addElement(2-gap,monthState+1,endList,topicList,aboutList);
 
 		//Add task of after the current month
-		addTasksToDays(-daysInMonth[monthState]-gap+2,monthState+2,endList,topicList,aboutList);
+		addElement(-daysInMonth[monthState]-gap+2,monthState+2,endList,topicList,aboutList);
 	}
 
 	/**
-	 * 
+	 * Add a new Elements to the Calendar.
 	 * @param index
 	 * @param monthState
 	 * @param endList
 	 * @param topicList
 	 * @param aboutList
 	 */
-	private void addTasksToDays(int index, int monthState,ArrayList<String> endList,
+	private void addElement(int index, int monthState,ArrayList<String> endList,
 			ArrayList<String> topicList, ArrayList<String> aboutList){
-		
-		for(CalendarDayPanelComponent day : days){
 
+		for(CalendarDayPanelComponent day : days){
 			String vergleich = yearState+""+(monthState)+""+(index);
 			if(monthState <=9 && index<=9){
 				vergleich = yearState+"0"+(monthState)+"0"+(index);
@@ -370,7 +447,7 @@ public class CalendarPanel extends JPanel{
 			int innerDex = 0;
 			for(String end: endList){
 				if(end.equals(vergleich)){
-					day.addTask(topicList.get(innerDex)+": "+aboutList.get(innerDex));
+					day.addElement(topicList.get(innerDex)+": "+aboutList.get(innerDex));
 					if(topicList.get(innerDex).startsWith("[E]")){
 						day.setBackground(Colour.TABLE_EVENT.getColor());
 					}

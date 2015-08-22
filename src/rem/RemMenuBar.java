@@ -110,7 +110,7 @@ public class RemMenuBar extends JMenuBar{
 
 			menuItemNewEvent = new JMenuItem("New event");
 			menuItemRemoveEvent = new JMenuItem("Remove event");
-			menuItemChangeEventStatus = new JMenu("Change status");
+			menuItemChangeEventStatus = new JMenuItem("Change status");
 			menuItemArchiveEvent = new JMenuItem("Archive event");
 
 			menuClose = new JMenuItem("Close");

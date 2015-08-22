@@ -21,7 +21,6 @@ import rem.InfoPanel;
 import rem.constants.Colour;
 import rem.constants.Messages;
 import rem.constants.States;
-import rem.popupmenus.TaskTablePopupMenu;
 
 /**
  * 
@@ -60,7 +59,8 @@ public class TasksTable extends RemTable {
 	}
 
 	public void setTableModel(){
-		/*DefaultTableModel model = new DefaultTableModel(tableContent, columnNames){
+		/* F[001]
+		 * DefaultTableModel model = new DefaultTableModel(tableContent, columnNames){
 
 			private static final long serialVersionUID = 1L;
 
@@ -328,11 +328,12 @@ public class TasksTable extends RemTable {
 				int rowNumber = table.getSelectedRow();
 				TableModel model = table.getModel();
 				if (e.getClickCount() == 2) {
-					openEditWindow((String) model.getValueAt( rowNumber,0),
+					/* F[001]
+					 * openEditWindow((String) model.getValueAt( rowNumber,0),
 							(String) model.getValueAt( rowNumber,1),
 							(String) model.getValueAt( rowNumber,2),
 							(String) model.getValueAt( rowNumber,3),
-							(String) model.getValueAt( rowNumber,4));
+							(String) model.getValueAt( rowNumber,4));*/
 				}
 			}
 			
@@ -346,7 +347,7 @@ public class TasksTable extends RemTable {
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(SwingUtilities.isRightMouseButton(arg0)){
-					TaskTablePopupMenu frame = new TaskTablePopupMenu(arg0.getXOnScreen(), arg0.getYOnScreen());
+					//TaskTablePopupMenu frame = new TaskTablePopupMenu(arg0.getXOnScreen(), arg0.getYOnScreen());
 					//frame.run();
 				}
 				
@@ -363,7 +364,8 @@ public class TasksTable extends RemTable {
 	 * @param status
 	 */
 	private void openEditWindow(final String topic, final String about, final String begin, final String end,final String status){
-		/*EditTaskFrame frame = new EditTaskFrame(this,topic,about,begin,end,status);
+		/* F[001]
+		 * EditTaskFrame frame = new EditTaskFrame(this,topic,about,begin,end,status);
 		Util.centerWindow(frame);
 		frame.setVisible(true);*/
 	}

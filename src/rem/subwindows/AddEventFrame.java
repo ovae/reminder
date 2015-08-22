@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,24 +22,27 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import rem.calendar.CalendarUtil;
 import rem.table.TasksTable;
 
 /**
- * 
+ * This windows is used to create a new event.
  * @author ovae.
- * @version 20150718.
+ * @version 20150819.
  */
 public class AddEventFrame extends JFrame{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	//InputFields
 	private JTextField inputFieldTopic;
-	private JTextArea inputFieldAbout;
 	private JTextField inputFieldBegin;
+	private JTextArea inputFieldAbout;
 	//Duration
 	private JSlider duration;
-	private int durationValue;
 	private JTextField durationView;
 
 	//Label and buttons
@@ -49,9 +54,12 @@ public class AddEventFrame extends JFrame{
 	private TasksTable table;
 	private JPanel mainPanel;
 
+	private static Date date = new Date();
+	private static SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
+
 	/**
 	 * 
-	 * @param parentFrame
+	 * @param table the tasktable.
 	 */
 	public AddEventFrame(final TasksTable table){
 		if(table.equals(null)){
@@ -62,8 +70,7 @@ public class AddEventFrame extends JFrame{
 		inputFieldAbout = new JTextArea("");
 		inputFieldBegin = new JTextField("");
 
-		duration = new JSlider(JSlider.HORIZONTAL,1, 365, 1);
-		durationValue = 1;
+		duration = new JSlider(JSlider.HORIZONTAL,1, 64, 1);
 		durationView = new JTextField("");
 
 		beginInfoLabel = new JLabel("");
@@ -118,7 +125,7 @@ public class AddEventFrame extends JFrame{
 		enterAbout.setBounds(10, 100, 100, 28);
 
 		//Set the bounds of the text fields.
-		inputFieldTopic.setBounds(10, 100, 360,28);
+		inputFieldTopic.setBounds(10, 100, 361,28);
 		inputFieldAbout.setBounds(10, 100, 360, 128);
 
 		//Set the bounds of the info labels.
@@ -145,6 +152,7 @@ public class AddEventFrame extends JFrame{
 	 */
 	private void setUpBeginnAndEnd(){
 		JLabel beginLable = new JLabel("Begin: ");
+		JLabel endLable = new JLabel("End: ");
 		JLabel durationLable = new JLabel("Duration ");
 
 		//Set a input format for begin and end input fields.
@@ -152,24 +160,30 @@ public class AddEventFrame extends JFrame{
 		inputFormate.setMaximumIntegerDigits(8);
 		inputFormate.setGroupingUsed(false); 
 		inputFieldBegin = new JFormattedTextField(inputFormate);
+		durationView = new JFormattedTextField(inputFormate);
+
+		inputFieldBegin.setText(ft.format(date));
+		durationView.setText(ft.format(date));
 
 		//Set the bounds of the text fields.
-		inputFieldBegin.setBounds(10, 100, 150,28);
+		inputFieldBegin.setBounds(10, 28, 150,28);
 
 		//Turn on labels at major tick marks.
-		duration.setMajorTickSpacing(364);
+		duration.setMajorTickSpacing(7);
 		duration.setMinorTickSpacing(1);
 		duration.setPaintTicks(true);
 		duration.setPaintLabels(true);
 
 		//Set the bounds of the Labels
-		beginLable.setBounds(10, 100, 100, 28);
-		durationLable.setBounds(10, 100, 100, 28);
+		beginLable.setBounds(10, 28, 100, 28);
+		endLable.setBounds(10, 28, 100, 28);
+		durationLable.setBounds(10, 28, 100, 28);
 
 		//Set the bounds of the text fields.
 		beginLable.setLocation(40, 195);
-		duration.setBounds(10, 100, 340, 50);
-		durationView.setBounds(10, 28, 28, 28);
+		endLable.setLocation(280, 195);
+		duration.setBounds(10, 100, 380, 50);
+		durationView.setBounds(10, 28, 150, 28);
 
 		//Set the bounds of the info labels.
 		beginInfoLabel.setBounds(10, 100, 180,28);
@@ -179,7 +193,7 @@ public class AddEventFrame extends JFrame{
 		inputFieldBegin.setLocation(120, 195);
 		durationLable.setLocation(40, 230);
 		duration.setLocation(110, 230);
-		durationView.setLocation(450, 230);
+		durationView.setLocation(330, 195);
 
 		//Set the label locations.
 		beginInfoLabel.setLocation(300, 200);
@@ -192,12 +206,14 @@ public class AddEventFrame extends JFrame{
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSlider s = (JSlider) e.getSource();
-				durationValue = s.getValue();
-				durationView.setText(""+s.getValue());
+				//int nDate = Integer.parseInt(ft.format(date))+s.getValue()-1;
+				int tempDate = CalendarUtil.addDaysToDate(Integer.parseInt(ft.format(date)), s.getValue()-1);
+				durationView.setText(tempDate+"");
 		}});
 
 		//Add all labels and text fields to the addPanel.
 		mainPanel.add(beginLable);
+		mainPanel.add(endLable);
 		mainPanel.add(durationLable);
 		mainPanel.add(duration);
 		mainPanel.add(durationView);
@@ -225,8 +241,7 @@ public class AddEventFrame extends JFrame{
 						inputFieldBegin.getText().trim().isEmpty() ){
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
-					
-					table.addRow(inputFieldTopic.getText(), inputFieldAbout.getText(), inputFieldBegin.getText(), ""+durationValue);
+					table.addRow(inputFieldTopic.getText(), inputFieldAbout.getText(), inputFieldBegin.getText(), durationView.getText());
 				}
 			}
 		});
@@ -250,12 +265,13 @@ public class AddEventFrame extends JFrame{
 	}
 
 	/**
-	 * Resets the all input fields of the addFrame.
+	 * Resets all input fields to default.
 	 */
 	public void resetInputsAddFrame(){
 		inputFieldTopic.setText("");
 		inputFieldAbout.setText("");
-		inputFieldBegin.setText("");
+		inputFieldBegin.setText(ft.format(date));
+		durationView.setText(ft.format(date));
 		duration.resetKeyboardActions();
 	}
 }
