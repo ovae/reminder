@@ -94,8 +94,8 @@ public class FileHandler {
 
 	/**
 	 * 
-	 * @param filename
-	 * @return
+	 * @param area the are to load in the data.
+	 * @param filename the file to load the data from.
 	 * @throws IOException
 	 */
 	public static void loadNoteFile(final JTextArea area,final File filename) throws IOException{
@@ -133,6 +133,10 @@ public class FileHandler {
 		}
 	}
 
+	/**
+	 * 
+	 * @return true if it's not linux, else false.
+	 */
 	private static boolean checkNotUnix(){
 		if( !System.getProperty("os.name").equals("Linux")){
 			return true;

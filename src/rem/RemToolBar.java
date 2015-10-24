@@ -3,6 +3,7 @@ package rem;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
@@ -10,16 +11,18 @@ import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import rem.calendar.CalendarUtil;
 import rem.constants.Icons;
+import rem.constants.States;
 import rem.subwindows.AddEventFrame;
 import rem.subwindows.AddTaskFrame;
 import rem.table.EventTable;
-import rem.table.TasksTable;
+import rem.table.TaskTable;
 
 /**
  * 
  * @author ovae
- * @version 20150801.
+ * @version 20151024.
  *
  */
 public class RemToolBar extends JToolBar{
@@ -43,19 +46,23 @@ public class RemToolBar extends JToolBar{
 
 	private JTabbedPane tabbedPane;
 
-	private TasksTable taskTable;
-	private TasksTable archiveTable;
+	private JButton devModeButton;
+
+	private TaskTable taskTable;
+	private TaskTable archiveTable;
 	private EventTable eventTable;
 
 	private AddTaskFrame addTaskFrame;
 	private AddEventFrame addEventFrame;
+
+	private Random random = new Random();
 
 	/**
 	 * 
 	 */
 	public RemToolBar(MainWindow mainwindow,AddTaskFrame addTaskFrame,AddEventFrame addEventFrame){
 		this.tabbedPane = mainwindow.getTabbedPane();
-		this.taskTable = (TasksTable) mainwindow.getTaskTable();
+		this.taskTable = (TaskTable) mainwindow.getTaskTable();
 		this.archiveTable = mainwindow.getArchiveTable();
 		this.eventTable = (EventTable) mainwindow.getEventTable();
 		this.addTaskFrame = addTaskFrame;
@@ -72,6 +79,7 @@ public class RemToolBar extends JToolBar{
 		archiveEventButton = new JButton(Icons.ARCHIVE_EVENT_ICON.getIcon());
 		restoreEventButton = new JButton(Icons.RESTORE_EVENT_ICON.getIcon());
 		doneEventButton = new JButton(Icons.CHANGE_EVENT_STATE_ICON.getIcon());
+		devModeButton = new JButton(Icons.DEV_Mode_ICON.getIcon());
 		setUpToolBar();
 	}
 
@@ -96,6 +104,11 @@ public class RemToolBar extends JToolBar{
 		this.add(restoreTaskButton);
 		this.add(removeArchivedTaskButton);
 		this.add(restoreEventButton);
+		if(MainWindow.devMode){
+			this.addSeparator(new Dimension(5, 10));
+			this.add(devModeButton);
+		}
+		
 		this.setFloatable(false);
 	}
 
@@ -114,6 +127,7 @@ public class RemToolBar extends JToolBar{
 		archiveEventButton.setRolloverIcon(Icons.ARCHIVE_EVENT_HOVER_ICON.getIcon());
 		restoreEventButton.setRolloverIcon(Icons.RESTORE_EVENT_HOVER_ICON.getIcon());
 		doneEventButton.setRolloverIcon(Icons.CHANGE_EVENT_STATE_HOVER_ICON.getIcon());
+		devModeButton.setRolloverIcon(Icons.DEV_Mode_HOVER_ICON.getIcon());
 
 		newTaskButton.setToolTipText("new task");
 		removeButton.setToolTipText("remove");
@@ -126,6 +140,7 @@ public class RemToolBar extends JToolBar{
 		archiveEventButton.setToolTipText("archive event");
 		restoreEventButton.setToolTipText("restore event");
 		doneEventButton.setToolTipText("change event status");
+		devModeButton.setToolTipText("Developer mode");
 
 		newTaskButton.setBorder(null);
 		removeButton.setBorder(null);
@@ -138,6 +153,7 @@ public class RemToolBar extends JToolBar{
 		doneEventButton.setBorder(null);
 		archiveEventButton.setBorder(null);
 		restoreEventButton.setBorder(null);
+		devModeButton.setBorder(null);
 
 		newTaskButton.setEnabled(true);
 		removeButton.setEnabled(true);
@@ -268,6 +284,22 @@ public class RemToolBar extends JToolBar{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				archiveTable.shiftTableItemsinOtherTable(eventTable);
+			}
+		});
+
+		/**
+		 * If {@link MainWindow#devMode} is {@code True} the Button is visible
+		 * else not.
+		 */
+		devModeButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int today = CalendarUtil.getToday();
+				for(int i=0;i<6;i++){
+					char c = (char) (i+65);
+					int state = random.nextInt(4 - 0 + 1);
+					taskTable.addRow("dev"+c, "dev", ""+(today-1), ""+CalendarUtil.addDaysToDate(today-1, i), States.states[state]);
+				}
 			}
 		});
 	}

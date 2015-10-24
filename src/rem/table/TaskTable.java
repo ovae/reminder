@@ -17,17 +17,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import rem.InfoPanel;
 import rem.constants.Colour;
 import rem.constants.Messages;
 import rem.constants.States;
+import rem.panels.InfoPanel;
 
 /**
  * 
  * @author ovae.
- * @version 20150514.
+ * @version 20150824.
  */
-public class TasksTable extends RemTable {
+public class TaskTable extends RemTable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,14 +35,28 @@ public class TasksTable extends RemTable {
 	private String[] status;
 	private Object[][] tableContent;
 
-	public TasksTable(DefaultTableModel defaultTableModel) {
+	/**
+	 * 
+	 * @param defaultTableModel
+	 */
+	public TaskTable(DefaultTableModel defaultTableModel) {
 		super(defaultTableModel);
+
+		columnNames = new String[5];
+		columnNames[0] = "column0" ;
+		columnNames[1] = "column1" ;
+		columnNames[2] = "column2" ;
+		columnNames[3] = "column3" ;
+		columnNames[4] = "column4" ;
+		this.setModel(new DefaultTableModel(tableContent, columnNames));
+
 		status = new String[5];
 		status[0] = States.states[0];
 		status[1] = States.states[1];
 		status[2] = States.states[2];
 		status[3] = States.states[3];
 		status[4] = States.states[4];
+
 		this.getTableHeader().setReorderingAllowed(false);
 		this.setBackground(Colour.CALENDAR_DAY.getColor());
 		eventListeners();
@@ -50,15 +64,23 @@ public class TasksTable extends RemTable {
 		this.setRowSelectionAllowed(true);
 	}
 
+	/**
+	 * 
+	 */
 	public void setTableHeader(String[] header){
 		columnNames = header;
 	}
-	
+
+	/**
+	 * 
+	 * @param status
+	 */
 	public void setStates(String[] status){
 		this.status = status;
 	}
 
 	public void setTableModel(){
+		//TODO F[001] c
 		/* F[001]
 		 * DefaultTableModel model = new DefaultTableModel(tableContent, columnNames){
 
@@ -77,9 +99,11 @@ public class TasksTable extends RemTable {
 	}
 
 	/**
-	 * Function to save new row to the Table.
-	 * @param topic, about, begin, end
-	 * @param url
+	 * Function to add a new row to the table.
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
 	 * "Topic","About","Begin","End", "Status"
 	 * This method is only used in the addNewTaskFrame.
 	 */
@@ -90,9 +114,12 @@ public class TasksTable extends RemTable {
 	}
 
 	/**
-	 * Function to add a new row to the Table.
-	 * @param topic, about, begin, end, status
-	 * @param url
+	 * Function to add a new row to the table.
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
 	 * "Topic","About","Begin","End", "Status"
 	 */
 	@Override
@@ -110,14 +137,13 @@ public class TasksTable extends RemTable {
 	 * @param end
 	 * @param status
 	 */
-	public void addRow(RemTable tempTable, String topic, String about, String begin, String end, String status){
+	private void addRow(RemTable tempTable, String topic, String about, String begin, String end, String status){
 			DefaultTableModel model = (DefaultTableModel) tempTable.getModel();
 			model.addRow(new Object[]{topic, about, begin, end, status});
 	}
 
 	/**
 	 * 
-	 * @param tempTable
 	 * @param topic
 	 * @param about
 	 * @param begin
@@ -205,7 +231,7 @@ public class TasksTable extends RemTable {
 				Date date = new Date();
 				SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
 				String today =ft.format(date);
-		
+
 				int todayParse = Integer.parseInt(""+today+"");
 				int valueParse = Integer.parseInt(tableValue);
 
@@ -226,11 +252,11 @@ public class TasksTable extends RemTable {
 				}else{
 					c.setBackground(Colour.TABLE_DEFAULT.getColor());
 				}
-		
+
 				if(tableStatus.equals(status[4]) && (valueParse-todayParse)==0){
 					c.setBackground(Colour.TABLE_DELIVERY_DAY_DELIVERED.getColor());
 				}
-		
+
 				//If you select a row and the row gets blue.
 				if(isSelected){
 					c.setBackground(Colour.TABLE_SELECTED_ROW.getColor());
@@ -259,7 +285,8 @@ public class TasksTable extends RemTable {
 	}
 
 	/**
-	 *Shift the selected rows of the Tasks table in the archive table.
+	 * Shift the selected rows of the Tasks table in the archive table.
+	 * @param table
 	 */
 	public void shiftTableItemsinOtherTable(RemTable table){
 		int[] rows = this.getSelectedRows();
@@ -285,6 +312,7 @@ public class TasksTable extends RemTable {
 
 	/**
 	 * Check if any item of the Table has changed.
+	 * @param infoPanel
 	 */
 	public void checkIfTableHasChanged(final InfoPanel infoPanel){
 		this.getModel().addTableModelListener(new TableModelListener(){
@@ -294,6 +322,10 @@ public class TasksTable extends RemTable {
 		});
 	}
 
+	/**
+	 * 
+	 * @return ArrayList of the table content.
+	 */
 	public ArrayList<String> getTableContent(){
 		ArrayList<String> list = new ArrayList<>();
 		for(int i=0; i<this.getRowCount(); i++){
@@ -305,25 +337,42 @@ public class TasksTable extends RemTable {
 		}
 		return list;
 	}
+
+	/**
+	 * 
+	 */
 	@Override
 	public void removeRow(int rowNumber) {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void removeRows() {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * 
+	 */
 	private void eventListeners(){
 		this.addMouseListener(new MouseListener() {
-			
+
+			/**
+			 * 
+			 */
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
-			
+
+			/**
+			 * 
+			 */
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
+				// TODO F[001] a
+				/* F[001]
 				JTable table =(JTable) e.getSource();
 				int rowNumber = table.getSelectedRow();
 				TableModel model = table.getModel();
@@ -333,16 +382,26 @@ public class TasksTable extends RemTable {
 							(String) model.getValueAt( rowNumber,1),
 							(String) model.getValueAt( rowNumber,2),
 							(String) model.getValueAt( rowNumber,3),
-							(String) model.getValueAt( rowNumber,4));*/
+							(String) model.getValueAt( rowNumber,4));
 				}
+				*/
 			}
-			
+
+			/**
+			 * 
+			 */
 			@Override
 			public void mouseExited(MouseEvent arg0) {}
-			
+
+			/**
+			 * 
+			 */
 			@Override
 			public void mouseEntered(MouseEvent arg0) {}
-			
+
+			/**
+			 * 
+			 */
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
@@ -350,7 +409,6 @@ public class TasksTable extends RemTable {
 					//TaskTablePopupMenu frame = new TaskTablePopupMenu(arg0.getXOnScreen(), arg0.getYOnScreen());
 					//frame.run();
 				}
-				
 			}
 		});
 	}
@@ -363,11 +421,23 @@ public class TasksTable extends RemTable {
 	 * @param end
 	 * @param status
 	 */
-	private void openEditWindow(final String topic, final String about, final String begin, final String end,final String status){
+	//private void openEditWindow(final String topic, final String about, final String begin, final String end,final String status){
+		//TODO F[001] b
 		/* F[001]
 		 * EditTaskFrame frame = new EditTaskFrame(this,topic,about,begin,end,status);
 		Util.centerWindow(frame);
 		frame.setVisible(true);*/
-	}
+	//}
 
+	/**
+	 * 
+	 * @param position
+	 * @return the status at the given position.
+	 */
+	public Object getStatusAt(int position){
+		if(position > status.length){
+			throw new IllegalArgumentException("The position is not in the range of the status array!");
+		}
+		return status[position];
+	}
 }

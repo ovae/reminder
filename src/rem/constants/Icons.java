@@ -3,9 +3,9 @@ package rem.constants;
 import javax.swing.ImageIcon;
 
 /**
- * 
+ * This enum contains all path of all icons in this programm.
  * @author ovae.
- * @version 20150501.
+ * @version 20151024.
  */
 public enum Icons {
 	MAIN_ICON					("/icons/program_main.png"),
@@ -39,7 +39,10 @@ public enum Icons {
 	RESTORE_EVENT_ICON			("/icons/restoreEvent.png"),
 	RESTORE_EVENT_HOVER_ICON	("/icons/restoreEventHover.png"),
 	ARCHIVE_EVENT_ICON			("/icons/archiveEvent.png"),
-	ARCHIVE_EVENT_HOVER_ICON	("/icons/archiveEventHover.png")
+	ARCHIVE_EVENT_HOVER_ICON	("/icons/archiveEventHover.png"),
+
+	DEV_Mode_ICON				("/icons/devMode.png"),
+	DEV_Mode_HOVER_ICON			("/icons/devModeHover.png")
 	;
 
 	private final String path;

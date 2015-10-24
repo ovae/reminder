@@ -22,35 +22,42 @@ import rem.constants.Colour;
 import rem.constants.Icons;
 import rem.constants.Messages;
 import rem.files.FileHandler;
-import rem.preference.RemPreferences;
+import rem.panels.InfoPanel;
 import rem.subwindows.AddEventFrame;
 import rem.subwindows.AddTaskFrame;
-import rem.subwindows.InfoFrame;
-import rem.subwindows.SettingsFrame;
 import rem.table.EventTable;
 import rem.table.RemTable;
-import rem.table.TasksTable;
+import rem.table.TaskTable;
 import rem.util.Util;
 
 /**
- * The main window of this program.
+ * This is the main window of the reminder program.
  * @author ovae.
- * @version 20150802.
+ * @version 20151024.
  */
 public class MainWindow extends JFrame{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Program info
 	 */
-	private String version ="0.5.0";
-	
-	//Main menu configuration
+	public static final String version ="1.5.6_20151024";
+
+	/**
+	 * If {@code True} then developer mode is on
+	 * else {@code False} mode is off.
+	 */
+	public static final Boolean devMode = false;
+
+	/**
+	 * The height of the main window.
+	 */
 	private int windowHeight;
+
+	/**
+	 * the weight of the main window.
+	 */
 	private int windowWidth;
 
 	//JPanels for the basic structure
@@ -78,25 +85,20 @@ public class MainWindow extends JFrame{
 	private JPanel calendarTab;
 
 	//Tables
-	private TasksTable taskTable;
-	private TasksTable archiveTable;
+	private TaskTable taskTable;
+	private TaskTable archiveTable;
 	private EventTable eventTable;
 	private JTextArea noteField;
 
 	//Sub windows
 	private AddTaskFrame addTaskFrame;
 	private AddEventFrame addEventFrame;
-	private InfoFrame infoFrame;
-	private SettingsFrame settingsFrame;
 
 	//Files
 	private File taskFile;
 	private File archiveFile;
 	private File eventFile;
 	private File noteFile;
-
-	//Preferences
-	private RemPreferences preferences;
 
 	/**
 	 * Creates a new MainWindow.
@@ -122,8 +124,8 @@ public class MainWindow extends JFrame{
 		this.noteScrollPane = new JScrollPane(noteTab);
 
 		//TabbedPane elements
-		this.taskTable = new TasksTable(new DefaultTableModel());
-		this.archiveTable = new TasksTable(new DefaultTableModel());
+		this.taskTable = new TaskTable(new DefaultTableModel());
+		this.archiveTable = new TaskTable(new DefaultTableModel());
 		this.eventTable = new EventTable(new DefaultTableModel());
 		this.calendarTab = new CalendarPanel(taskTable, archiveTable, eventTable);
 		this.noteField = new JTextArea();
@@ -134,38 +136,19 @@ public class MainWindow extends JFrame{
 		eventFile = new File(System.getProperty("user.dir")+"/userfiles/event.txt");
 		noteFile = new File(System.getProperty("user.dir")+"/userfiles/note.txt");
 
-		//sub menus
-		this.addTaskFrame = new AddTaskFrame(taskTable);
-		this.addEventFrame = new AddEventFrame(eventTable);
-		this.infoFrame = new InfoFrame();
-		this.settingsFrame = new SettingsFrame(this);
-		Util.centerWindow(infoFrame);
-		Util.centerWindow(addTaskFrame);
-		Util.centerWindow(addEventFrame);
-		Util.centerWindow(settingsFrame);
-
-		//ToolBar
-		toolbar = new RemToolBar(this, addTaskFrame, addEventFrame);
-
-		//MenuBar
-		remMenu = new RemMenuBar(this, addTaskFrame, addEventFrame, infoFrame, version,noteField);
-
-		//Initialise the preferences
-		preferences = new RemPreferences();
-
 		//Basic menu structure.
 		windowStructure();
 	}
 
 	/**
-	 * 
+	 * Sets the window to visible.
 	 */
 	public void run(){
 		this.setVisible(true);
 	}
 
 	/**
-	 * Set all basic window settings.
+	 * Set up all basic window settings.
 	 */
 	private void windowSettings(){
 		this.setSize(new Dimension(windowWidth,windowHeight));
@@ -230,7 +213,7 @@ public class MainWindow extends JFrame{
 	}
 
 	/**
-	 * 
+	 * Sets up the note tab.
 	 */
 	private void settingUpTheNoteTab() {
 		noteField.setBackground(Colour.CALENDAR_DAY.getColor());
@@ -238,16 +221,25 @@ public class MainWindow extends JFrame{
 		noteTab.add(noteField, BorderLayout.CENTER);
 		noteField.getDocument().addDocumentListener(new DocumentListener(){
 
+			/**
+			 * 
+			 */
 			@Override
 			public void changedUpdate(DocumentEvent arg0) {
 				infoPanel.setStateChanged();
 			}
 
+			/**
+			 * 
+			 */
 			@Override
 			public void insertUpdate(DocumentEvent arg0) {
 				infoPanel.setStateChanged();
 			}
 
+			/**
+			 * 
+			 */
 			@Override
 			public void removeUpdate(DocumentEvent arg0) {
 				infoPanel.setStateChanged();
@@ -294,7 +286,7 @@ public class MainWindow extends JFrame{
 
 
 	/**
-	 * Load the table content from files in the table.
+	 * Load the table content from files in the tables.
 	 */
 	private void loadTableContent(){
 		try {
@@ -307,6 +299,10 @@ public class MainWindow extends JFrame{
 		}finally{
 			infoPanel.setStateSaved();
 		}
+		addTaskFrame = new AddTaskFrame(this);
+		addEventFrame = new AddEventFrame(eventTable);
+		toolbar = new RemToolBar(this, addTaskFrame, addEventFrame);
+		remMenu = new RemMenuBar(this, addTaskFrame, addEventFrame, noteField);
 	}
 
 	//Setter
@@ -316,8 +312,7 @@ public class MainWindow extends JFrame{
 	//Getter
 	public RemTable getTaskTable(){return taskTable;}
 	public RemTable getEventTable(){return eventTable;}
-	public TasksTable getArchiveTable() {return archiveTable;}
-	public RemPreferences getPreferences(){return preferences;}
+	public TaskTable getArchiveTable() {return archiveTable;}
 	public JTabbedPane getTabbedPane() {return tabbedPane;}
 	public InfoPanel getInfoPanel() {return infoPanel;}
 	public File getTaskFile() {return taskFile;}

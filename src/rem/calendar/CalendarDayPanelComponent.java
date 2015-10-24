@@ -117,14 +117,14 @@ public class CalendarDayPanelComponent extends JPanel{
 	}
 
 	/**
-	 * Sets the background colour to the colour to {@see Colour#CALENDAR_HOLDER_DAY_TASK}.
+	 * Sets the background colour to the colour to {@link Colour#CALENDAR_HOLDER_DAY_TASK}.
 	 */
 	public void setBackgroundColour(){
 		taskTable.setBackground(Colour.CALENDAR_HOLDER_DAY_TASK.getColor());
 	}
 
 	/**
-	 * Sets the background colour of the table header to {@see Colour#CALENDAR_TODAY}.
+	 * Sets the background colour of the table header to {@link Colour#CALENDAR_TODAY}.
 	 */
 	public void setActuelDayColour(){
 		taskTable.getTableHeader().setBackground(Colour.CALENDAR_TODAY.getColor());

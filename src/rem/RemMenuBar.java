@@ -20,14 +20,15 @@ import javax.swing.event.ChangeListener;
 import rem.constants.Icons;
 import rem.constants.Messages;
 import rem.files.FileHandler;
+import rem.panels.InfoPanel;
 import rem.subwindows.AddEventFrame;
 import rem.subwindows.AddTaskFrame;
-import rem.subwindows.InfoFrame;
+import rem.subwindows.HelpFrame;
 import rem.table.EventTable;
-import rem.table.TasksTable;
+import rem.table.TaskTable;
 
 /**
- * 
+ * The menu bar of the {@link MainWindow}.
  * @author ovae.
  * @version 20150801.
  *
@@ -39,12 +40,13 @@ public class RemMenuBar extends JMenuBar{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	// The menus
 	private JMenu menuMenus;
 	private JMenu menuHelp;
+
+	// The menu items
 	private JMenuItem menuItemSave;
 	private JMenuItem menuClose;
-	private JMenuItem menuItemColours;
-	private JMenuItem menuItemAbout;
 	private JMenuItem menuItemNewTask;
 	private JMenuItem menuItemRemoveTask;
 	private JMenuItem menuItemChangeTaskStatus;
@@ -56,19 +58,22 @@ public class RemMenuBar extends JMenuBar{
 	private JMenuItem menuItemChangeEventStatus;
 	private JMenuItem menuItemRestore;
 	private JMenuItem menuItemRemoveArchiveTask;
+	private JMenuItem menuItemHelp;
 
 	private JTabbedPane tabbedPane;
 	private InfoPanel infoPanel;
-	private String version;
 
-	private TasksTable taskTable;
-	private TasksTable archiveTable;
+	// Tables
+	private TaskTable taskTable;
+	private TaskTable archiveTable;
 	private EventTable eventTable;
 
+	// Frames
 	private AddTaskFrame addTaskFrame;
 	private AddEventFrame addEventFrame;
-	private InfoFrame infoFrame;
+	private HelpFrame helpFrame;
 
+	// Files
 	private File taskFile;
 	private File archiveFile;
 	private File eventFile;
@@ -76,27 +81,28 @@ public class RemMenuBar extends JMenuBar{
 	private JTextArea noteField;
 
 	/**
-	 * 
+	 * Creates a new RemMenuBar.
+	 * @param mainwindow the main window.
+	 * @param addTaskFrame the frame to add tasks to the tasks table.
+	 * @param addEventFrame the frame to add events to the event table.
+	 * @param noteField
 	 */
 	public RemMenuBar(MainWindow mainwindow,AddTaskFrame addTaskFrame,
 											AddEventFrame addEventFrame,
-											InfoFrame infoFrame,
-											String version,
 											JTextArea noteField){
 		this.tabbedPane = mainwindow.getTabbedPane();
 		this.infoPanel = mainwindow.getInfoPanel();
-		this.taskTable = (TasksTable) mainwindow.getTaskTable();
+		this.taskTable = (TaskTable) mainwindow.getTaskTable();
 		this.archiveTable = mainwindow.getArchiveTable();
 		this.eventTable = (EventTable) mainwindow.getEventTable();
 		this.addTaskFrame = addTaskFrame;
 		this.addEventFrame = addEventFrame;
-		this.infoFrame = infoFrame;
-		this.version = version;
 		this.taskFile = mainwindow.getTaskFile();
 		this.archiveFile = mainwindow.getArchiveFile();
 		this.eventFile = mainwindow.getEventFile();
 		this.noteFile = mainwindow.getNoteFile();
 		this.noteField = noteField;
+		helpFrame = new HelpFrame(mainwindow, noteField);
 
 		menuMenus = new JMenu("\u2630 Menu");
 			menuItemNewTask = new JMenuItem("New task");
@@ -117,14 +123,13 @@ public class RemMenuBar extends JMenuBar{
 			menuItemSave = new JMenuItem("Save");
 			
 		menuHelp = new JMenu("Help");
-			menuItemColours = new JMenuItem("Colours");
-			menuItemAbout = new JMenuItem("About");
+			menuItemHelp = new JMenuItem("Help");
 
 		setUpMenuBar();
 	}
 
 	/**
-	 * 
+	 * Sets up the menu bar.
 	 */
 	private void setUpMenuBar(){
 		setMenuOptions();
@@ -151,19 +156,17 @@ public class RemMenuBar extends JMenuBar{
 			menuMenus.add(menuClose);
 
 		this.add(menuHelp);
-			menuHelp.add(menuItemColours);
-			menuHelp.add(menuItemAbout);
+			menuHelp.add(menuItemHelp);
 	}
 
 	/**
-	 * 
+	 * Set up the menu options.
 	 */
 	private void setMenuOptions(){
 		//Set icon for the menu items
 		menuItemSave.setIcon(Icons.SAVE_ICON.getIcon());
 		menuClose.setIcon(Icons.EXIT_ICON.getIcon());
-		menuItemAbout.setIcon(Icons.ABOUT_ICON.getIcon());
-		menuItemColours.setIcon(Icons.COLOUR_ICON.getIcon());
+		menuItemHelp.setIcon(Icons.PLACEHOLDER.getIcon());
 
 		menuItemNewTask.setIcon(Icons.ADD_TASK_ICON.getIcon());
 		menuItemRemoveTask.setIcon(Icons.REMOVE_TASK_ICON.getIcon());
@@ -212,7 +215,7 @@ public class RemMenuBar extends JMenuBar{
 	}
 
 	/**
-	 * 
+	 * Sets up the menu action listener.
 	 */
 	private void setMenuActionListener(){
 		menuItemNewTask.addActionListener(new ActionListener(){
@@ -246,20 +249,6 @@ public class RemMenuBar extends JMenuBar{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				taskTable.shiftTableItemsinOtherTable(archiveTable);
-			}
-		});
-
-		menuItemColours.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				infoFrame.setVisible(true);
-			}
-		});
-
-		menuItemAbout.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				JOptionPane.showMessageDialog(null, "Reminder "+version,"Program Info", 1);
 			}
 		});
 
@@ -339,10 +328,18 @@ public class RemMenuBar extends JMenuBar{
 				eventTable.updateTableRow();
 			}
 		});
+
+		//Help Menu
+		menuItemHelp.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				helpFrame.setVisible(true);
+			}
+		});
 	}
 
 	/**
-	 * 
+	 * Sets up the menu change listener.
 	 */
 	private void setMenuChangeListener(){
 		tabbedPane.addChangeListener(new ChangeListener() {
@@ -420,6 +417,7 @@ public class RemMenuBar extends JMenuBar{
 						break;
 					default:
 						//Error
+						throw new IllegalStateException("This state is not normal, isn't it!");
 				}
 			}
 		});

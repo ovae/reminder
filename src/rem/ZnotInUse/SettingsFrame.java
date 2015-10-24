@@ -1,11 +1,10 @@
-package rem.subwindows;
+package rem.ZnotInUse;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import rem.MainWindow;
+import rem.util.Util;
 
 /**
  * 
@@ -29,7 +29,7 @@ public class SettingsFrame extends JFrame{
 	private JPanel mainPanel;
 	private JPanel contentPanel;
 	private JPanel controlPanel;
-	private MainWindow parentFrame;
+	//private MainWindow parentFrame;
 
 	private JTextField tasksPathField;
 	private JTextField archivePathField;
@@ -39,8 +39,8 @@ public class SettingsFrame extends JFrame{
 	private JButton changeTaskPathButton;
 	private JButton changeArchivePathButton;
 
-	private File tasksFile;
-	private File archiveFile;
+	//private File tasksFile;
+	//private File archiveFile;
 
 	public SettingsFrame(final MainWindow parentFrame){
 		super("Settings");
@@ -48,7 +48,7 @@ public class SettingsFrame extends JFrame{
 		this.setContentPane(mainPanel);
 		windowSettings();
 
-		this.parentFrame = parentFrame;
+		//this.parentFrame = parentFrame;
 		this.contentPanel = new JPanel();
 		this.controlPanel = new JPanel(new BorderLayout());
 		this.cancelButton = new JButton("Cancel");
@@ -63,13 +63,14 @@ public class SettingsFrame extends JFrame{
 
 		//load the JTextfield contents
 		try{
-			this.tasksPathField.setText(parentFrame.getPreferences().loadTasksFilePath());
-			this.archivePathField.setText(parentFrame.getPreferences().loadArchiveFilePath());
+			//this.tasksPathField.setText(parentFrame.getPreferences().loadTasksFilePath());
+			//this.archivePathField.setText(parentFrame.getPreferences().loadArchiveFilePath());
 		}catch(Exception e){
 			
 		}
 
 		this.setVisible(false);
+		Util.centerWindow(this);
 	}
 
 	private void windowSettings(){
@@ -123,7 +124,7 @@ public class SettingsFrame extends JFrame{
 				int result = chooser.showOpenDialog(null);
 				if(result == 0){
 					tasksPathField.setText(chooser.getSelectedFile().toString());
-					tasksFile = chooser.getSelectedFile();
+					//tasksFile = chooser.getSelectedFile();
 					System.out.println(""+chooser.getSelectedFile());
 				}
 			}
@@ -136,7 +137,7 @@ public class SettingsFrame extends JFrame{
 				int result = chooser.showOpenDialog(null);
 				if(result == 0){
 					archivePathField.setText(chooser.getSelectedFile().toString());
-					archiveFile = chooser.getSelectedFile();
+					//archiveFile = chooser.getSelectedFile();
 				}
 			}
 		});
@@ -144,8 +145,8 @@ public class SettingsFrame extends JFrame{
 		saveButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				parentFrame.getPreferences().storeTasksFilePath(""+tasksFile);
-				parentFrame.getPreferences().storeArchiveFilePath(""+archiveFile);
+				//parentFrame.getPreferences().storeTasksFilePath(""+tasksFile);
+				//parentFrame.getPreferences().storeArchiveFilePath(""+archiveFile);
 				//parentFrame.setTaskFilePath(chooser.getSelectedFile());
 				//parentFrame.setArchiveFilePath(chooser.getSelectedFile());
 				System.out.println("Saved.");

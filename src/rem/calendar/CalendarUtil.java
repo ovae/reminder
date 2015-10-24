@@ -1,26 +1,29 @@
 package rem.calendar;
 
+import java.util.Calendar;
+
 /**
  * 
  * @author ovae.
- * @version 20150819.
+ * @version 20151024.
  *
  */
 public class CalendarUtil {
 
+	private static final int[] monthConfigurationOne = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
+	private static final int[] monthConfigurationTwo = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
+
 	/**
 	 * 
 	 * @param year
-	 * @return
+	 * @return daysInMonth a int array of the days in month.
 	 */
 	public static int[] getMonthSetting(final int year){
 		int[] daysInMonth;
-		int[] monthCOnfigurationOne = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-		int[] monthCOnfigurationTwo = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-		if(year%4 ==0){
-			daysInMonth = monthCOnfigurationOne;
+		if(year%4 == 0 || year%400 == 0){
+			daysInMonth = monthConfigurationOne;
 		}else{
-			daysInMonth = monthCOnfigurationTwo;
+			daysInMonth = monthConfigurationTwo;
 		}
 		return daysInMonth;
 	}
@@ -28,7 +31,7 @@ public class CalendarUtil {
 	/**
 	 * 
 	 * @param value has to be in his yyyymmdd form.
-	 * @return
+	 * @return the month of the given value.
 	 */
 	public static int getMonth(final int value){
 		return Integer.parseInt((""+value).substring(4,6));
@@ -37,7 +40,7 @@ public class CalendarUtil {
 	/**
 	 * 
 	 * @param value has to be in his yyyymmdd form.
-	 * @return
+	 * @return the day of the given value.
 	 */
 	public static int getDay(final int value){
 		return Integer.parseInt((""+value).substring(6,8));
@@ -46,7 +49,7 @@ public class CalendarUtil {
 	/**
 	 * 
 	 * @param value has to be in his yyyymmdd form.
-	 * @return
+	 * @return the year of the given value.
 	 */
 	public static int getYear(final int value){
 		return Integer.parseInt((""+value).substring(0,4));
@@ -56,7 +59,7 @@ public class CalendarUtil {
 	 * 
 	 * @param date has to be in his yyyymmdd form.
 	 * @param value
-	 * @return
+	 * @return the corret next date.
 	 */
 	public static int addDaysToDate(final int date,int value){
 		int year = getYear(date);
@@ -90,5 +93,20 @@ public class CalendarUtil {
 			}
 		}
 		return Integer.parseInt(out);
+	}
+
+	/**
+	 * Returns the current day  like this yyyymmdd.
+	 * @return today
+	 */
+	public static int getToday(){
+		int out=0;
+		int dayState = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		int monthState = Calendar.getInstance().get(Calendar.MONTH)+1;
+		int yearState = Calendar.getInstance().get(Calendar.YEAR);
+		out +=dayState;
+		out += (monthState*100);
+		out += (yearState*10000);
+		return out;
 	}
 }

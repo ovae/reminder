@@ -1,7 +1,7 @@
 package rem.subwindows;
 
+import rem.MainWindow;
 import rem.constants.States;
-import rem.table.TasksTable;
 
 public class EditTaskFrame extends AddTaskFrame{
 
@@ -10,15 +10,23 @@ public class EditTaskFrame extends AddTaskFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public EditTaskFrame(TasksTable table) {
-		super(table);
+	public EditTaskFrame(MainWindow window) {
+		super(window);
 	}
 
-	public EditTaskFrame(final TasksTable table,final String topic, final String about, final String begin, final String end,final String status) {
-		super(table);
+	/**
+	 * 
+	 * @param table
+	 * @param topic
+	 * @param about
+	 * @param begin
+	 * @param end
+	 * @param status
+	 */
+	public EditTaskFrame(final MainWindow window,final String topic, final String about, final String begin, final String end,final String status) {
+		super(window);
 		this.setTitle("Edit Task");
 		this.setVisible(false);
-		this.setInputFieldTopic(topic);
 		this.setInputFieldAbout(about);
 		this.setInputFieldBegin(begin);
 		this.setInputFieldEnd(end);

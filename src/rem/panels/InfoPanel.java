@@ -1,4 +1,4 @@
-package rem;
+package rem.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,10 +12,13 @@ import javax.swing.JPanel;
  * A JPanel with two JLabels, at the left the actual date
  * and at the right an information if the program have changed.
  * @author ovae.
- * @version 20150719.
+ * @version 20150824.
  */
 public class InfoPanel extends JPanel{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

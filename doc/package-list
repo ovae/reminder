@@ -2,8 +2,10 @@ rem
 rem.calendar
 rem.constants
 rem.files
-rem.popupMenus
+rem.panels
+rem.popupmenus
 rem.preference
-rem.subWindows
+rem.subwindows
 rem.table
+rem.tests
 rem.util

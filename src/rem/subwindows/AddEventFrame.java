@@ -23,7 +23,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import rem.calendar.CalendarUtil;
-import rem.table.TasksTable;
+import rem.table.TaskTable;
+import rem.util.Util;
 
 /**
  * This windows is used to create a new event.
@@ -51,7 +52,7 @@ public class AddEventFrame extends JFrame{
 	private JButton addButton;
 	private JButton resetButton;
 
-	private TasksTable table;
+	private TaskTable table;
 	private JPanel mainPanel;
 
 	private static Date date = new Date();
@@ -61,7 +62,7 @@ public class AddEventFrame extends JFrame{
 	 * 
 	 * @param table the tasktable.
 	 */
-	public AddEventFrame(final TasksTable table){
+	public AddEventFrame(final TaskTable table){
 		if(table.equals(null)){
 			throw new IllegalArgumentException("The table can not be null.");
 		}
@@ -88,6 +89,7 @@ public class AddEventFrame extends JFrame{
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		createTheContent();
+		Util.centerWindow(this);
 	}
 
 	/**

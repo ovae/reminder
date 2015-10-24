@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 import rem.constants.Colour;
 import rem.table.EventTable;
-import rem.table.TasksTable;
+import rem.table.TaskTable;
 
 /**
  * A calendar component witch can show task and events of the day.
@@ -58,10 +58,10 @@ public class CalendarPanel extends JPanel{
 	private int currentYear;
 
 	//Table object
-	private TasksTable table;
+	private TaskTable table;
 
 	//Archive table
-	private TasksTable archive;
+	private TaskTable archive;
 
 	//Event table
 	private EventTable event;
@@ -72,7 +72,7 @@ public class CalendarPanel extends JPanel{
 	 * @param archive the archive table
 	 * @param event the event table.
 	 */
-	public CalendarPanel(final TasksTable table, final TasksTable archive, final EventTable event){
+	public CalendarPanel(final TaskTable table, final TaskTable archive, final EventTable event){
 		this.table = table;
 		this.archive = archive;
 		this.event = event;
@@ -104,13 +104,7 @@ public class CalendarPanel extends JPanel{
 		yearLabel = new JLabel(""+yearState);
 		days = new ArrayList<CalendarDayPanelComponent>();
 
-		int[] monthCOnfigurationOne = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-		int[] monthCOnfigurationTwo = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30 ,31};
-		if(yearState%4 ==0){
-			daysInMonth = monthCOnfigurationOne;
-		}else{
-			daysInMonth = monthCOnfigurationTwo;
-		}
+		daysInMonth = CalendarUtil.getMonthSetting(yearState);
 
 		setUpComponents();
 		setUpHeaderPanel();
@@ -249,6 +243,7 @@ public class CalendarPanel extends JPanel{
 	 * Creates the Calendar Panel, it holds all components that represent the days of the month.
 	 */
 	private void setUpCalendarPanel(){
+		daysInMonth = CalendarUtil.getMonthSetting(yearState);
 		prepaireTheDaysList();
 		int gap = getGap();
 		int index = 1-gap;
@@ -280,9 +275,6 @@ public class CalendarPanel extends JPanel{
 
 	/**
 	 * Prepares the days list, witch contains a JPanel for each day of the month.
-	 * @param month
-	 * @param year
-	 * @return gap
 	 */
 	private void prepaireTheDaysList(){
 		int gap = getGap();
@@ -468,4 +460,5 @@ public class CalendarPanel extends JPanel{
 		}
 		return gap--;
 	}
+
 }

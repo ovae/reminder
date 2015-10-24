@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,18 +22,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import rem.table.TasksTable;
+import rem.MainWindow;
+import rem.table.TaskTable;
+import rem.util.Util;
 
 /**
  * 
  * @author ovae.
- * @version 20150719.
+ * @version 20151024.
  */
 public class AddTaskFrame extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextField inputFieldTopic;
+	private JComboBox<String> topicBox;
 	private JTextArea inputFieldAbout;
 	private JComboBox<String> status;
 	private JTextField inputFieldBegin;
@@ -42,24 +46,28 @@ public class AddTaskFrame extends JFrame{
 	private JButton addButton;
 	private JButton resetButton;
 
-	private TasksTable table;
+	private TaskTable table;
 	private JPanel mainPanel;
+
+	private MainWindow window;
 
 	private static Date date = new Date();
 	private static SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd");
 
 	/**
 	 * 
-	 * @param parentFrame
+	 * @param window the main window.
 	 */
-	public AddTaskFrame(final TasksTable table){
-		if(table.equals(null)){
+	public AddTaskFrame(final MainWindow window){
+		if(window.equals(null)){
 			throw new IllegalArgumentException("The table can not be null.");
 		}
 
-		inputFieldTopic = new JTextField("");
+		this.window = window;
+
 		inputFieldAbout = new JTextArea("");
 		status = new JComboBox<String>();
+		topicBox = new JComboBox<String>();
 		inputFieldBegin = new JTextField("");
 		inputFieldEnd = new JTextField("");
 
@@ -71,7 +79,7 @@ public class AddTaskFrame extends JFrame{
 		mainPanel = new JPanel();
 		mainPanel.setLayout(null);
 
-		this.table = table;
+		this.table = (TaskTable) window.getTaskTable();
 		this.setTitle("New Task");
 		this.setLocationRelativeTo(null);
 		this.setSize(new Dimension(500,330));
@@ -80,6 +88,7 @@ public class AddTaskFrame extends JFrame{
 		this.setLayout(new BorderLayout());
 
 		createTheContent();
+		Util.centerWindow(this);
 	}
 
 	/**
@@ -90,6 +99,7 @@ public class AddTaskFrame extends JFrame{
 		setUpBeginnAndEnd();
 		setUpTheInputFields();
 		setUpTheStatusComboBox();
+		setUpTheTopicComboBox();
 		setUpButtonPanel();
 
 		//If the window is closed, the resetInputAddFrame method is used-
@@ -115,7 +125,6 @@ public class AddTaskFrame extends JFrame{
 		enterAbout.setBounds(10, 28, 100, 28);
 
 		//Set the bounds of the text fields.
-		inputFieldTopic.setBounds(10, 28, 361,28);
 		inputFieldAbout.setBounds(10, 28, 360, 128);
 
 		//Set the bounds of the info labels.
@@ -127,13 +136,12 @@ public class AddTaskFrame extends JFrame{
 		enterAbout.setLocation(40, 60);
 
 		//Set the input locations.
-		inputFieldTopic.setLocation(120, 30);
 		inputFieldAbout.setLocation(120, 60);
 
 		//Add all labels and text fields to the addPanel.
 		mainPanel.add(enterTopic);
 		mainPanel.add(enterAbout);
-		mainPanel.add(inputFieldTopic);
+		//mainPanel.add(inputFieldTopic);
 		mainPanel.add(inputFieldAbout);
 	}
 
@@ -193,13 +201,13 @@ public class AddTaskFrame extends JFrame{
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				//Check if one of the text fields is empty.
-				if(inputFieldTopic.getText().trim().isEmpty() || 
+				if(String.valueOf(topicBox.getSelectedItem()).trim().isEmpty()  || 
 						inputFieldAbout.getText().trim().isEmpty() ||
 						inputFieldBegin.getText().trim().isEmpty() ||
 						inputFieldEnd.getText().trim().isEmpty() ){
 					JOptionPane.showMessageDialog(null, "At least one inputfeald is empty.");
 				}else{
-					table.addRow(inputFieldTopic.getText(), inputFieldAbout.getText(), inputFieldBegin.getText(), inputFieldEnd.getText(), String.valueOf(status.getSelectedItem()));
+					table.addRow(String.valueOf(topicBox.getSelectedItem()), inputFieldAbout.getText(), inputFieldBegin.getText(), inputFieldEnd.getText(), String.valueOf(status.getSelectedItem()));
 				}
 			}
 		});
@@ -223,6 +231,31 @@ public class AddTaskFrame extends JFrame{
 	}
 
 	/**
+	 * TODO
+	 */
+	private void setUpTheTopicComboBox(){
+		table = (TaskTable) window.getTaskTable();
+		List<String> list = new ArrayList<>();
+		for(int i=0; i < table.getRowCount(); i++ ){
+			String current = (String) table.getValueAt(i,0);
+			if(!list.contains(current) && current != null){
+				list.add(current);
+			}
+		}
+
+		String[] out = new String[list.size()];
+		for(int i=0;i<list.size();i++){
+			out[i] = list.get(i);
+		}
+
+		topicBox = new JComboBox<String>(out);
+		topicBox.setEditable(true);
+		topicBox.setBounds(10, 28, 361,28);
+		topicBox.setLocation(120,30);
+		mainPanel.add(topicBox);
+	}
+
+	/**
 	 * 
 	 */
 	private void setUpTheStatusComboBox(){
@@ -240,31 +273,19 @@ public class AddTaskFrame extends JFrame{
 	}
 
 	/**
-	 * Resets the all input fields of the addFrame.
+	 * Resets all input fields of this Frame.
 	 */
 	public void resetInputsAddFrame(){
-		inputFieldTopic.setText("");
 		inputFieldAbout.setText("");
 		inputFieldBegin.setText(ft.format(date));
 		inputFieldEnd.setText(ft.format(date));
 		status.setSelectedIndex(0);
 	}
 
-
-	public void setInputFieldTopic(final String text){
-		this.inputFieldTopic.setText(text);
-	}
-	public void setInputFieldAbout(final String text){
-		this.inputFieldAbout.setText(text);
-	}
-	public void setInputFieldBegin(final String text){
-		this.inputFieldBegin.setText(text);
-	}
-	public void setInputFieldEnd(final String text){
-		this.inputFieldEnd.setText(text);
-	}
-	public void setStatus(final int anIndex){
-		this.status.setSelectedIndex(anIndex);
-	}
+	//Setter
+	public void setInputFieldAbout(final String text){this.inputFieldAbout.setText(text);}
+	public void setInputFieldBegin(final String text){this.inputFieldBegin.setText(text);}
+	public void setInputFieldEnd(final String text){this.inputFieldEnd.setText(text);}
+	public void setStatus(final int anIndex){this.status.setSelectedIndex(anIndex);}
 
 }

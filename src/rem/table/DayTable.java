@@ -13,7 +13,7 @@ import rem.constants.Colour;
  * @author ovae.
  * @version 20150514.
  */
-public class DayTable extends TasksTable{
+public class DayTable extends TaskTable{
 
 	/**
 	 * 

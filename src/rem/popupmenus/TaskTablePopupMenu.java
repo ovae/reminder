@@ -9,6 +9,11 @@ import javax.swing.JPopupMenu;
 
 import rem.constants.Icons;
 
+/**
+ * 
+ * @author ovae.
+ * @version 20150824.
+ */
 public class TaskTablePopupMenu extends JPopupMenu{
 
 	/**
@@ -19,6 +24,11 @@ public class TaskTablePopupMenu extends JPopupMenu{
 	private JButton closeButton;
 	private JButton newTaskButton;
 
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	public TaskTablePopupMenu(int x, int y){
 		closeButton = new JButton("Close");
 		newTaskButton = new JButton(Icons.ADD_TASK_ICON.getIcon());
@@ -26,11 +36,19 @@ public class TaskTablePopupMenu extends JPopupMenu{
 		settingUp(x,y);
 	}
 
+	/**
+	 * 
+	 */
 	public void run(){
 		this.pack();
 		this.setVisible(true);
 	}
 
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	private void settingUp(int x, int y){
 		this.setVisible(false);
 		this.setLocation(x, y);
@@ -59,6 +77,9 @@ public class TaskTablePopupMenu extends JPopupMenu{
 		this.add(closeButton);
 	}
 
+	/**
+	 * 
+	 */
 	private void exit(){
 		this.setVisible(false);
 	}

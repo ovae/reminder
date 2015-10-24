@@ -20,11 +20,11 @@ public abstract class RemTable extends JTable{
 
 	RemTable(DefaultTableModel defaultTableModel){
 		this.columnNames = new String[5];
-		this.columnNames[0] = "colomn0" ;
-		this.columnNames[1] = "colomn1" ;
-		this.columnNames[2] = "colomn2" ;
-		this.columnNames[3] = "colomn3" ;
-		this.columnNames[4] = "colomn4" ;
+		this.columnNames[0] = "column0" ;
+		this.columnNames[1] = "column1" ;
+		this.columnNames[2] = "column2" ;
+		this.columnNames[3] = "column3" ;
+		this.columnNames[4] = "column4" ;
 		this.setModel(new DefaultTableModel(tableContent, columnNames));
 		this.setBorder(BorderFactory.createLineBorder(Colour.TABLE_BORDER.getColor()));
 		this.setBackground(Colour.TABLE_BACKGROUND.getColor());
@@ -49,16 +49,8 @@ public abstract class RemTable extends JTable{
 	 */
 	public abstract void addRow(final String topic, final String about, final String begin, final String end, final String status);
 
-	/**
-	 * 
-	 * @param tempTable
-	 * @param topic
-	 * @param about
-	 * @param begin
-	 * @param end
-	 * @param status
-	 */
-	public abstract void addRow(final RemTable tempTable, final String topic, final String about, final String begin, final String end,final String status);
+	//protected abstract void addRow(final RemTable tempTable, final String topic, final String about, final String begin, final String end,final String status);
+
 
 	/**
 	 * Remove a single Row
